@@ -1,4 +1,4 @@
-#include "object.h"
+#include "Sprites.h"
 
 //BEGIN MODIFIERS
 void Character::setStr(int str){
@@ -57,12 +57,14 @@ void Character::setLevel(int level){
 	else
 		this->level = level;
 }
+/*
 void Character::setAC(int ac){
 	if (ac <= 0)
 		this->ac = 0;
 	else
 		this->ac = ac;
 }
+*/
 //END MODIFIERS
 
 //BEGIN ACCESSORS
@@ -90,10 +92,25 @@ int Character::getHp(){
 int Character::getLevel(){
 	return level;
 }
+
+int Character::getModifier(int base)
+{
+	return (base/2)-5;
+}
+
+// Armor Class (AC): How hard a character is to hit. 
+// 10 + armor bonus + shield bonus + size modifier + dexterity modifier
 int Character::getAC(){
-	return ac;
+	return 10 + getModifier(dex);
 }
 //END ACCESSORS
+
+const int Fighter::FIGHTER_HP = 10;
+
+Fighter::Fighter()
+{
+
+}
 
 //Constructor class
 //Takes a type race to specify which race the character is
@@ -102,14 +119,14 @@ int Character::getAC(){
 //Str, Dex, Con, Ite, Wis, Cha are all determined randomly by the character roll.
 Fighter::Fighter(race myrace) {
 
+	setHp(FIGHTER_HP);
+	setLevel(1);
 	Dice myDice;
 
 	switch (myrace)
 	{
 		case HUMAN:
-			setHp(12);
-			setLevel(1);
-			setAC(0);
+			//setAC(0);
 			setStr(myDice.characterRoll());
 			setDex(myDice.characterRoll());
 			setCon(myDice.characterRoll());
@@ -118,9 +135,7 @@ Fighter::Fighter(race myrace) {
 			setCha(myDice.characterRoll());
 			break;
 		case DWARF:
-			setHp(22);
-			setLevel(1);
-			setAC(0);
+			//setAC(0);
 			setStr(myDice.characterRoll());
 			setDex(myDice.characterRoll());
 			setCon(myDice.characterRoll() + 2);
