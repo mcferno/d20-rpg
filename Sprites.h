@@ -14,7 +14,7 @@ automatically creates a player when it is called.
 #ifndef SPRITES_H
 	#define SPRITES_H
 
-#include "dice.h"
+#include "Dice.h"
 #include "Graphics.h"
 #include <iostream>
 
