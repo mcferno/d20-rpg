@@ -33,7 +33,7 @@ void SelectionScreen::init()
 
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
-		availableSprites[i].x = 272 + (i*64);
+		availableSprites[i].x = 80 + (i*64);
 		availableSprites[i].y = 96;
 		availableSprites[i].clip.w = availableSprites[i].clip.h = 16; 
 	}
