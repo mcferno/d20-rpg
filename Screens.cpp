@@ -11,6 +11,8 @@ void SelectionScreen::init()
 	characterSprites = new Graphics(".\\images\\characters.bmp");
 	selectScreen = new Graphics(".\\images\\selectScreen.png");
 
+
+
 }
 
 SelectionScreen::SelectionScreen()
@@ -30,8 +32,35 @@ void SelectionScreen::paint()
 	// if player graphic selected? paint in selected character area
 	// if race selected? 
 
+	SDL_Rect *character1 = new SDL_Rect();
+	SDL_Rect *character2 = new SDL_Rect();
+	SDL_Rect *character3 = new SDL_Rect();
+	SDL_Rect *character4 = new SDL_Rect();
+	SDL_Rect *character5 = new SDL_Rect();
+
+	character1->x = 0; character1->y = 0; character1->w = 16; character1->h = 16;
+	character2->x = 272; character2->y = 0; character2->w = 16; character2->h = 16;
+	character3->x = 0; character3->y = 152; character3->w = 16; character3->h = 16;
+	character4->x = 152; character4->y = 152; character4->w = 16; character4->h = 16;
+	character5->x = 272; character5->y = 152; character5->w = 16; character5->h = 16;
+
+	//coordinates for the player selection squares
+	int cx1 = 272;
+	int cy = 96;
+	int cx2 = cx1 + 64;
+	int cx3 = cx2 + 64;
+	int cx4 = cx3 + 64;
+	int cx5 = cx4 + 64;
+
+	
 
 	applySurface(0,0,selectScreen->image,screen);
+	applySurface(cx1,cy,characterSprites->image,screen, character1);
+	applySurface(cx2,cy,characterSprites->image,screen, character2);
+	applySurface(cx3,cy,characterSprites->image,screen, character3);
+	applySurface(cx4,cy,characterSprites->image,screen, character4);
+	applySurface(cx5,cy,characterSprites->image,screen, character5);
+		
 }
 
 void SelectionScreen::mouseLeft(int x, int y)
