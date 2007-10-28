@@ -98,6 +98,26 @@ int Character::getModifier(int base)
 	return (base/2)-5;
 }
 
+int Character::getStrMod() {
+	return getModifier(str);
+}
+int Character::getDexMod() {
+	return getModifier(dex);
+}
+int Character::getConMod() {
+	return getModifier(con);
+}
+int Character::getIteMod() {
+	return getModifier(ite);
+}
+int Character::getWisMod() {
+	return getModifier(wis);
+}
+int Character::getChaMod() {
+	return getModifier(cha);
+}
+
+
 // Armor Class (AC): How hard a character is to hit. 
 // 10 + armor bonus + shield bonus + size modifier + dexterity modifier
 int Character::getAC(){

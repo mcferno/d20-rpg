@@ -22,6 +22,7 @@ public:
 
 class MainGame
 {
+private:
 	SDL_Surface *screen;
 public:
 	MainGame(SDL_Surface *);

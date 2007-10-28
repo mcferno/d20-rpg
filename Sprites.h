@@ -53,11 +53,14 @@ class InatemateObject : public Object
 //Character defines the basic rules and attributes of Characters in the game world
 class Character : public Object
 {
-	//Modifiers common to all Characters
-	//Strenght, Dexterity, Constitution, Intelligence, Wisdom, Charisma 
-	//Hitpoints, Level, Armour Class 
 private:
-	int str, dex, con, ite, wis, cha, hp, level; //, ac;
+	// abilities common to all characters: strength, dexterity, consitution, wisdom, charisma
+	int str, dex, con, ite, wis, cha;
+	
+	// hit points, current level
+	int hp, level;
+
+	int getModifier(int);
 	
 public:
 	//mutators
@@ -83,7 +86,13 @@ public:
 	int getLevel();
 	int getAC();
 
-	int getModifier(int);
+	// accessors for modifiers
+	int getStrMod();
+	int getDexMod();
+	int getConMod();
+	int getIteMod();
+	int getWisMod();
+	int getChaMod();
 };
 
 // --------------------------

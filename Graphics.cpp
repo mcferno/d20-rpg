@@ -170,14 +170,14 @@ void Map::parseIndex(char *filename)
 
 	// initialize 2D array of tiles which will represent the map
 	ts = new Tile*[mapW];
-	for (int i = 0; i < mapW; i++)
-		ts[i] = new Tile[mapH];
+	for (int k = 0; k < mapW; k++)
+		ts[k] = new Tile[mapH];
 
 
 	std::cout << "Initializing map, W: "<<mapW<<" tiles, H: "<< mapH <<" tiles ... ";
 
 	// read the input index file, initializing the tiles
-	for(i=0;i<w;i++)
+	for(int i=0;i<w;i++)
 	{
 		for(int j=0;j<h;j++)
 		{
