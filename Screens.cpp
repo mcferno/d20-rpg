@@ -3,14 +3,16 @@
 #include <iostream>
 
 Graphics *characterSprites = NULL;
+Graphics *highlightTile = NULL;
 Graphics *selectScreen = NULL;
 Character *mainCharacter = NULL;
+
 
 void SelectionScreen::init()
 {
 	characterSprites = new Graphics(".\\images\\characters.bmp");
 	selectScreen = new Graphics(".\\images\\selectScreen.png");
-
+	highlightTile = new Graphics(".\\images\\highlight.png");
 
 
 }
@@ -32,12 +34,12 @@ void SelectionScreen::paint()
 	// if player graphic selected? paint in selected character area
 	// if race selected? 
 
+	//clipping sprite coordinates
 	SDL_Rect *character1 = new SDL_Rect();
 	SDL_Rect *character2 = new SDL_Rect();
 	SDL_Rect *character3 = new SDL_Rect();
 	SDL_Rect *character4 = new SDL_Rect();
 	SDL_Rect *character5 = new SDL_Rect();
-
 	character1->x = 0; character1->y = 0; character1->w = 16; character1->h = 16;
 	character2->x = 272; character2->y = 0; character2->w = 16; character2->h = 16;
 	character3->x = 0; character3->y = 152; character3->w = 16; character3->h = 16;
@@ -45,16 +47,17 @@ void SelectionScreen::paint()
 	character5->x = 272; character5->y = 152; character5->w = 16; character5->h = 16;
 
 	//coordinates for the player selection squares
-	int cx1 = 272;
-	int cy = 96;
-	int cx2 = cx1 + 64;
-	int cx3 = cx2 + 64;
-	int cx4 = cx3 + 64;
-	int cx5 = cx4 + 64;
+	cx1 = 272;
+	cy = 96;
+	cx2 = cx1 + 64;
+	cx3 = cx2 + 64;
+	cx4 = cx3 + 64;
+	cx5 = cx4 + 64;
 
-	
+	//sprites
 
 	applySurface(0,0,selectScreen->image,screen);
+	applySurface(0,0,highlightTile->image,screen);
 	applySurface(cx1,cy,characterSprites->image,screen, character1);
 	applySurface(cx2,cy,characterSprites->image,screen, character2);
 	applySurface(cx3,cy,characterSprites->image,screen, character3);
@@ -65,12 +68,34 @@ void SelectionScreen::paint()
 
 void SelectionScreen::mouseLeft(int x, int y)
 {
+	//what happens when you select START
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
-		
 		//state = STATE_MAIN_GAME;
 		//mainGame.init();
 	}
+	
+	//what happens when u select a character in order from 1st to 5th
+	if (x>=cx1 && x<=(cx1+16) && y>=cy && y<=(cy+16))
+	{
+		applySurface(cx1,cy,highlightTile->image,screen);	
+	}
+	if (x>=cx2 && x<=(cx2+16) && y>=cy && y<=(cy+16))
+	{
+		applySurface(cx2,cy,highlightTile->image,screen);
+	}
+	if (x>=cx3 && x<=(cx3+16) && y>=cy && y<=(cy+16))
+	{
+		applySurface(cx3,cy,highlightTile->image,screen);
+	}
+	if (x>=cx4 && x<=(cx4+16) && y>=cy && y<=(cy+16))
+	{
+		applySurface(cx4,cy,highlightTile->image,screen);
+	}
+	if (x>=cx5 && x<=(cx5+16) && y>=cy && y<=(cy+16))
+	{
+		applySurface(cx5,cy,highlightTile->image,screen);
+	} 
 }
 
 void SelectionScreen::mouseRight(int x, int y)

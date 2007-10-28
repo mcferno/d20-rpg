@@ -13,6 +13,8 @@ private:
 
 	void init();
 public:
+	//coordinates for the player selection squares
+	int cx1, cx2, cx3, cx4, cx5, cy;
 	SelectionScreen();
 	SelectionScreen(SDL_Surface *);
 	void mouseLeft(int,int);
