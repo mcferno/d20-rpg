@@ -162,17 +162,20 @@ protected:
 	int limitWTiles;
 	int limitHTiles;
 
-	// 2-dimensional TileSet representing the game map (once loaded).
-	Tile **ts;
-
 	// Pointer to the game map graphics
 	Graphics *g;
 
 	int tileSize; //, wTiles, hTiles;
 
 public:
+	// 2-dimensional TileSet representing the game map (once loaded).
+	Tile **ts;
+
 	// Dimensions in pixels of the window bounding the map on the screen
 	Rect limit;
+
+	// load the graphics from a file, instead of recieving a pointer
+	void loadGraphics(char *,int,int,int);
 
 	// open a *.map file (indexFile), initializing the tileSet
 	virtual void loadGraphics(Graphics *);

@@ -19,11 +19,44 @@ public:
 };
 
 
+class Level
+{
+public:
+	char *graphics;
+	char *index;
+	int alphaR;
+	int alphaG;
+	int alphaB;
+};
+
+
 
 class MainGame
 {
 private:
 	SDL_Surface *screen;
+	int currentLevel;
+	int state;
+	Map gameMap;
+	Level *level;
+
+	static const int LEVEL_1;
+
+	static const int STATE_LEVEL_START;
+	static const int STATE_HUMAN_TURN;
+	static const int STATE_AI_TURN;
+
+	void loadLevel();
+	void paintCharacter(Character*);
+
+
 public:
+	MainGame();
 	MainGame(SDL_Surface *);
+	void paint();
+	void init();
+	void keyUp();
+	void keyDown();
+	void keyLeft();
+	void keyRight();
 };

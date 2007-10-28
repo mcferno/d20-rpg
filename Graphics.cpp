@@ -194,6 +194,11 @@ void Map::parseIndex(char *filename)
 	std::cout << "Successful!\n";
 }
 
+void Map::loadGraphics(char *filename, int alphaR, int alphaG, int alphaB)
+{
+	loadGraphics(new Graphics(filename,alphaR,alphaG,alphaB));
+}
+
 void Map::loadGraphics(Graphics *newGraphics)
 {
 	g = newGraphics;
@@ -209,6 +214,7 @@ void Map::loadMap(Graphics *newGraphics, char *indexFilename)
 
 Map::Map()
 {
+	std::cout << "default constuctor was called";
 }
 
 Map::Map(int newX, int newY, int newW, int newH)

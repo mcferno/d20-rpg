@@ -12,12 +12,14 @@ const int FRAME_RATE_SLEEP = 40;
 SDL_Event event;
 
 SDL_Surface *screen = NULL;
+SDL_Surface *background = NULL;
+Uint32 bgColor;
 
 // Game states
 const int STATE_CHARACTER_SELECTION = 0;
 const int STATE_MAIN_GAME = 1;
 
-int state;
+int state = STATE_CHARACTER_SELECTION;
 
 int main( int argc, char* args[] ) 
 {
@@ -30,6 +32,8 @@ int main( int argc, char* args[] )
 	// Initialize the main graphics screen 
 	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE ); 
 
+	bgColor = SDL_MapRGB( screen->format, 0, 0, 0 );
+	
 	// set the window title for the main window
 	SDL_WM_SetCaption( WINDOW_TITLE, NULL );
 
@@ -37,6 +41,8 @@ int main( int argc, char* args[] )
 
 
 	SelectionScreen selectionScreen = SelectionScreen(screen);
+
+	MainGame mainGame(screen);
 
 /*
 	selectionScreen.setBackground(screen);
@@ -55,16 +61,29 @@ int main( int argc, char* args[] )
 		{
 			if( event.type == SDL_KEYDOWN ) 
 			{
-				if (state == STATE_CHARACTER_SELECTION)
+				switch( event.key.keysym.sym ) 
 				{
-					switch( event.key.keysym.sym ) 
-					{
-						case SDLK_UP:
-							//selectionScreen.keyUp();
-							break;
-						case SDLK_w:
-							break; 
-					}
+					case SDLK_UP:
+						if(state == STATE_MAIN_GAME)
+							mainGame.keyUp();
+						break;
+					case SDLK_DOWN:
+						if(state == STATE_MAIN_GAME)
+							mainGame.keyDown();
+						break;
+					case SDLK_LEFT:
+						if(state == STATE_MAIN_GAME)
+							mainGame.keyLeft();
+						break;
+					case SDLK_RIGHT:
+						if(state == STATE_MAIN_GAME)
+							mainGame.keyRight();
+						break;
+					case SDLK_q:
+						// temporary key used to jump to the Main Game mode (for testing purposes)
+						state = STATE_MAIN_GAME;
+						mainGame.init();
+						break; 
 				}
 			}
 			
@@ -98,13 +117,16 @@ int main( int argc, char* args[] )
 			} 
 		}
 
+		// paint the background black
+		SDL_FillRect(screen, NULL, bgColor);
+
 		switch(state)
 		{
 			case STATE_CHARACTER_SELECTION:
 				selectionScreen.paint();
 				break;
 			case STATE_MAIN_GAME:
-				//mainGame.paint();
+				mainGame.paint();
 				break;
 		}
 
