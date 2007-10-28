@@ -9,6 +9,10 @@ void SelectionScreen::init()
 	characterSprites = new Graphics(".\\images\\characters.bmp");
 }
 
+SelectionScreen::SelectionScreen()
+{
+}
+
 SelectionScreen::SelectionScreen(SDL_Surface *newScreen)
 {
 	screen = newScreen;
@@ -43,7 +47,7 @@ const int MainGame::STATE_HUMAN_TURN = 1;
 const int MainGame::STATE_AI_TURN = 2;
 
 MainGame::MainGame()
-{;
+{
 	std::cout << "called";
 }
 
@@ -113,17 +117,33 @@ void MainGame::paintCharacter(Character* c)
 
 void MainGame::keyUp()
 {
-	mainCharacter->y -= 1;
+	if(mainCharacter->y > 0)
+	{
+		if(gameMap.ts[mainCharacter->x][mainCharacter->y-1].isWalkable)
+			mainCharacter->y -= 1;
+	}
 }
 void MainGame::keyDown()
 {
-	mainCharacter->y += 1;
+	if(mainCharacter->y < gameMap.h)
+	{
+		if(gameMap.ts[mainCharacter->x][mainCharacter->y+1].isWalkable)
+			mainCharacter->y += 1;
+	}
 }
 void MainGame::keyLeft()
 {
-	mainCharacter->x -= 1;
+	if(mainCharacter->x > 0)
+	{
+		if(gameMap.ts[mainCharacter->x-1][mainCharacter->y].isWalkable)
+			mainCharacter->x -= 1;
+	}
 }
 void MainGame::keyRight()
 {
-	mainCharacter->x += 1;
+	if(mainCharacter->x < gameMap.w)
+	{
+		if(gameMap.ts[mainCharacter->x+1][mainCharacter->y].isWalkable)
+			mainCharacter->x += 1;
+	}
 }

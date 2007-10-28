@@ -15,11 +15,35 @@ SDL_Surface *screen = NULL;
 SDL_Surface *background = NULL;
 Uint32 bgColor;
 
+SelectionScreen selectionScreen;
+MainGame mainGame;
+
 // Game states
 const int STATE_CHARACTER_SELECTION = 0;
 const int STATE_MAIN_GAME = 1;
 
 int state = STATE_CHARACTER_SELECTION;
+
+void paint()
+{
+	// paint the background black
+	SDL_FillRect(screen, NULL, bgColor);
+
+	switch(state)
+	{
+		case STATE_CHARACTER_SELECTION:
+			selectionScreen.paint();
+			break;
+		case STATE_MAIN_GAME:
+			mainGame.paint();
+			break;
+	}
+
+	if( SDL_Flip( screen ) == -1 ) 
+	{ 
+		return; 
+	}
+}
 
 int main( int argc, char* args[] ) 
 {
@@ -37,19 +61,17 @@ int main( int argc, char* args[] )
 	// set the window title for the main window
 	SDL_WM_SetCaption( WINDOW_TITLE, NULL );
 
+	selectionScreen = SelectionScreen(screen);
 
-
-
-	SelectionScreen selectionScreen = SelectionScreen(screen);
-
-	MainGame mainGame(screen);
+	mainGame = MainGame(screen);
 
 /*
 	selectionScreen.setBackground(screen);
 	selectionScreen.load();
 */
 
-
+	// initial paint
+	paint();
 
 	//Make sure the program waits for a quit, instead of a timed exit
 	bool quit = false;
@@ -115,24 +137,9 @@ int main( int argc, char* args[] )
 			{ 
 				quit = true; 
 			} 
-		}
 
-		// paint the background black
-		SDL_FillRect(screen, NULL, bgColor);
-
-		switch(state)
-		{
-			case STATE_CHARACTER_SELECTION:
-				selectionScreen.paint();
-				break;
-			case STATE_MAIN_GAME:
-				mainGame.paint();
-				break;
-		}
-
-		if( SDL_Flip( screen ) == -1 ) 
-		{ 
-			return 2; 
+			// paint only if an event occured
+			paint();
 		}
 
 		SDL_Delay(FRAME_RATE_SLEEP);

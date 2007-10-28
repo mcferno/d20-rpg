@@ -11,6 +11,7 @@ private:
 
 	void init();
 public:
+	SelectionScreen();
 	SelectionScreen(SDL_Surface *);
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
