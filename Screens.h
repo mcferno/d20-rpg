@@ -6,20 +6,30 @@ extern Graphics *selectScreen;
 extern Graphics *characterSprites;
 extern Character *mainCharacter;
 
+class SpriteSelection
+{
+public:
+	// on screen location
+	int x,y;
+	// clip relating to a sprite sheet
+	SDL_Rect clip;
+};
+
 class SelectionScreen
 {
 private:
 	SDL_Surface *screen;
+	static const int NUM_CHARACTERS = 5;
+	SpriteSelection availableSprites[NUM_CHARACTERS];
+	int selectedSprite;
 
 	void init();
+	void paintSpriteSelection(SpriteSelection);
 public:
-	//coordinates for the player selection squares
-	int cx1, cx2, cx3, cx4, cx5, cy;
 	SelectionScreen();
 	SelectionScreen(SDL_Surface *);
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
-
 	void paint();
 };
 
@@ -52,7 +62,7 @@ private:
 	static const int STATE_AI_TURN;
 
 	void loadLevel();
-	void paintCharacter(Character*);
+	void paintObject(Object*);
 
 
 public:

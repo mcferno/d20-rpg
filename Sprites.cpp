@@ -57,6 +57,14 @@ void Character::setLevel(int level){
 	else
 		this->level = level;
 }
+
+void Character::setSpeed(int speedInFeet){
+	if (speedInFeet < 5)
+		this->speed = 1;
+	else
+		this->speed = speedInFeet / FT_TO_TILES;
+}
+
 /*
 void Character::setAC(int ac){
 	if (ac <= 0)
@@ -125,7 +133,6 @@ int Character::getAC(){
 }
 //END ACCESSORS
 
-const int Fighter::FIGHTER_HP = 10;
 
 Fighter::Fighter()
 {

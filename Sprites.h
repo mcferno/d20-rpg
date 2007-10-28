@@ -22,8 +22,8 @@ automatically creates a player when it is called.
 //As of October 10th only HUMAN and DWARF have been implemented
 enum race {HUMAN, DWARF, ELF, GNOME, HALF_ELF, HALF_ORC, HALFLING};
 
-
-
+// conversion between feet and tile size (5ft per tile)
+const int FT_TO_TILES = 5;
 
 
 //Class Object will store information about any object drawn on the map
@@ -57,8 +57,8 @@ private:
 	// abilities common to all characters: strength, dexterity, consitution, wisdom, charisma
 	int str, dex, con, ite, wis, cha;
 	
-	// hit points, current level
-	int hp, level;
+	// hit points, current level, speed (in tiles)
+	int hp, level, speed;
 
 	int getModifier(int);
 	
@@ -74,6 +74,7 @@ public:
 	void setHp(int);
 	void setLevel(int);
 	//void setAC(int);
+	void setSpeed(int);
 
 	//accessors
 	int getStr();
@@ -113,11 +114,49 @@ class Monster : public Character
 //When calling the class, it receives a specific race type specified in the above race enumeration
 class Fighter : public Character {
 public:
-	const static int FIGHTER_HP;
+	const static int FIGHTER_HP = 10;
 	Fighter();
 	Fighter(race);
 };
 
+
+// Race specific characteristics (as defined by the d20 system
+class Race
+{
+public:
+	static const int STR_ADJ = 0;
+	static const int DEX_ADJ = 0;
+	static const int CON_ADJ = 0;
+	static const int ITE_ADJ = 0;
+	static const int WIS_ADJ = 0;
+	static const int CHA_ADJ = 0;
+};
+
+class HumanRace : public Race
+{
+	static const int SPEED = 30;
+};
+
+class DwarfRace : public Race
+{
+	static const int DEX_ADJ = -2;
+	static const int CON_ADJ = 2;
+	static const int SPEED = 20;
+};
+
+class ElfRace : public Race
+{
+	static const int DEX_ADJ = 2;
+	static const int CON_ADJ = -2;
+	static const int SPEED = 30;
+};
+
+class GnomeRace : public Race
+{
+	static const int STR_ADJ = -2;
+	static const int CON_ADJ = 2;
+	static const int SPEED = 20;
+};
 
 #endif
 
