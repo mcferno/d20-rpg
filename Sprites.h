@@ -120,7 +120,7 @@ public:
 };
 
 
-// Race specific characteristics (as defined by the d20 system
+// Race specific characteristics (as defined by the d20 system)
 class Race
 {
 public:

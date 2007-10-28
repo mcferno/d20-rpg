@@ -76,6 +76,9 @@ int main( int argc, char* args[] )
 	//Make sure the program waits for a quit, instead of a timed exit
 	bool quit = false;
 
+	// whether or not the screen needs repainting
+	bool dirty = false;
+
 	while(quit != true) 
 	{
 
@@ -83,6 +86,7 @@ int main( int argc, char* args[] )
 		{
 			if( event.type == SDL_KEYDOWN ) 
 			{
+				dirty = true;
 				switch( event.key.keysym.sym ) 
 				{
 					case SDLK_UP:
@@ -111,6 +115,7 @@ int main( int argc, char* args[] )
 			
 			if( event.type == SDL_MOUSEBUTTONDOWN )
 			{
+				dirty = true;
 				if( event.button.button == SDL_BUTTON_LEFT )
 				{
 					if (state == STATE_CHARACTER_SELECTION)
@@ -139,7 +144,11 @@ int main( int argc, char* args[] )
 			} 
 
 			// paint only if an event occured
-			paint();
+			if(dirty)
+			{
+				paint();
+				dirty = false;
+			}
 		}
 
 		SDL_Delay(FRAME_RATE_SLEEP);

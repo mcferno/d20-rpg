@@ -80,11 +80,11 @@ void SelectionScreen::mouseLeft(int x, int y)
 		//state = STATE_MAIN_GAME;
 		//mainGame.init();
 	}
-	
+
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
-		if (x>=availableSprites[i].x && x<=(availableSprites[i].x+16) && y>=availableSprites[i].y && y<=(availableSprites[i].x+16))
+		if (x>=availableSprites[i].x && x<=(availableSprites[i].x+16) && y>=availableSprites[i].y && y<=(availableSprites[i].y+16))
 			selectedSprite = i;
 	}
 }
