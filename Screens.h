@@ -1,6 +1,8 @@
 #include "Graphics.h"
 #include "Sprites.h"
 
+
+extern Graphics *selectScreen;
 extern Graphics *characterSprites;
 extern Character *mainCharacter;
 

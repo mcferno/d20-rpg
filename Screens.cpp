@@ -1,12 +1,16 @@
 #include "Screens.h"
+
 #include <iostream>
 
 Graphics *characterSprites = NULL;
+Graphics *selectScreen = NULL;
 Character *mainCharacter = NULL;
 
 void SelectionScreen::init()
 {
 	characterSprites = new Graphics(".\\images\\characters.bmp");
+	selectScreen = new Graphics(".\\images\\selectScreen.png");
+
 }
 
 SelectionScreen::SelectionScreen()
@@ -27,11 +31,17 @@ void SelectionScreen::paint()
 	// if race selected? 
 
 
-	applySurface(0,0,characterSprites->image,screen);
+	applySurface(0,0,selectScreen->image,screen);
 }
 
 void SelectionScreen::mouseLeft(int x, int y)
 {
+	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
+	{
+		
+		//state = STATE_MAIN_GAME;
+		//mainGame.init();
+	}
 }
 
 void SelectionScreen::mouseRight(int x, int y)
@@ -41,7 +51,6 @@ void SelectionScreen::mouseRight(int x, int y)
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 const int MainGame::LEVEL_1 = 1;
-
 const int MainGame::STATE_LEVEL_START = 0;
 const int MainGame::STATE_HUMAN_TURN = 1;
 const int MainGame::STATE_AI_TURN = 2;
