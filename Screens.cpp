@@ -7,6 +7,11 @@ Graphics *highlightTile = NULL;
 Graphics *selectScreen = NULL;
 Character *mainCharacter = NULL;
 
+int character;
+race selectedRace;
+enum playerClass {FIGHTER};
+playerClass selectedClass;
+
 // temporary
 Monster monsters[3];
 Character *players[4];
