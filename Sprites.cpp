@@ -1,5 +1,16 @@
 #include "Sprites.h"
 
+Object::Object()
+{
+	x = y = -1;
+	clip = new SDL_Rect();
+	graphics = NULL;
+}
+
+Character::Character() : Object()
+{
+}
+
 //BEGIN MODIFIERS
 void Character::setStr(int str){
 	if (str <= 0)
@@ -171,6 +182,10 @@ Fighter::Fighter(race myrace) {
 			setCha(myDice.characterRoll() - 2);
 			break;
 	}
+}
+
+Monster::Monster() : Character()
+{
 }
 
 

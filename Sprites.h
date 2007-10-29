@@ -42,6 +42,9 @@ public:
 
 	// paints the object, depending on what type it is..
 	//virtual paint();
+
+	// default constructor
+	Object();
 };
 
 
@@ -63,6 +66,8 @@ private:
 	int getModifier(int);
 	
 public:
+	Character();
+
 	//mutators
 	void setStr(int);
 	void setDex(int);
@@ -105,6 +110,8 @@ public:
 // basic AI could go here..
 class Monster : public Character
 {
+public:
+	Monster();
 };
 
 

@@ -55,14 +55,18 @@ private:
 	Map gameMap;
 	Level *level;
 
-	static const int LEVEL_1;
+	static const int LEVEL_1 = 1;
 
-	static const int STATE_LEVEL_START;
-	static const int STATE_HUMAN_TURN;
-	static const int STATE_AI_TURN;
+	static const int STATE_LEVEL_START = 0;
+	static const int STATE_HUMAN_TURN = 1;
+	static const int STATE_AI_TURN = 2;
 
 	void loadLevel();
+	void paintNow();
 	void paintObject(Object*);
+	void doInitiativeRoll();
+	void nextTurn();
+	void doAITurn();
 
 
 public:

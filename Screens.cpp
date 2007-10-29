@@ -7,6 +7,12 @@ Graphics *highlightTile = NULL;
 Graphics *selectScreen = NULL;
 Character *mainCharacter = NULL;
 
+// temporary
+Monster monsters[3];
+Character *players[4];
+int currentPlayer = -1;
+int currSpeed = -1;
+
 
 void SelectionScreen::init()
 {
@@ -97,10 +103,6 @@ void SelectionScreen::mouseRight(int x, int y)
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-const int MainGame::LEVEL_1 = 1;
-const int MainGame::STATE_LEVEL_START = 0;
-const int MainGame::STATE_HUMAN_TURN = 1;
-const int MainGame::STATE_AI_TURN = 2;
 
 MainGame::MainGame()
 {
@@ -134,6 +136,82 @@ void MainGame::init()
 	mainCharacter->y = 14;
 
 	mainCharacter->clip = tempRect;
+
+	if(state == STATE_LEVEL_START)
+		doInitiativeRoll();
+}
+
+// no actual rolling of dice to decide order just yet
+void MainGame::doInitiativeRoll()
+{
+	players[0] = mainCharacter;
+	players[1] = &monsters[0];
+	players[2] = &monsters[1];
+	players[3] = &monsters[2];
+
+	nextTurn();
+}
+
+void MainGame::nextTurn()
+{
+	std::cout << "current turn : " << currentPlayer << "\n";
+	currentPlayer +=1;
+	currentPlayer %= 4;
+	currSpeed = 5;
+
+	if(players[currentPlayer] == mainCharacter)
+	{
+		state = STATE_HUMAN_TURN;
+		std::cout << "human turn!\n";
+	}
+	else 
+	{
+		state = STATE_AI_TURN;
+		std::cout << "AI turn!\n";
+	}
+
+	if(state == STATE_AI_TURN)
+	{
+		for(;currSpeed>=0;currSpeed--)
+		{
+			doAITurn();
+			paintNow();
+			SDL_Delay(250);
+		}
+		nextTurn();
+	}
+}
+
+// super simplistic AI, randomly goes up, down, left or right
+void MainGame::doAITurn()
+{
+	switch(rand() % 4)
+	{
+		case 0:
+			// move up
+			if(players[currentPlayer]->y > 0)
+				if(gameMap.ts[players[currentPlayer]->x][players[currentPlayer]->y-1].isWalkable)
+					players[currentPlayer]->y -=1;
+			break;
+		case 1:
+			// move down
+			if(players[currentPlayer]->y < gameMap.h-1)
+				if(gameMap.ts[players[currentPlayer]->x][players[currentPlayer]->y+1].isWalkable)
+					players[currentPlayer]->y +=1;
+			break;
+		case 2:
+			// move left
+			if(players[currentPlayer]->x > 0)
+				if(gameMap.ts[players[currentPlayer]->x-1][players[currentPlayer]->y].isWalkable)
+					players[currentPlayer]->x -=1;
+			break;
+		default:
+			// move right
+			if(players[currentPlayer]->x < gameMap.w-1)
+				if(gameMap.ts[players[currentPlayer]->x+1][players[currentPlayer]->y].isWalkable)
+					players[currentPlayer]->x +=1;
+			break;
+	}
 }
 
 void MainGame::loadLevel()
@@ -147,8 +225,45 @@ void MainGame::loadLevel()
 			level->alphaR = 0xFF;
 			level->alphaG = 0xE2;
 			level->alphaB = 0xAA;
+
+			// initialize a small set of enemies
+			Graphics *monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
+
+			// skeleton
+			monsters[0].graphics = monsterGraphics;
+			monsters[0].clip->x = 6*16;
+			monsters[0].clip->y = 2*16;
+			monsters[0].clip->w = 16;
+			monsters[0].clip->h = 16;
+			monsters[0].x = 15;
+			monsters[0].y = 20;
+
+			// thug
+			monsters[1].graphics = monsterGraphics;
+			monsters[1].clip->x = 0;
+			monsters[1].clip->y = 0;
+			monsters[1].clip->w = 16;
+			monsters[1].clip->h = 16;
+			monsters[1].x = 25;
+			monsters[1].y = 10;
+
+			// porcupine
+			monsters[2].graphics = monsterGraphics;
+			monsters[2].clip->x = 14*16;
+			monsters[2].clip->y = 0;
+			monsters[2].clip->w = 16;
+			monsters[2].clip->h = 16;
+			monsters[2].x = 25;
+			monsters[2].y = 25;
+
 			break;
 	}
+}
+
+void MainGame::paintNow()
+{
+	paint();
+	SDL_Flip(screen);
 }
 
 void MainGame::paint()
@@ -156,6 +271,10 @@ void MainGame::paint()
 	gameMap.paint();
 
 	paintObject(mainCharacter);
+
+	paintObject(&monsters[0]);
+	paintObject(&monsters[1]);
+	paintObject(&monsters[2]);
 }
 
 void MainGame::paintObject(Object* obj)
@@ -170,33 +289,65 @@ void MainGame::paintObject(Object* obj)
 
 void MainGame::keyUp()
 {
-	if(mainCharacter->y > 0)
+	if(state == STATE_HUMAN_TURN)
 	{
-		if(gameMap.ts[mainCharacter->x][mainCharacter->y-1].isWalkable)
-			mainCharacter->y -= 1;
+		if(mainCharacter->y > 0)
+		{
+			if(gameMap.ts[mainCharacter->x][mainCharacter->y-1].isWalkable)
+			{
+				mainCharacter->y -= 1;
+				currSpeed -= 1;
+			}
+		}
+		if(currSpeed == 0)
+			nextTurn();
 	}
 }
 void MainGame::keyDown()
 {
-	if(mainCharacter->y < gameMap.h-1)
+	if(state == STATE_HUMAN_TURN)
 	{
-		if(gameMap.ts[mainCharacter->x][mainCharacter->y+1].isWalkable)
-			mainCharacter->y += 1;
+		if(mainCharacter->y < gameMap.h-1)
+		{
+			if(gameMap.ts[mainCharacter->x][mainCharacter->y+1].isWalkable)
+			{
+				mainCharacter->y += 1;
+				currSpeed -= 1;
+			}
+		}
+		if(currSpeed == 0)
+			nextTurn();
 	}
 }
 void MainGame::keyLeft()
 {
-	if(mainCharacter->x > 0)
+	if(state == STATE_HUMAN_TURN)
 	{
-		if(gameMap.ts[mainCharacter->x-1][mainCharacter->y].isWalkable)
-			mainCharacter->x -= 1;
+		if(mainCharacter->x > 0)
+		{
+			if(gameMap.ts[mainCharacter->x-1][mainCharacter->y].isWalkable)
+			{
+				mainCharacter->x -= 1;
+				currSpeed -= 1;
+			}
+		}
+		if(currSpeed == 0)
+			nextTurn();
 	}
 }
 void MainGame::keyRight()
 {
-	if(mainCharacter->x < gameMap.w-1)
+	if(state == STATE_HUMAN_TURN)
 	{
-		if(gameMap.ts[mainCharacter->x+1][mainCharacter->y].isWalkable)
-			mainCharacter->x += 1;
+		if(mainCharacter->x < gameMap.w-1)
+		{
+			if(gameMap.ts[mainCharacter->x+1][mainCharacter->y].isWalkable)
+			{
+				mainCharacter->x += 1;
+				currSpeed -= 1;
+			}
+		}
+		if(currSpeed == 0)
+			nextTurn();
 	}
 }
