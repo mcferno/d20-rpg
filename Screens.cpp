@@ -1,5 +1,6 @@
 #include "Screens.h"
 
+
 #include <iostream>
 
 Graphics *characterSprites = NULL;
@@ -7,10 +8,11 @@ Graphics *highlightTile = NULL;
 Graphics *selectScreen = NULL;
 Character *mainCharacter = NULL;
 
-int character;
-race selectedRace;
+//int selectedCharacter;
+//race selectedRace;
 enum playerClass {FIGHTER};
-playerClass selectedClass;
+playerClass myClass;
+race myRace;
 
 // temporary
 Monster monsters[3];
@@ -25,8 +27,12 @@ void SelectionScreen::init()
 	selectScreen = new Graphics(".\\images\\selectScreen.png");
 	highlightTile = new Graphics(".\\images\\highlight.png");
 
+	//initialize to none-selected
 	selectedSprite = -1;
+	selectedRace = -1;
+	selectedClass = -1;
 
+	//location of available sprites on clip sheet
 	availableSprites[0].clip.x = 0;
 	availableSprites[0].clip.y = 0; 
 	
@@ -42,12 +48,30 @@ void SelectionScreen::init()
 	availableSprites[4].clip.x = 272; 
 	availableSprites[4].clip.y = 152;
 
+	//location to paint the sprites
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
 		availableSprites[i].x = 80 + (i*64);
 		availableSprites[i].y = 96;
 		availableSprites[i].clip.w = availableSprites[i].clip.h = 16; 
 	}
+
+	//location to paint the highlight box for seleced races
+	availableRaces[0].x = 10;
+	availableRaces[0].y = 10;
+
+	availableRaces[1].x = 20;
+	availableRaces[1].y = 20;
+
+	availableRaces[2].x = 30;
+	availableRaces[2].y = 30;
+
+	availableRaces[3].x = 40;
+	availableRaces[3].y = 40;
+
+	//location to paint the highlight box for selected classes
+	availableClasses[0].x = 0;
+	availableClasses[0].y = 0;
 }
 
 SelectionScreen::SelectionScreen()
@@ -74,8 +98,12 @@ void SelectionScreen::paint()
 		paintSpriteSelection(availableSprites[i]);
 
 	// highlight a selected sprite
-	if(selectedSprite != -1)
+	if(selectedSprite != -1) 
 		applySurface(availableSprites[selectedSprite].x,availableSprites[selectedSprite].y,highlightTile->image,screen);
+	if(selectedRace != -1)
+		applySurface(availableRaces[selectedRace].x,availableRaces[selectedRace].y,highlightTile->image,screen);
+	if(selectedClass != -1)
+		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile->image,screen);
 }
 
 void SelectionScreen::paintSpriteSelection(SpriteSelection ss)
@@ -88,6 +116,33 @@ void SelectionScreen::mouseLeft(int x, int y)
 	//what happens when you select START
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
+		//DONT NEED THIS I DONT THINK
+		//switch (selectedSprite) {
+		//	case 0:
+		//		break;
+		//	case 1:
+		//		break;
+		//	case 2:
+		//		break;
+		//	case 3:
+		//		break;
+		//	case 4:
+		//		break
+		//}
+		switch (selectedRace) {
+			case 0:
+				myRace = HUMAN;
+				break;
+		}
+		switch (selectedClass) {
+			case 0:
+				myClass = FIGHTER;
+				break;
+		}
+		
+		//if (myClass = FIGHTER)
+			//make call to character here using myRACE and the SELECTED SPRITE characteristics
+
 		//state = STATE_MAIN_GAME;
 		//mainGame.init();
 	}
@@ -98,12 +153,25 @@ void SelectionScreen::mouseLeft(int x, int y)
 		if (x>=availableSprites[i].x && x<=(availableSprites[i].x+16) && y>=availableSprites[i].y && y<=(availableSprites[i].y+16))
 			selectedSprite = i;
 	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_RACES;i++)
+	{
+		if (x>=availableRaces[i].x && x<=(availableRaces[i].x+16) && y>=availableRaces[i].y && y<=(availableRaces[i].y+16))
+			selectedRace = i;
+	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_CLASSES;i++)
+	{
+		if (x>=availableClasses[i].x && x<=(availableClasses[i].x+16) && y>=availableClasses[i].y && y<=(availableClasses[i].y+16))
+			selectedClass = i;
+	}
 }
 
 void SelectionScreen::mouseRight(int x, int y)
 {
 	selectedSprite = -1;
-
+	selectedRace = -1;
+	selectedClass = -1;
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

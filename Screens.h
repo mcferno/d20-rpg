@@ -15,13 +15,34 @@ public:
 	SDL_Rect clip;
 };
 
+class RaceSelection
+{
+public:
+	int x,y;
+	SDL_Rect clip;
+};
+
+class ClassSelection
+{
+public:
+	// on screen location
+	int x,y;
+	SDL_Rect clip;
+};
+
 class SelectionScreen
 {
 private:
 	SDL_Surface *screen;
 	static const int NUM_CHARACTERS = 5;
+	static const int NUM_RACES = 4;
+	static const int NUM_CLASSES = 1;
 	SpriteSelection availableSprites[NUM_CHARACTERS];
-	int selectedSprite;
+	RaceSelection availableRaces[NUM_RACES];
+	ClassSelection availableClasses[NUM_CLASSES];
+	int selectedSprite; 
+	int selectedRace;
+	int selectedClass;
 
 	void init();
 	void paintSpriteSelection(SpriteSelection);
