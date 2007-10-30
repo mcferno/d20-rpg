@@ -214,7 +214,6 @@ void Map::loadMap(Graphics *newGraphics, char *indexFilename)
 
 Map::Map()
 {
-	std::cout << "default constuctor was called";
 }
 
 Map::Map(int newX, int newY, int newW, int newH)

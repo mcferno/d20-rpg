@@ -127,6 +127,20 @@ public:
 	~Graphics();
 };
 
+/*
+ * Class GraphicsSelection: A simple data structure to track a certain sprite
+ *   from a Graphics object, stored separately
+ */ 
+class GraphicsSelection
+{
+public:
+	// on screen location
+	int x,y;
+
+	// clip relating to a sprite sheet
+	SDL_Rect clip;
+};
+
 // #####################################################################################################
 
 /* 

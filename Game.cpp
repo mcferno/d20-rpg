@@ -1,5 +1,6 @@
 #include "Graphics.h"
 #include "Screens.h"
+#include <time.h>
 
 //Screen attributes 
 const int SCREEN_WIDTH = 800; 
@@ -24,10 +25,15 @@ const int STATE_MAIN_GAME = 1;
 
 int state = STATE_CHARACTER_SELECTION;
 
-void paint()
+void clearScreen()
 {
 	// paint the background black
 	SDL_FillRect(screen, NULL, bgColor);
+}
+
+void paint()
+{
+	clearScreen();
 
 	switch(state)
 	{
@@ -60,6 +66,9 @@ int main( int argc, char* args[] )
 	
 	// set the window title for the main window
 	SDL_WM_SetCaption( WINDOW_TITLE, NULL );
+
+	// seed rand for later use in the game
+	srand ((unsigned int)time(NULL));
 
 	selectionScreen = SelectionScreen(screen);
 
@@ -106,9 +115,16 @@ int main( int argc, char* args[] )
 							mainGame.keyRight();
 						break;
 					case SDLK_q:
-						// temporary key used to jump to the Main Game mode (for testing purposes)
-						state = STATE_MAIN_GAME;
-						mainGame.init();
+						if(state == STATE_CHARACTER_SELECTION)
+						{
+							// temporary key used to jump to the Main Game mode (for testing purposes)
+							state = STATE_MAIN_GAME;
+
+							// erase any possible residual graphics
+							clearScreen();
+
+							mainGame.init();
+						}
 						break; 
 				}
 			}

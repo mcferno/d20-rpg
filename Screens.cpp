@@ -14,13 +14,6 @@ enum playerClass {FIGHTER};
 playerClass myClass;
 race myRace;
 
-// temporary
-Monster monsters[3];
-Character *players[4];
-int currentPlayer = -1;
-int currSpeed = -1;
-
-
 void SelectionScreen::init()
 {
 	characterSprites = new Graphics(".\\images\\characters.bmp");
@@ -95,7 +88,7 @@ void SelectionScreen::paint()
 
 	// paint each sprite
 	for(int i=0;i<NUM_CHARACTERS;i++)
-		paintSpriteSelection(availableSprites[i]);
+		paintGraphicsSelection(availableSprites[i]);
 
 	// highlight a selected sprite
 	if(selectedSprite != -1) 
@@ -106,7 +99,7 @@ void SelectionScreen::paint()
 		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile->image,screen);
 }
 
-void SelectionScreen::paintSpriteSelection(SpriteSelection ss)
+void SelectionScreen::paintGraphicsSelection(GraphicsSelection &ss)
 {
 	applySurface(ss.x,ss.y,characterSprites->image,screen,&ss.clip);
 }
@@ -176,6 +169,8 @@ void SelectionScreen::mouseRight(int x, int y)
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+// temporary until the characters are properly created
+int currSpeed = -1;
 
 MainGame::MainGame()
 {
@@ -186,16 +181,22 @@ MainGame::MainGame(SDL_Surface *newScreen)
 	screen = newScreen;
 	currentLevel = LEVEL_1;
 	gameMap = Map(16,16,672,512);
+	numPlayers = -1;
+	numEnemies = -1;
+	currentPlayer = NULL;
 }
 
 void MainGame::init()
 {
 	loadLevel();
+	numPlayers = numEnemies+1;
+
 	gameMap.loadGraphics(level->graphics, level->alphaR, level->alphaG, level->alphaB);
 	gameMap.parseIndex(level->index);
 	state = STATE_LEVEL_START;
 
 	// hacked in, fake character
+	// --------------------------------------
 	mainCharacter = new Fighter(HUMAN);
 	mainCharacter->graphics = characterSprites;
 	SDL_Rect *tempRect = new SDL_Rect();
@@ -209,38 +210,79 @@ void MainGame::init()
 	mainCharacter->y = 14;
 
 	mainCharacter->clip = tempRect;
+	// --------------------------------------
+
+	std::cout << "There are " << numEnemies << " monsters on this level\n";
 
 	if(state == STATE_LEVEL_START)
 		doInitiativeRoll();
 }
 
-// no actual rolling of dice to decide order just yet
+// initiative roll to decide the order the turns will be taken in
+// the first roll is arbitarily the human's roll
 void MainGame::doInitiativeRoll()
 {
-	players[0] = mainCharacter;
-	players[1] = &monsters[0];
-	players[2] = &monsters[1];
-	players[3] = &monsters[2];
+	std::cout << "Now let's do an initiative roll to see who starts\n";
+	int *rolls = new int[numPlayers];
+	for(int i=0; i<numPlayers; i++)
+	{
+		rolls[i] = Dice::roll(Dice::D20);
+		if(i==0)
+			std::cout << "You rolled a " << rolls[i] << "\n";
+		else
+			std::cout << "Monster #" << i+1 << " rolled a " << rolls[i] << "\n";
+	}
+
+	int i, j, highestRoll, highRollerIdx;
+
+	// put the characters in the queue in the order of their initiative roll
+	for(i=0;i<numPlayers;i++)
+	{
+		// arbitrarily choose the first roll as the highest
+		highestRoll = rolls[0];
+		highRollerIdx = 0;
+
+		// see if any of the other rolls were higher
+		for(j=1;j<numPlayers;j++)
+		{
+			if(rolls[j] > highestRoll)
+			{
+				highestRoll = rolls[j];
+				highRollerIdx = j;
+			}
+		}
+		// set the highest to -1, so it doesn't appear again
+		rolls[highRollerIdx] = -1;
+
+		// add the highest roller to the queue
+		if(highRollerIdx == 0)
+			playOrder.push(mainCharacter);
+		else
+			playOrder.push(&enemies[highRollerIdx-1]);
+	}
 
 	nextTurn();
 }
 
 void MainGame::nextTurn()
 {
-	std::cout << "current turn : " << currentPlayer << "\n";
-	currentPlayer +=1;
-	currentPlayer %= 4;
 	currSpeed = 5;
 
-	if(players[currentPlayer] == mainCharacter)
+	if(currentPlayer != NULL)
+		playOrder.push(currentPlayer);
+
+	currentPlayer = playOrder.front();
+	playOrder.pop();
+
+	if(currentPlayer == mainCharacter)
 	{
 		state = STATE_HUMAN_TURN;
-		std::cout << "human turn!\n";
+		std::cout << "Your turn, make your move\n";
 	}
 	else 
 	{
 		state = STATE_AI_TURN;
-		std::cout << "AI turn!\n";
+		std::cout << "AI's turn\n";
 	}
 
 	if(state == STATE_AI_TURN)
@@ -262,27 +304,27 @@ void MainGame::doAITurn()
 	{
 		case 0:
 			// move up
-			if(players[currentPlayer]->y > 0)
-				if(gameMap.ts[players[currentPlayer]->x][players[currentPlayer]->y-1].isWalkable)
-					players[currentPlayer]->y -=1;
+			if(currentPlayer->y > 0)
+				if(gameMap.ts[currentPlayer->x][currentPlayer->y-1].isWalkable)
+					currentPlayer->y -=1;
 			break;
 		case 1:
 			// move down
-			if(players[currentPlayer]->y < gameMap.h-1)
-				if(gameMap.ts[players[currentPlayer]->x][players[currentPlayer]->y+1].isWalkable)
-					players[currentPlayer]->y +=1;
+			if(currentPlayer->y < gameMap.h-1)
+				if(gameMap.ts[currentPlayer->x][currentPlayer->y+1].isWalkable)
+					currentPlayer->y +=1;
 			break;
 		case 2:
 			// move left
-			if(players[currentPlayer]->x > 0)
-				if(gameMap.ts[players[currentPlayer]->x-1][players[currentPlayer]->y].isWalkable)
-					players[currentPlayer]->x -=1;
+			if(currentPlayer->x > 0)
+				if(gameMap.ts[currentPlayer->x-1][currentPlayer->y].isWalkable)
+					currentPlayer->x -=1;
 			break;
 		default:
 			// move right
-			if(players[currentPlayer]->x < gameMap.w-1)
-				if(gameMap.ts[players[currentPlayer]->x+1][players[currentPlayer]->y].isWalkable)
-					players[currentPlayer]->x +=1;
+			if(currentPlayer->x < gameMap.w-1)
+				if(gameMap.ts[currentPlayer->x+1][currentPlayer->y].isWalkable)
+					currentPlayer->x +=1;
 			break;
 	}
 }
@@ -292,6 +334,8 @@ void MainGame::loadLevel()
 	switch(currentLevel)
 	{
 		case LEVEL_1:
+			std::cout << "Now Loading Level 1\n";
+
 			level = new Level();
 			level->graphics = ".\\levels\\level00\\graphicTiles.bmp";
 			level->index = ".\\levels\\level00\\index.map";
@@ -302,32 +346,36 @@ void MainGame::loadLevel()
 			// initialize a small set of enemies
 			Graphics *monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
 
+			numEnemies = 3;
+
+			enemies = new Monster[numEnemies];
+
 			// skeleton
-			monsters[0].graphics = monsterGraphics;
-			monsters[0].clip->x = 6*16;
-			monsters[0].clip->y = 2*16;
-			monsters[0].clip->w = 16;
-			monsters[0].clip->h = 16;
-			monsters[0].x = 15;
-			monsters[0].y = 20;
+			enemies[0].graphics = monsterGraphics;
+			enemies[0].clip->x = 6*16;
+			enemies[0].clip->y = 2*16;
+			enemies[0].clip->w = 16;
+			enemies[0].clip->h = 16;
+			enemies[0].x = 15;
+			enemies[0].y = 20;
 
 			// thug
-			monsters[1].graphics = monsterGraphics;
-			monsters[1].clip->x = 0;
-			monsters[1].clip->y = 0;
-			monsters[1].clip->w = 16;
-			monsters[1].clip->h = 16;
-			monsters[1].x = 25;
-			monsters[1].y = 10;
+			enemies[1].graphics = monsterGraphics;
+			enemies[1].clip->x = 0;
+			enemies[1].clip->y = 0;
+			enemies[1].clip->w = 16;
+			enemies[1].clip->h = 16;
+			enemies[1].x = 25;
+			enemies[1].y = 10;
 
 			// porcupine
-			monsters[2].graphics = monsterGraphics;
-			monsters[2].clip->x = 14*16;
-			monsters[2].clip->y = 0;
-			monsters[2].clip->w = 16;
-			monsters[2].clip->h = 16;
-			monsters[2].x = 25;
-			monsters[2].y = 25;
+			enemies[2].graphics = monsterGraphics;
+			enemies[2].clip->x = 14*16;
+			enemies[2].clip->y = 0;
+			enemies[2].clip->w = 16;
+			enemies[2].clip->h = 16;
+			enemies[2].x = 25;
+			enemies[2].y = 25;
 
 			break;
 	}
@@ -345,14 +393,14 @@ void MainGame::paint()
 
 	paintObject(mainCharacter);
 
-	paintObject(&monsters[0]);
-	paintObject(&monsters[1]);
-	paintObject(&monsters[2]);
+	paintObject(&enemies[0]);
+	paintObject(&enemies[1]);
+	paintObject(&enemies[2]);
 }
 
 void MainGame::paintObject(Object* obj)
 {
-	if(gameMap.isOnScreen(mainCharacter->x,mainCharacter->y))
+	if(gameMap.isOnScreen(obj->x,obj->y))
 	{
 		int x = gameMap.limit.x + (obj->x - gameMap.x)*16;
 		int y = gameMap.limit.y + (obj->y - gameMap.y)*16;

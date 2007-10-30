@@ -28,7 +28,15 @@ WHEN INSTANTIATING THE DICE CLASS TO SET THE SEED NUMBER
 		void setCharacterRolls (int, int, int, int);
 	 public:
 		int characterRoll();
-		int roll(int);		
+		static int roll(int);
+
+		// all the different kinds of dice
+		static const int D4 = 4;
+		static const int D6 = 6;
+		static const int D8 = 8;
+		static const int D10 = 10;
+		static const int D12 = 12;
+		static const int D20 = 20;
 	};
 
 	//This is a simple accessor to change the variables quickly in character roll.
