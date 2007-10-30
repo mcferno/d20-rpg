@@ -1,23 +1,3 @@
-//ok, if you click a character and you click start and then Q, the game selects the right character.
-//for some reason my switch statements arent working, and i have no idea what type of character it is initializing
-//im off to bed for now, the code still compiles, ill try to look at it tomorrow, but if you have a chance
-//take a quick look.
-
-//it appears to initalize to enum 0 0, which is human fighter :/
-//however, the cases work when you select things, but its making a default assumption and it never 
-//changes race even tho it prints out the cout in the switch case, if that makes sense.
-
-//PS THIS MIGHT ACTUALLY WORK NOW THAT I LOOK AT IT
-//IT SEEMS THAT ENUMERATIONS TAKE ON A DEFAULT VALUE (namely, being the first value, 0, in the enumeration)
-
-//if youre able to figure out the start button and how to move the game along
-//try to put in some kind of error checking to make sure that you have selected a character
-//otherwise you get the whole characterClip image :)
-
-//btw if you click Q without clicking start it crashes
-
-//please delete this
-
 #include "Screens.h"
 #include <iostream>
 
@@ -178,6 +158,16 @@ void SelectionScreen::mouseLeft(int x, int y)
 		//state = STATE_MAIN_GAME;
 		//mainGame.init();
 	}
+
+	if (x >= 672 && x <= 784 && y >= 480 && y <= 527)
+	{
+		selectedSprite = -1;
+		selectedRace = -1;
+		selectedClass = -1;
+	}
+
+
+
 
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
