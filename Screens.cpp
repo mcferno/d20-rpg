@@ -82,10 +82,6 @@ void SelectionScreen::setSignal(bool* signal)
 
 void SelectionScreen::paint()
 {
-	// paint background
-	// if player graphic selected? paint in selected character area
-	// if race selected? 
-
 	// apply background image
 	applySurface(0,0,selectScreen->image,screen);
 
@@ -102,74 +98,88 @@ void SelectionScreen::paint()
 		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile->image,screen);
 }
 
+//paints the sprites
 void SelectionScreen::paintGraphicsSelection(GraphicsSelection &ss)
 {
 	applySurface(ss.x,ss.y,characterSprites->image,screen,&ss.clip);
 }
 
+//LEFT MOUSE EVENT POLLING
 void SelectionScreen::mouseLeft(int x, int y)
 {
-	//what happens when you select START
+	//START BUTTON
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
-		switch (selectedRace) {
-			case 0:
-				myRace = HUMAN;
-				std::cout << "\nhuman";
-				break;
-			case 1:
-				myRace = DWARF;
-				std::cout << "\ndwarf";
-				break;
-			case 2:
-				myRace = ELF;
-				std::cout << "\nelf";
-				break;
-			case 3:
-				myRace = GNOME;
-				std::cout << "\ngnome";
+		//Check to make sure you have selected everything
+		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1)
+		{
+			//decide which race you selected
+			switch (selectedRace) {
+				case 0:
+					myRace = HUMAN;
+					std::cout << "\nhuman";
+					break;
+				case 1:
+					myRace = DWARF;
+					std::cout << "\ndwarf";
+					break;
+				case 2:
+					myRace = ELF;
+					std::cout << "\nelf";
+					break;
+				case 3:
+					myRace = GNOME;
+					std::cout << "\ngnome";
+			}
+			//decide which class you selected
+			switch (selectedClass) {
+				case 0:
+					myClass = FIGHTER;
+					std::cout << "\nfighter";
+					break;
+				case -1:
+					break;
+			}
+			//call the character you selected
+			SDL_Rect *characterRect = new SDL_Rect();
+
+			//switch statement to call appropriate class for which class you selected
+			switch (myClass) {
+				case FIGHTER:
+					mainCharacter = new Fighter(myRace);
+					mainCharacter->graphics = characterSprites;
+
+					characterRect->x = availableSprites[selectedSprite].clip.x;
+					characterRect->y = availableSprites[selectedSprite].clip.y;
+					characterRect->w = availableSprites[selectedSprite].clip.w;
+					characterRect->h = availableSprites[selectedSprite].clip.h;
+						
+					mainCharacter->x = 10;
+					mainCharacter->y = 14;
+
+					mainCharacter->clip = characterRect;
+
+					std::cout << "\nYOU ARE A " << myRace << " " << myClass <<"\n and you selected character #" << selectedSprite;
+					break;
+				case MORON:
+					std::cout << "WHY?!?!";
+			}
+			//pass a call back to Game.cpp
+			*signalCompletion = true;
 		}
-		switch (selectedClass) {
-			case 0:
-				myClass = FIGHTER;
-				std::cout << "\nfighter";
-				break;
-			case -1:
-				break;
-		}
-		SDL_Rect *characterRect = new SDL_Rect();
-
-		switch (myClass) {
-			case FIGHTER:
-				mainCharacter = new Fighter(myRace);
-				mainCharacter->graphics = characterSprites;
-
-				characterRect->x = availableSprites[selectedSprite].clip.x;
-				characterRect->y = availableSprites[selectedSprite].clip.y;
-				characterRect->w = availableSprites[selectedSprite].clip.w;
-				characterRect->h = availableSprites[selectedSprite].clip.h;
-					
-				mainCharacter->x = 10;
-				mainCharacter->y = 14;
-
-				mainCharacter->clip = characterRect;
-
-				std::cout << "\nYOU ARE A " << myRace << " " << myClass <<"\n and you selected character #" << selectedSprite;
-				break;
-			case MORON:
-				std::cout << "WHY?!?!";
-
-		}
-
-		*signalCompletion = true;
+		else
+			std::cout << "YOU MUST SELECT A CHARACTER AND RACE AND CLASS";
 	}
+	//END START BUTTON
 
+	//CLEAR BUTTON
 	if (x >= 672 && x <= 784 && y >= 480 && y <= 527)
 	{
 		selectedSprite = -1;
 		selectedRace = -1;
 		selectedClass = -1;
 	}
+	//END CLEAR BUTTON
 
 
 
@@ -194,6 +204,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 	}
 }
 
+//Right mouse even polling
 void SelectionScreen::mouseRight(int x, int y)
 {
 	selectedSprite = -1;
