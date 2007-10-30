@@ -23,6 +23,8 @@ private:
 	int selectedRace;
 	int selectedClass;
 
+	bool *signalCompletion;
+
 	void init();
 	void paintGraphicsSelection(GraphicsSelection &);
 
@@ -32,6 +34,7 @@ public:
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
 	void paint();
+	void setSignal(bool *);
 };
 
 /*

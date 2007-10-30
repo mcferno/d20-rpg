@@ -5,7 +5,6 @@ Graphics *characterSprites = NULL;
 Graphics *highlightTile = NULL;
 Graphics *selectScreen = NULL;
 Character *mainCharacter = NULL;
-SDL_Rect *characterRect = new SDL_Rect();
 
 //int selectedCharacter;
 //race selectedRace;
@@ -15,7 +14,7 @@ race myRace;
 
 void SelectionScreen::init()
 {
-	characterSprites = new Graphics(".\\images\\characters.bmp");
+	characterSprites = new Graphics(".\\images\\characters.png");
 	selectScreen = new Graphics(".\\images\\selectScreen.png");
 	highlightTile = new Graphics(".\\images\\highlight.png");
 
@@ -28,17 +27,17 @@ void SelectionScreen::init()
 	availableSprites[0].clip.x = 0;
 	availableSprites[0].clip.y = 0; 
 	
-	availableSprites[1].clip.x = 272; 
+	availableSprites[1].clip.x = 9*16; 
 	availableSprites[1].clip.y = 0; 
 
 	availableSprites[2].clip.x = 0; 
-	availableSprites[2].clip.y = 152;
+	availableSprites[2].clip.y = 4*16;
 
-	availableSprites[3].clip.x = 152; 
-	availableSprites[3].clip.y = 152;
+	availableSprites[3].clip.x = 5*16; 
+	availableSprites[3].clip.y = 4*16;
 
-	availableSprites[4].clip.x = 272; 
-	availableSprites[4].clip.y = 152;
+	availableSprites[4].clip.x = 9*16; 
+	availableSprites[4].clip.y = 4*16;
 
 	//location to paint the sprites
 	for(int i=0;i<NUM_CHARACTERS;i++)
@@ -74,6 +73,11 @@ SelectionScreen::SelectionScreen(SDL_Surface *newScreen)
 {
 	screen = newScreen;
 	init();
+}
+
+void SelectionScreen::setSignal(bool* signal)
+{
+	signalCompletion = signal;
 }
 
 void SelectionScreen::paint()
@@ -133,6 +137,8 @@ void SelectionScreen::mouseLeft(int x, int y)
 			case -1:
 				break;
 		}
+		SDL_Rect *characterRect = new SDL_Rect();
+
 		switch (myClass) {
 			case FIGHTER:
 				mainCharacter = new Fighter(myRace);
@@ -155,8 +161,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 
 		}
 
-		//state = STATE_MAIN_GAME;
-		//mainGame.init();
+		*signalCompletion = true;
 	}
 
 	if (x >= 672 && x <= 784 && y >= 480 && y <= 527)
@@ -223,10 +228,6 @@ void MainGame::init()
 	gameMap.loadGraphics(level->graphics, level->alphaR, level->alphaG, level->alphaB);
 	gameMap.parseIndex(level->index);
 	state = STATE_LEVEL_START;
-
-	// hacked in, fake character
-	// --------------------------------------
-	// --------------------------------------
 
 	std::cout << "There are " << numEnemies << " monsters on this level\n";
 

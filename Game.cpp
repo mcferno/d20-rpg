@@ -70,14 +70,11 @@ int main( int argc, char* args[] )
 	// seed rand for later use in the game
 	srand ((unsigned int)time(NULL));
 
+	bool isDone = false;
 	selectionScreen = SelectionScreen(screen);
+	selectionScreen.setSignal(&isDone);
 
 	mainGame = MainGame(screen);
-
-/*
-	selectionScreen.setBackground(screen);
-	selectionScreen.load();
-*/
 
 	// initial paint
 	paint();
@@ -114,18 +111,6 @@ int main( int argc, char* args[] )
 						if(state == STATE_MAIN_GAME)
 							mainGame.keyRight();
 						break;
-					case SDLK_q:
-						if(state == STATE_CHARACTER_SELECTION)
-						{
-							// temporary key used to jump to the Main Game mode (for testing purposes)
-							state = STATE_MAIN_GAME;
-
-							// erase any possible residual graphics
-							clearScreen();
-
-							mainGame.init();
-						}
-						break; 
 				}
 			}
 			
@@ -145,19 +130,18 @@ int main( int argc, char* args[] )
 				}
 			}
 
-			//if(selectionScreen.isDone())
-			//{
-				//mainScreen.initCharacter(selectionScreen.chosenGraphics);
-				//state = STATE_MAIN_GAME;
-				// destroy selectionscreen.
-			//}
-			
-
-
 			if( event.type == SDL_QUIT ) 
 			{ 
 				quit = true; 
 			} 
+
+			if(isDone)
+			{
+				state = STATE_MAIN_GAME;
+				clearScreen();
+				mainGame.init();
+				isDone = false;
+			}
 
 			// paint only if an event occured
 			if(dirty)
