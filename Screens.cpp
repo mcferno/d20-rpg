@@ -1,16 +1,35 @@
+//ok, if you click a character and you click start and then Q, the game selects the right character.
+//for some reason my switch statements arent working, and i have no idea what type of character it is initializing
+//im off to bed for now, the code still compiles, ill try to look at it tomorrow, but if you have a chance
+//take a quick look.
+
+//it appears to initalize to enum 0 0, which is human fighter :/
+//however, the cases work when you select things, but its making a default assumption and it never 
+//changes race even tho it prints out the cout in the switch case, if that makes sense.
+
+//PS THIS MIGHT ACTUALLY WORK NOW THAT I LOOK AT IT
+//IT SEEMS THAT ENUMERATIONS TAKE ON A DEFAULT VALUE (namely, being the first value, 0, in the enumeration)
+
+//if youre able to figure out the start button and how to move the game along
+//try to put in some kind of error checking to make sure that you have selected a character
+//otherwise you get the whole characterClip image :)
+
+//btw if you click Q without clicking start it crashes
+
+//please delete this
+
 #include "Screens.h"
-
-
 #include <iostream>
 
 Graphics *characterSprites = NULL;
 Graphics *highlightTile = NULL;
 Graphics *selectScreen = NULL;
 Character *mainCharacter = NULL;
+SDL_Rect *characterRect = new SDL_Rect();
 
 //int selectedCharacter;
 //race selectedRace;
-enum playerClass {FIGHTER};
+enum playerClass {FIGHTER, MORON};
 playerClass myClass;
 race myRace;
 
@@ -20,7 +39,7 @@ void SelectionScreen::init()
 	selectScreen = new Graphics(".\\images\\selectScreen.png");
 	highlightTile = new Graphics(".\\images\\highlight.png");
 
-	//initialize to none-selected
+	//initialize to non-selected
 	selectedSprite = -1;
 	selectedRace = -1;
 	selectedClass = -1;
@@ -50,21 +69,21 @@ void SelectionScreen::init()
 	}
 
 	//location to paint the highlight box for seleced races
-	availableRaces[0].x = 10;
-	availableRaces[0].y = 10;
+	availableRaces[0].x = 16;
+	availableRaces[0].y = 256;
 
-	availableRaces[1].x = 20;
-	availableRaces[1].y = 20;
+	availableRaces[1].x = 320;
+	availableRaces[1].y = 256;
 
-	availableRaces[2].x = 30;
-	availableRaces[2].y = 30;
+	availableRaces[2].x = 16;
+	availableRaces[2].y = 384;
 
-	availableRaces[3].x = 40;
-	availableRaces[3].y = 40;
+	availableRaces[3].x = 320;
+	availableRaces[3].y = 384;
 
 	//location to paint the highlight box for selected classes
-	availableClasses[0].x = 0;
-	availableClasses[0].y = 0;
+	availableClasses[0].x = 16;
+	availableClasses[0].y = 512;
 }
 
 SelectionScreen::SelectionScreen()
@@ -109,32 +128,52 @@ void SelectionScreen::mouseLeft(int x, int y)
 	//what happens when you select START
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
-		//DONT NEED THIS I DONT THINK
-		//switch (selectedSprite) {
-		//	case 0:
-		//		break;
-		//	case 1:
-		//		break;
-		//	case 2:
-		//		break;
-		//	case 3:
-		//		break;
-		//	case 4:
-		//		break
-		//}
 		switch (selectedRace) {
 			case 0:
 				myRace = HUMAN;
+				std::cout << "\nhuman";
 				break;
+			case 1:
+				myRace = DWARF;
+				std::cout << "\ndwarf";
+				break;
+			case 2:
+				myRace = ELF;
+				std::cout << "\nelf";
+				break;
+			case 3:
+				myRace = GNOME;
+				std::cout << "\ngnome";
 		}
 		switch (selectedClass) {
 			case 0:
 				myClass = FIGHTER;
+				std::cout << "\nfighter";
+				break;
+			case -1:
 				break;
 		}
-		
-		//if (myClass = FIGHTER)
-			//make call to character here using myRACE and the SELECTED SPRITE characteristics
+		switch (myClass) {
+			case FIGHTER:
+				mainCharacter = new Fighter(myRace);
+				mainCharacter->graphics = characterSprites;
+
+				characterRect->x = availableSprites[selectedSprite].clip.x;
+				characterRect->y = availableSprites[selectedSprite].clip.y;
+				characterRect->w = availableSprites[selectedSprite].clip.w;
+				characterRect->h = availableSprites[selectedSprite].clip.h;
+					
+				mainCharacter->x = 10;
+				mainCharacter->y = 14;
+
+				mainCharacter->clip = characterRect;
+
+				std::cout << "\nYOU ARE A " << myRace << " " << myClass <<"\n and you selected character #" << selectedSprite;
+				break;
+			case MORON:
+				std::cout << "WHY?!?!";
+
+		}
 
 		//state = STATE_MAIN_GAME;
 		//mainGame.init();
@@ -197,19 +236,6 @@ void MainGame::init()
 
 	// hacked in, fake character
 	// --------------------------------------
-	mainCharacter = new Fighter(HUMAN);
-	mainCharacter->graphics = characterSprites;
-	SDL_Rect *tempRect = new SDL_Rect();
-
-	tempRect->x = 0;
-	tempRect->y = 0;
-	tempRect->w = 16;
-	tempRect->h = 16;
-
-	mainCharacter->x = 10;
-	mainCharacter->y = 14;
-
-	mainCharacter->clip = tempRect;
 	// --------------------------------------
 
 	std::cout << "There are " << numEnemies << " monsters on this level\n";
