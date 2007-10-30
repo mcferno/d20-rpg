@@ -62,11 +62,11 @@ public:
 
 		// initialize 2D array
 		ts = new Tile*[w];
-		for (int i = 0; i < w; i++)
-			ts[i] = new Tile[h];
+		for (int k = 0; k < w; k++)
+			ts[k] = new Tile[h];
 
 		// set all the tiles as empty
-		for(i=0;i<w;i++)
+		for(int i=0;i<w;i++)
 		{
 			for(int j=0;j<h;j++)
 			{
