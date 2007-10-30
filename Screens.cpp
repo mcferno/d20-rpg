@@ -4,6 +4,7 @@
 Graphics *characterSprites = NULL;
 Graphics *highlightTile = NULL;
 Graphics *selectScreen = NULL;
+Graphics *selectionScreenBackground = NULL;
 Character *mainCharacter = NULL;
 
 //int selectedCharacter;
@@ -15,7 +16,8 @@ race myRace;
 void SelectionScreen::init()
 {
 	characterSprites = new Graphics(".\\images\\characters.png");
-	selectScreen = new Graphics(".\\images\\selectScreen.png");
+	selectionScreenBackground = new Graphics(".\\images\\selectScreenBackground.png");
+	selectScreen = new Graphics(".\\images\\selectScreen.png", 0x00,0x00,0x00,16);
 	highlightTile = new Graphics(".\\images\\highlight.png");
 
 	//initialize to non-selected
@@ -83,6 +85,7 @@ void SelectionScreen::setSignal(bool* signal)
 void SelectionScreen::paint()
 {
 	// apply background image
+	applySurface(0,0,selectionScreenBackground->image,screen);
 	applySurface(0,0,selectScreen->image,screen);
 
 	// paint each sprite

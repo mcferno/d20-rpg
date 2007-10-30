@@ -5,6 +5,7 @@
 using std::queue;
 
 extern Graphics *selectScreen;
+extern Graphics *selectionScreenBackground;
 extern Graphics *characterSprites;
 extern Character *mainCharacter;
 
