@@ -9,7 +9,7 @@ Character *mainCharacter = NULL;
 
 //int selectedCharacter;
 //race selectedRace;
-enum playerClass {FIGHTER, MORON};
+enum playerClass {FIGHTER};
 playerClass myClass;
 race myRace;
 
@@ -116,33 +116,35 @@ void SelectionScreen::mouseLeft(int x, int y)
 		//Check to make sure you have selected everything
 		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1)
 		{
+			std::cout << "You have selected a: ";
 			//decide which race you selected
 			switch (selectedRace) {
 				case 0:
 					myRace = HUMAN;
-					std::cout << "\nhuman";
+					std::cout << "human ";
 					break;
 				case 1:
 					myRace = DWARF;
-					std::cout << "\ndwarf";
+					std::cout << "dwarf ";
 					break;
 				case 2:
 					myRace = ELF;
-					std::cout << "\nelf";
+					std::cout << "elf ";
 					break;
 				case 3:
 					myRace = GNOME;
-					std::cout << "\ngnome";
+					std::cout << "gnome ";
 			}
 			//decide which class you selected
 			switch (selectedClass) {
 				case 0:
 					myClass = FIGHTER;
-					std::cout << "\nfighter";
+					std::cout << "fighter.";
 					break;
 				case -1:
 					break;
 			}
+			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n";
 			//call the character you selected
 			SDL_Rect *characterRect = new SDL_Rect();
 
@@ -161,11 +163,6 @@ void SelectionScreen::mouseLeft(int x, int y)
 					mainCharacter->y = 14;
 
 					mainCharacter->clip = characterRect;
-
-					std::cout << "\nYOU ARE A " << myRace << " " << myClass <<"\n and you selected character #" << selectedSprite;
-					break;
-				case MORON:
-					std::cout << "WHY?!?!";
 			}
 			//pass a call back to Game.cpp
 			*signalCompletion = true;
@@ -183,9 +180,6 @@ void SelectionScreen::mouseLeft(int x, int y)
 		selectedClass = -1;
 	}
 	//END CLEAR BUTTON
-
-
-
 
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
@@ -210,9 +204,24 @@ void SelectionScreen::mouseLeft(int x, int y)
 //Right mouse even polling
 void SelectionScreen::mouseRight(int x, int y)
 {
-	selectedSprite = -1;
-	selectedRace = -1;
-	selectedClass = -1;
+	// check if any of the sprites were selected
+	for(int i=0;i<NUM_CHARACTERS;i++)
+	{
+		if (x>=availableSprites[i].x && x<=(availableSprites[i].x+16) && y>=availableSprites[i].y && y<=(availableSprites[i].y+16))
+			selectedSprite = -1;
+	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_RACES;i++)
+	{
+		if (x>=availableRaces[i].x && x<=(availableRaces[i].x+16) && y>=availableRaces[i].y && y<=(availableRaces[i].y+16))
+			selectedRace = -1;
+	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_CLASSES;i++)
+	{
+		if (x>=availableClasses[i].x && x<=(availableClasses[i].x+16) && y>=availableClasses[i].y && y<=(availableClasses[i].y+16))
+			selectedClass = -1;
+	}
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -297,7 +306,7 @@ void MainGame::doInitiativeRoll()
 
 void MainGame::nextTurn()
 {
-	currSpeed = 5;
+	currSpeed = mainCharacter->getSpeed();
 
 	if(currentPlayer != NULL)
 		playOrder.push(currentPlayer);

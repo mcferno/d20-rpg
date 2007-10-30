@@ -111,6 +111,9 @@ int Character::getHp(){
 int Character::getLevel(){
 	return level;
 }
+int Character::getSpeed(){
+	return speed;
+}
 
 int Character::getModifier(int base)
 {
@@ -137,6 +140,7 @@ int Character::getChaMod() {
 }
 
 
+
 // Armor Class (AC): How hard a character is to hit. 
 // 10 + armor bonus + shield bonus + size modifier + dexterity modifier
 int Character::getAC(){
@@ -144,6 +148,16 @@ int Character::getAC(){
 }
 //END ACCESSORS
 
+void Character::showCharacter() {
+	std::cout << "STR: " << getStr() << "\n";
+	std::cout << "DEX: " << getDex() << "\n";
+	std::cout << "CON: " << getCon() << "\n";
+	std::cout << "ITE: " << getIte() << "\n";
+	std::cout << "WIS: " << getWis() << "\n";
+	std::cout << "CHA: " << getCha() << "\n";
+	std::cout << "SPEED: " << getSpeed() << "\n";
+	std::cout << "HP: " << getHp() << "\n";
+}
 
 Fighter::Fighter()
 {
@@ -171,6 +185,8 @@ Fighter::Fighter(race myrace) {
 			setIte(myDice.characterRoll());
 			setWis(myDice.characterRoll());
 			setCha(myDice.characterRoll());
+			setSpeed(HUMAN_SPEED);
+			showCharacter();
 			break;
 		case DWARF:
 			//setAC(0);
@@ -180,6 +196,30 @@ Fighter::Fighter(race myrace) {
 			setIte(myDice.characterRoll());
 			setWis(myDice.characterRoll());
 			setCha(myDice.characterRoll() - 2);
+			setSpeed(DWARF_SPEED);
+			showCharacter();
+			break;
+		case ELF:
+			//setAC(0);
+			setStr(myDice.characterRoll());
+			setDex(myDice.characterRoll());
+			setCon(myDice.characterRoll() + 2);
+			setIte(myDice.characterRoll());
+			setWis(myDice.characterRoll());
+			setCha(myDice.characterRoll() - 2);
+			setSpeed(ELF_SPEED);
+			showCharacter();
+			break;
+		case GNOME:
+			//setAC(0);
+			setStr(myDice.characterRoll());
+			setDex(myDice.characterRoll());
+			setCon(myDice.characterRoll() + 2);
+			setIte(myDice.characterRoll());
+			setWis(myDice.characterRoll());
+			setCha(myDice.characterRoll() - 2);
+			setSpeed(GNOME_SPEED);
+			showCharacter();
 			break;
 	}
 }

@@ -20,7 +20,7 @@ automatically creates a player when it is called.
 
 //These are the types of races allowed in the game
 //As of October 10th only HUMAN and DWARF have been implemented
-enum race {HUMAN, DWARF, ELF, GNOME, HALF_ELF, HALF_ORC, HALFLING};
+enum race {HUMAN, DWARF, ELF, GNOME};
 
 // conversion between feet and tile size (5ft per tile)
 const int FT_TO_TILES = 5;
@@ -68,6 +68,11 @@ private:
 public:
 	Character();
 
+	const static int HUMAN_SPEED = 10;
+	const static int DWARF_SPEED = 20;
+	const static int GNOME_SPEED = 15;
+	const static int ELF_SPEED = 50;
+
 	//mutators
 	void setStr(int);
 	void setDex(int);
@@ -91,6 +96,7 @@ public:
 	int getHp();
 	int getLevel();
 	int getAC();
+	int getSpeed();
 
 	// accessors for modifiers
 	int getStrMod();
@@ -99,6 +105,9 @@ public:
 	int getIteMod();
 	int getWisMod();
 	int getChaMod();
+
+	//output
+	void showCharacter();
 };
 
 // --------------------------
