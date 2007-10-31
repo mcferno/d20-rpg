@@ -1,5 +1,14 @@
+/********************************************************
+Author: Patrick McFern
+
+All classes related to any kind of visual graphics.
+  Loading graphics, creating a tile, loading sprite sheets,
+  Making a map (collection of tiles), etc..
+
+*********************************************************/
+
 #ifndef GRAPHICS_H
-#define GRAPHICS_H
+	#define GRAPHICS_H
 
 #include "SDL.h"
 #include "SDL_image.h"

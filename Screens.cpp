@@ -1,16 +1,23 @@
 #include "Screens.h"
 #include <iostream>
 
-Graphics *characterSprites = NULL;
-SDL_Surface *highlightTile = NULL;
-SDL_Surface *selectScreen = NULL;
 Character *mainCharacter = NULL;
 
-//int selectedCharacter;
-//race selectedRace;
+// #####################################################################################################
+
 enum playerClass {FIGHTER};
 playerClass myClass;
 race myRace;
+
+SelectionScreen::SelectionScreen()
+{
+}
+
+SelectionScreen::SelectionScreen(SDL_Surface *newScreen)
+{
+	screen = newScreen;
+	init();
+}
 
 void SelectionScreen::init()
 {
@@ -73,16 +80,6 @@ void SelectionScreen::init()
 	availableClasses[0].y = 31*16;
 	availableClasses[0].clip.w = 6*16;
 	availableClasses[0].clip.h = 16;
-}
-
-SelectionScreen::SelectionScreen()
-{
-}
-
-SelectionScreen::SelectionScreen(SDL_Surface *newScreen)
-{
-	screen = newScreen;
-	init();
 }
 
 void SelectionScreen::setSignal(bool* signal)
@@ -237,10 +234,7 @@ void SelectionScreen::mouseRight(int x, int y)
 	}
 }
 
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// temporary until the characters are properly created
-int currSpeed = -1;
+// #####################################################################################################
 
 MainGame::MainGame()
 {
@@ -253,9 +247,11 @@ MainGame::MainGame(SDL_Surface *newScreen)
 	gameMap = Map(16,16,672,512);
 	numPlayers = -1;
 	numEnemies = -1;
+	currSpeed = -1;
 	currentPlayer = NULL;
 }
 
+// begins the game by loading the level and all of its enemies
 void MainGame::init()
 {
 	loadLevel();
@@ -318,6 +314,7 @@ void MainGame::doInitiativeRoll()
 	nextTurn();
 }
 
+// respect the turn order, handling AI it is an enemy's turn
 void MainGame::nextTurn()
 {
 	if(currentPlayer != NULL)
@@ -338,6 +335,7 @@ void MainGame::nextTurn()
 		state = STATE_AI_TURN;
 	}
 
+	// play the computer's turn
 	if(state == STATE_AI_TURN)
 	{
 		std::cout << "AI's turn ";
@@ -388,6 +386,7 @@ void MainGame::doAITurn()
 	}
 }
 
+// initialize the current level, including the map and the enemies
 void MainGame::loadLevel()
 {
 	switch(currentLevel)
@@ -534,3 +533,5 @@ void MainGame::keyRight()
 			nextTurn();
 	}
 }
+
+// #####################################################################################################

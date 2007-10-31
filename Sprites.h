@@ -12,7 +12,7 @@ automatically creates a player when it is called.
 *********************************************************/
 
 #ifndef SPRITES_H
-#define SPRITES_H
+	#define SPRITES_H
 
 #include "Dice.h"
 #include "Graphics.h"
@@ -25,6 +25,7 @@ enum race {HUMAN, DWARF, ELF, GNOME};
 // conversion between feet and tile size (5ft per tile)
 const int FT_TO_TILES = 5;
 
+// #####################################################################################################
 
 //Class Object will store information about any object drawn on the map
 class Object
@@ -47,13 +48,16 @@ public:
 	Object();
 };
 
+// #####################################################################################################
 
+// any object that doesn't move, but occupies space on the map
 class InatemateObject : public Object
 {};
 
+// #####################################################################################################
 
-//Character is a child of Object
-//Character defines the basic rules and attributes of Characters in the game world
+// An object that moves.
+// Character defines the basic rules and attributes of Characters in the game world
 class Character : public Object
 {
 private:
@@ -67,11 +71,6 @@ private:
 	
 public:
 	Character();
-
-	const static int HUMAN_SPEED = 10;
-	const static int DWARF_SPEED = 20;
-	const static int GNOME_SPEED = 15;
-	const static int ELF_SPEED = 50;
 
 	//mutators
 	void setStr(int);
@@ -109,24 +108,20 @@ public:
 	void showCharacter();
 };
 
-// --------------------------
+// #####################################################################################################
 
-
-
-
-// see player, might be removed.
-// basic AI could go here..
+// a movable object which is controlled by the computer
+// to be implemented later.
 class Monster : public Character
 {
 public:
 	Monster();
 };
 
+// #####################################################################################################
 
-
-//Class fighter is a child of Character
-//Fighter class is the definition of a certain type of character in the game
-//When calling the class, it receives a specific race type specified in the above race enumeration
+// Fighter class is the definition of a certain type of character in the game
+// When calling the class, it receives a specific race type specified in the above race enumeration
 class Fighter : public Character {
 public:
 	const static int FIGHTER_HP = 10;
@@ -134,6 +129,7 @@ public:
 	Fighter(race);
 };
 
+// #####################################################################################################
 
 // Race specific characteristics (as defined by the d20 system)
 class Race
@@ -147,11 +143,15 @@ public:
 	static const int CHA_ADJ = 0;
 };
 
+// #####################################################################################################
+
 class HumanRace : public Race
 {
 public:
 	static const int SPEED = 30;
 };
+
+// #####################################################################################################
 
 class DwarfRace : public Race
 {
@@ -161,6 +161,8 @@ public:
 	static const int SPEED = 20;
 };
 
+// #####################################################################################################
+
 class ElfRace : public Race
 {
 public:
@@ -169,6 +171,8 @@ public:
 	static const int SPEED = 30;
 };
 
+// #####################################################################################################
+
 class GnomeRace : public Race
 {
 public:
@@ -176,6 +180,8 @@ public:
 	static const int CON_ADJ = 2;
 	static const int SPEED = 20;
 };
+
+// #####################################################################################################
 
 #endif
 

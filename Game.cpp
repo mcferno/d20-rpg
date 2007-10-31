@@ -135,6 +135,7 @@ int main( int argc, char* args[] )
 				quit = true; 
 			} 
 
+			// if the selection screen has signaled it is done, start the game
 			if(isDone)
 			{
 				state = STATE_MAIN_GAME;
@@ -151,6 +152,7 @@ int main( int argc, char* args[] )
 			}
 		}
 
+		// momentary sleep to avoid using too much CPU
 		SDL_Delay(FRAME_RATE_SLEEP);
 	}
 	

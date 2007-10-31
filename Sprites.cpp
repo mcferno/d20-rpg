@@ -1,11 +1,15 @@
 #include "Sprites.h"
 
+// #####################################################################################################
+
 Object::Object()
 {
 	x = y = -1;
 	clip = new SDL_Rect();
 	graphics = NULL;
 }
+
+// #####################################################################################################
 
 Character::Character() : Object()
 {
@@ -75,15 +79,6 @@ void Character::setSpeed(int speedInFeet){
 	else
 		this->speed = speedInFeet / FT_TO_TILES;
 }
-
-/*
-void Character::setAC(int ac){
-	if (ac <= 0)
-		this->ac = 0;
-	else
-		this->ac = ac;
-}
-*/
 //END MODIFIERS
 
 //BEGIN ACCESSORS
@@ -139,8 +134,6 @@ int Character::getChaMod() {
 	return getModifier(cha);
 }
 
-
-
 // Armor Class (AC): How hard a character is to hit. 
 // 10 + armor bonus + shield bonus + size modifier + dexterity modifier
 int Character::getAC(){
@@ -158,6 +151,8 @@ void Character::showCharacter() {
 	std::cout << "SPEED: " << getSpeed() << "\n";
 	std::cout << "HP: " << getHp() << "\n";
 }
+
+// #####################################################################################################
 
 Fighter::Fighter()
 {
@@ -220,9 +215,14 @@ Fighter::Fighter(race myrace) {
 	}
 }
 
+// #####################################################################################################
+
+// to be implemented..
 Monster::Monster() : Character()
 {
 }
+
+// #####################################################################################################
 
 
 

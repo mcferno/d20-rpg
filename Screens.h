@@ -1,5 +1,14 @@
+/********************************************************
+Author: Patrick McFern & Chris Karpyszyn
+
+All classes related to screens (ex: Character selection
+  screen, Main game screen) with the logic to run them
+  and properly interact with the user.
+
+*********************************************************/
+
 #ifndef SCREENS_H
-#define SCREENS_H
+	#define SCREENS_H
 
 #include "Graphics.h"
 #include "Sprites.h"
@@ -7,16 +16,22 @@
 
 using std::queue;
 
-
-extern Graphics *characterSprites;
+// the chosen character, shared among the selection screen and main game
 extern Character *mainCharacter;
 
+// #####################################################################################################
+
+/*
+ * Class SelectionScreen: Allows the user to visually chose his/her character
+ *   to use throughout the game.
+ */
 class SelectionScreen
 {
 private:
 	// pointer to the main screen which will be painted to
 	SDL_Surface *screen;
 
+	// variables needed to offer the user a set of choices for their character
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;
 	static const int NUM_CLASSES = 1;
@@ -26,7 +41,11 @@ private:
 	int selectedSprite; 
 	int selectedRace;
 	int selectedClass;
+	Graphics *characterSprites;
+	SDL_Surface *highlightTile;
+	SDL_Surface *selectScreen;
 
+	// whether or not the main character has been created
 	bool *signalCompletion;
 
 	void init();
@@ -36,11 +55,17 @@ private:
 public:
 	SelectionScreen();
 	SelectionScreen(SDL_Surface *);
+	void paint();
+
+	// a 'semaphore' of sorts used to synchonize with the class which instanciated it
+	void setSignal(bool *);
+
+	// handles mouse interactions
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
-	void paint();
-	void setSignal(bool *);
 };
+
+// #####################################################################################################
 
 /*
  * Class Level: A simple structure to store information needed to load a level.
@@ -60,8 +85,14 @@ public:
 	char *index;
 };
 
+// #####################################################################################################
 
-
+/*
+ * Class MainGame: Once the main character has been chosen, the main game class
+ *   will take care of implementing the game rules involved in playing. This
+ *   includes but is not limited to: determining who will go first, maintaining
+ *   proper turns, etc...
+ */
 class MainGame
 {
 private:
@@ -71,6 +102,7 @@ private:
 	Map gameMap;
 	Level *level;
 	Character *currentPlayer;
+	int currSpeed;
 	int numPlayers;
 
 	// queue used to track the players and their relative turns
@@ -96,17 +128,23 @@ private:
 	void paintObject(Object*);
 	void doInitiativeRoll();
 	void nextTurn();
+
+	// does simple AI for enemies of the level
 	void doAITurn();
 
 public:
 	MainGame();
 	MainGame(SDL_Surface *);
-	void paint();
 	void init();
+	void paint();
+
+	// keyboard interaction, allowing the human player to control his character
 	void keyUp();
 	void keyDown();
 	void keyLeft();
 	void keyRight();
 };
+
+// #####################################################################################################
 
 #endif
