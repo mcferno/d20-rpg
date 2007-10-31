@@ -1,11 +1,13 @@
+#ifndef SCREENS_H
+#define SCREENS_H
+
 #include "Graphics.h"
 #include "Sprites.h"
 #include <queue>
 
 using std::queue;
 
-extern Graphics *selectScreen;
-extern Graphics *selectionScreenBackground;
+
 extern Graphics *characterSprites;
 extern Character *mainCharacter;
 
@@ -14,6 +16,7 @@ class SelectionScreen
 private:
 	// pointer to the main screen which will be painted to
 	SDL_Surface *screen;
+
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;
 	static const int NUM_CLASSES = 1;
@@ -28,6 +31,7 @@ private:
 
 	void init();
 	void paintGraphicsSelection(GraphicsSelection &);
+	bool inBounds(GraphicsSelection &, int, int);
 
 public:
 	SelectionScreen();
@@ -104,3 +108,5 @@ public:
 	void keyLeft();
 	void keyRight();
 };
+
+#endif

@@ -2,9 +2,8 @@
 #include <iostream>
 
 Graphics *characterSprites = NULL;
-Graphics *highlightTile = NULL;
-Graphics *selectScreen = NULL;
-Graphics *selectionScreenBackground = NULL;
+SDL_Surface *highlightTile = NULL;
+SDL_Surface *selectScreen = NULL;
 Character *mainCharacter = NULL;
 
 //int selectedCharacter;
@@ -16,9 +15,8 @@ race myRace;
 void SelectionScreen::init()
 {
 	characterSprites = new Graphics(".\\images\\characters.png");
-	selectionScreenBackground = new Graphics(".\\images\\selectScreenBackground.png");
-	selectScreen = new Graphics(".\\images\\selectScreen.png", 0x00,0x00,0x00,16);
-	highlightTile = new Graphics(".\\images\\highlight.png");
+	selectScreen = loadImage(".\\images\\selectScreen.png");
+	highlightTile = loadImage(".\\images\\highlight.png",0x0,0xFF,0xFF);
 
 	//initialize to non-selected
 	selectedSprite = -1;
@@ -45,26 +43,36 @@ void SelectionScreen::init()
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
 		availableSprites[i].x = 80 + (i*64);
-		availableSprites[i].y = 96;
+		availableSprites[i].y = 80;
 		availableSprites[i].clip.w = availableSprites[i].clip.h = 16; 
 	}
 
 	//location to paint the highlight box for seleced races
-	availableRaces[0].x = 16;
-	availableRaces[0].y = 256;
+	availableRaces[0].x = 3*16;
+	availableRaces[0].y = 14*16;
+	availableRaces[0].clip.w = 6*16;
+	availableRaces[0].clip.h = 16;
 
-	availableRaces[1].x = 320;
-	availableRaces[1].y = 256;
+	availableRaces[1].x = 17*16;
+	availableRaces[1].y = 18*16;
+	availableRaces[1].clip.w = 5*16;
+	availableRaces[1].clip.h = 16;
 
-	availableRaces[2].x = 16;
-	availableRaces[2].y = 384;
+	availableRaces[2].x = 24*16;
+	availableRaces[2].y = 16*16;
+	availableRaces[2].clip.w = 3*16;
+	availableRaces[2].clip.h = 16;
 
-	availableRaces[3].x = 320;
-	availableRaces[3].y = 384;
+	availableRaces[3].x = 10*16;
+	availableRaces[3].y = 20*16;
+	availableRaces[3].clip.w = 6*16;
+	availableRaces[3].clip.h = 16;
 
 	//location to paint the highlight box for selected classes
-	availableClasses[0].x = 16;
-	availableClasses[0].y = 512;
+	availableClasses[0].x = 15*16;
+	availableClasses[0].y = 31*16;
+	availableClasses[0].clip.w = 6*16;
+	availableClasses[0].clip.h = 16;
 }
 
 SelectionScreen::SelectionScreen()
@@ -85,8 +93,7 @@ void SelectionScreen::setSignal(bool* signal)
 void SelectionScreen::paint()
 {
 	// apply background image
-	applySurface(0,0,selectionScreenBackground->image,screen);
-	applySurface(0,0,selectScreen->image,screen);
+	applySurface(0,0,selectScreen,screen);
 
 	// paint each sprite
 	for(int i=0;i<NUM_CHARACTERS;i++)
@@ -94,11 +101,11 @@ void SelectionScreen::paint()
 
 	// highlight a selected sprite
 	if(selectedSprite != -1) 
-		applySurface(availableSprites[selectedSprite].x,availableSprites[selectedSprite].y,highlightTile->image,screen);
+		applySurface(availableSprites[selectedSprite].x,availableSprites[selectedSprite].y,highlightTile,screen);
 	if(selectedRace != -1)
-		applySurface(availableRaces[selectedRace].x,availableRaces[selectedRace].y,highlightTile->image,screen);
+		applySurface(availableRaces[selectedRace].x,availableRaces[selectedRace].y,highlightTile,screen);
 	if(selectedClass != -1)
-		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile->image,screen);
+		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile,screen);
 }
 
 //paints the sprites
@@ -144,13 +151,14 @@ void SelectionScreen::mouseLeft(int x, int y)
 				case -1:
 					break;
 			}
-			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n";
+			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n\n";
 			//call the character you selected
 			SDL_Rect *characterRect = new SDL_Rect();
 
 			//switch statement to call appropriate class for which class you selected
 			switch (myClass) {
 				case FIGHTER:
+					std::cout << "Now rolling your abilities...\n";
 					mainCharacter = new Fighter(myRace);
 					mainCharacter->graphics = characterSprites;
 
@@ -168,7 +176,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 			*signalCompletion = true;
 		}
 		else
-			std::cout << "YOU MUST SELECT A CHARACTER AND RACE AND CLASS";
+			std::cout << "ERROR: You must select a character, race and class!\n";
 	}
 	//END START BUTTON
 
@@ -184,21 +192,26 @@ void SelectionScreen::mouseLeft(int x, int y)
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
-		if (x>=availableSprites[i].x && x<=(availableSprites[i].x+16) && y>=availableSprites[i].y && y<=(availableSprites[i].y+16))
+		if(inBounds(availableSprites[i],x,y))
 			selectedSprite = i;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_RACES;i++)
 	{
-		if (x>=availableRaces[i].x && x<=(availableRaces[i].x+16) && y>=availableRaces[i].y && y<=(availableRaces[i].y+16))
+		if(inBounds(availableRaces[i],x,y))
 			selectedRace = i;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_CLASSES;i++)
 	{
-		if (x>=availableClasses[i].x && x<=(availableClasses[i].x+16) && y>=availableClasses[i].y && y<=(availableClasses[i].y+16))
+		if(inBounds(availableClasses[i],x,y))
 			selectedClass = i;
 	}
+}
+
+bool SelectionScreen::inBounds(GraphicsSelection &gs, int x, int y)
+{
+	return (x >= gs.x && x <= (gs.x + gs.clip.w) && y >= gs.y && y <= (gs.y + gs.clip.h));
 }
 
 //Right mouse even polling
@@ -207,19 +220,19 @@ void SelectionScreen::mouseRight(int x, int y)
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
-		if (x>=availableSprites[i].x && x<=(availableSprites[i].x+16) && y>=availableSprites[i].y && y<=(availableSprites[i].y+16))
+		if(inBounds(availableSprites[i],x,y))
 			selectedSprite = -1;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_RACES;i++)
 	{
-		if (x>=availableRaces[i].x && x<=(availableRaces[i].x+16) && y>=availableRaces[i].y && y<=(availableRaces[i].y+16))
+		if(inBounds(availableRaces[i],x,y))
 			selectedRace = -1;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_CLASSES;i++)
 	{
-		if (x>=availableClasses[i].x && x<=(availableClasses[i].x+16) && y>=availableClasses[i].y && y<=(availableClasses[i].y+16))
+		if(inBounds(availableClasses[i],x,y))
 			selectedClass = -1;
 	}
 }
@@ -262,7 +275,7 @@ void MainGame::init()
 // the first roll is arbitarily the human's roll
 void MainGame::doInitiativeRoll()
 {
-	std::cout << "Now let's do an initiative roll to see who starts\n";
+	std::cout << "\nNow let's do an initiative roll to see who starts\n";
 	int *rolls = new int[numPlayers];
 	for(int i=0; i<numPlayers; i++)
 	{
@@ -272,6 +285,7 @@ void MainGame::doInitiativeRoll()
 		else
 			std::cout << "Monster #" << i+1 << " rolled a " << rolls[i] << "\n";
 	}
+	std::cout << "\n";
 
 	int i, j, highestRoll, highRollerIdx;
 
@@ -306,13 +320,13 @@ void MainGame::doInitiativeRoll()
 
 void MainGame::nextTurn()
 {
-	currSpeed = mainCharacter->getSpeed();
-
 	if(currentPlayer != NULL)
 		playOrder.push(currentPlayer);
 
 	currentPlayer = playOrder.front();
 	playOrder.pop();
+
+	currSpeed = currentPlayer->getSpeed();
 
 	if(currentPlayer == mainCharacter)
 	{
@@ -322,17 +336,22 @@ void MainGame::nextTurn()
 	else 
 	{
 		state = STATE_AI_TURN;
-		std::cout << "AI's turn\n";
 	}
 
 	if(state == STATE_AI_TURN)
 	{
-		for(;currSpeed>=0;currSpeed--)
+		std::cout << "AI's turn ";
+		paintNow();
+		SDL_Delay(500);
+
+		for( ;currSpeed>0;currSpeed--)
 		{
+			std::cout << ".";
 			doAITurn();
 			paintNow();
 			SDL_Delay(250);
 		}
+		std::cout << " Done!\n";
 		nextTurn();
 	}
 }
@@ -374,7 +393,7 @@ void MainGame::loadLevel()
 	switch(currentLevel)
 	{
 		case LEVEL_1:
-			std::cout << "Now Loading Level 1\n";
+			std::cout << "\nNow Loading Level 1\n";
 
 			level = new Level();
 			level->graphics = ".\\levels\\level00\\graphicTiles.bmp";
@@ -398,6 +417,7 @@ void MainGame::loadLevel()
 			enemies[0].clip->h = 16;
 			enemies[0].x = 15;
 			enemies[0].y = 20;
+			enemies[0].setSpeed(30);
 
 			// thug
 			enemies[1].graphics = monsterGraphics;
@@ -407,6 +427,7 @@ void MainGame::loadLevel()
 			enemies[1].clip->h = 16;
 			enemies[1].x = 25;
 			enemies[1].y = 10;
+			enemies[1].setSpeed(25);
 
 			// porcupine
 			enemies[2].graphics = monsterGraphics;
@@ -416,6 +437,7 @@ void MainGame::loadLevel()
 			enemies[2].clip->h = 16;
 			enemies[2].x = 25;
 			enemies[2].y = 25;
+			enemies[2].setSpeed(20);
 
 			break;
 	}

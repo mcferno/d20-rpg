@@ -178,47 +178,43 @@ Fighter::Fighter(race myrace) {
 	switch (myrace)
 	{
 		case HUMAN:
-			//setAC(0);
-			setStr(myDice.characterRoll());
-			setDex(myDice.characterRoll());
-			setCon(myDice.characterRoll());
-			setIte(myDice.characterRoll());
-			setWis(myDice.characterRoll());
-			setCha(myDice.characterRoll());
-			setSpeed(HUMAN_SPEED);
+			setStr(myDice.characterRoll() + HumanRace::STR_ADJ);
+			setDex(myDice.characterRoll() + HumanRace::DEX_ADJ);
+			setCon(myDice.characterRoll() + HumanRace::CON_ADJ);
+			setIte(myDice.characterRoll() + HumanRace::ITE_ADJ);
+			setWis(myDice.characterRoll() + HumanRace::WIS_ADJ);
+			setCha(myDice.characterRoll() + HumanRace::CHA_ADJ);
+			setSpeed(HumanRace::SPEED);
 			showCharacter();
 			break;
 		case DWARF:
-			//setAC(0);
-			setStr(myDice.characterRoll());
-			setDex(myDice.characterRoll());
-			setCon(myDice.characterRoll() + 2);
-			setIte(myDice.characterRoll());
-			setWis(myDice.characterRoll());
-			setCha(myDice.characterRoll() - 2);
-			setSpeed(DWARF_SPEED);
+			setStr(myDice.characterRoll() + DwarfRace::STR_ADJ);
+			setDex(myDice.characterRoll() + DwarfRace::DEX_ADJ);
+			setCon(myDice.characterRoll() + DwarfRace::CON_ADJ);
+			setIte(myDice.characterRoll() + DwarfRace::ITE_ADJ);
+			setWis(myDice.characterRoll() + DwarfRace::WIS_ADJ);
+			setCha(myDice.characterRoll() + DwarfRace::CHA_ADJ);
+			setSpeed(DwarfRace::SPEED);
 			showCharacter();
 			break;
 		case ELF:
-			//setAC(0);
-			setStr(myDice.characterRoll());
-			setDex(myDice.characterRoll());
-			setCon(myDice.characterRoll() + 2);
-			setIte(myDice.characterRoll());
-			setWis(myDice.characterRoll());
-			setCha(myDice.characterRoll() - 2);
-			setSpeed(ELF_SPEED);
+			setStr(myDice.characterRoll() + ElfRace::STR_ADJ);
+			setDex(myDice.characterRoll() + ElfRace::DEX_ADJ);
+			setCon(myDice.characterRoll() + ElfRace::CON_ADJ);
+			setIte(myDice.characterRoll() + ElfRace::ITE_ADJ);
+			setWis(myDice.characterRoll() + ElfRace::WIS_ADJ);
+			setCha(myDice.characterRoll() + ElfRace::CHA_ADJ);
+			setSpeed(ElfRace::SPEED);
 			showCharacter();
 			break;
 		case GNOME:
-			//setAC(0);
-			setStr(myDice.characterRoll());
-			setDex(myDice.characterRoll());
-			setCon(myDice.characterRoll() + 2);
-			setIte(myDice.characterRoll());
-			setWis(myDice.characterRoll());
-			setCha(myDice.characterRoll() - 2);
-			setSpeed(GNOME_SPEED);
+			setStr(myDice.characterRoll() + GnomeRace::STR_ADJ);
+			setDex(myDice.characterRoll() + GnomeRace::DEX_ADJ);
+			setCon(myDice.characterRoll() + GnomeRace::CON_ADJ);
+			setIte(myDice.characterRoll() + GnomeRace::ITE_ADJ);
+			setWis(myDice.characterRoll() + GnomeRace::WIS_ADJ);
+			setCha(myDice.characterRoll() + GnomeRace::CHA_ADJ);
+			setSpeed(GnomeRace::SPEED);
 			showCharacter();
 			break;
 	}

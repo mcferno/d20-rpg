@@ -12,7 +12,7 @@ automatically creates a player when it is called.
 *********************************************************/
 
 #ifndef SPRITES_H
-	#define SPRITES_H
+#define SPRITES_H
 
 #include "Dice.h"
 #include "Graphics.h"
@@ -83,7 +83,6 @@ public:
 	void setAllModifiers(int, int, int, int, int, int);
 	void setHp(int);
 	void setLevel(int);
-	//void setAC(int);
 	void setSpeed(int);
 
 	//accessors
@@ -150,11 +149,13 @@ public:
 
 class HumanRace : public Race
 {
+public:
 	static const int SPEED = 30;
 };
 
 class DwarfRace : public Race
 {
+public:
 	static const int DEX_ADJ = -2;
 	static const int CON_ADJ = 2;
 	static const int SPEED = 20;
@@ -162,6 +163,7 @@ class DwarfRace : public Race
 
 class ElfRace : public Race
 {
+public:
 	static const int DEX_ADJ = 2;
 	static const int CON_ADJ = -2;
 	static const int SPEED = 30;
@@ -169,6 +171,7 @@ class ElfRace : public Race
 
 class GnomeRace : public Race
 {
+public:
 	static const int STR_ADJ = -2;
 	static const int CON_ADJ = 2;
 	static const int SPEED = 20;
