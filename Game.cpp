@@ -16,8 +16,11 @@ SDL_Surface *screen = NULL;
 SDL_Surface *background = NULL;
 Uint32 bgColor;
 
-SelectionScreen selectionScreen;
-MainGame mainGame;
+// changed to pointers since the objects were being created statically
+// at run time, which lead to problems since these objects depend on
+// the screen having been created first
+SelectionScreen *selectionScreen;
+MainGame *mainGame;
 
 // Game states
 const int STATE_CHARACTER_SELECTION = 0;
@@ -38,10 +41,10 @@ void paint()
 	switch(state)
 	{
 		case STATE_CHARACTER_SELECTION:
-			selectionScreen.paint();
+			selectionScreen->paint();
 			break;
 		case STATE_MAIN_GAME:
-			mainGame.paint();
+			mainGame->paint();
 			break;
 	}
 
@@ -71,10 +74,10 @@ int main( int argc, char* args[] )
 	srand ((unsigned int)time(NULL));
 
 	bool isDone = false;
-	selectionScreen = SelectionScreen(screen);
-	selectionScreen.setSignal(&isDone);
+	selectionScreen = new SelectionScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,screen);
+	selectionScreen->setSignal(&isDone);
 
-	mainGame = MainGame(screen);
+	mainGame = new MainGame(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,screen);
 
 	// initial paint
 	paint();
@@ -95,21 +98,25 @@ int main( int argc, char* args[] )
 				dirty = true;
 				switch( event.key.keysym.sym ) 
 				{
+					case SDLK_s:
+						if(state == STATE_MAIN_GAME)
+							mainGame->showShop();
+						break;
 					case SDLK_UP:
 						if(state == STATE_MAIN_GAME)
-							mainGame.keyUp();
+							mainGame->keyUp();
 						break;
 					case SDLK_DOWN:
 						if(state == STATE_MAIN_GAME)
-							mainGame.keyDown();
+							mainGame->keyDown();
 						break;
 					case SDLK_LEFT:
 						if(state == STATE_MAIN_GAME)
-							mainGame.keyLeft();
+							mainGame->keyLeft();
 						break;
 					case SDLK_RIGHT:
 						if(state == STATE_MAIN_GAME)
-							mainGame.keyRight();
+							mainGame->keyRight();
 						break;
 				}
 			}
@@ -120,13 +127,13 @@ int main( int argc, char* args[] )
 				if( event.button.button == SDL_BUTTON_LEFT )
 				{
 					if (state == STATE_CHARACTER_SELECTION)
-						selectionScreen.mouseLeft(event.button.x,event.button.y);
+						selectionScreen->mouseLeft(event.button.x,event.button.y);
 
 				}
 				if( event.button.button == SDL_BUTTON_RIGHT )
 				{
 					if (state == STATE_CHARACTER_SELECTION)
-						selectionScreen.mouseRight(event.button.x,event.button.y);
+						selectionScreen->mouseRight(event.button.x,event.button.y);
 				}
 			}
 
@@ -140,7 +147,7 @@ int main( int argc, char* args[] )
 			{
 				state = STATE_MAIN_GAME;
 				clearScreen();
-				mainGame.init();
+				mainGame->init();
 				isDone = false;
 			}
 

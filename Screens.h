@@ -21,16 +21,39 @@ extern Character *mainCharacter;
 
 // #####################################################################################################
 
+// inherited x,y,w,h are in px
+class Screen : public Rect
+{
+protected:
+	//static SDL_Surface *defaultScreen;
+	SDL_Surface *screen;
+public:
+	// handles key interaction
+	//virtual void keyUp();
+	//virtual void keyDown();
+	//virtual void keyLeft();
+	//virtual void keyRight();
+
+	// handles mouse interactions
+	//void mouseLeft(int,int);
+	//void mouseRight(int,int);
+
+	virtual void paint() = 0;
+
+	Screen(int,int,int,int,SDL_Surface *);
+
+	//void setScreen(SDL_Surface *);
+};
+
+// #####################################################################################################
+
 /*
  * Class SelectionScreen: Allows the user to visually chose his/her character
  *   to use throughout the game.
  */
-class SelectionScreen
+class SelectionScreen : public Screen
 {
 private:
-	// pointer to the main screen which will be painted to
-	SDL_Surface *screen;
-
 	// variables needed to offer the user a set of choices for their character
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;
@@ -53,8 +76,7 @@ private:
 	bool inBounds(GraphicsSelection &, int, int);
 
 public:
-	SelectionScreen();
-	SelectionScreen(SDL_Surface *);
+	SelectionScreen(int, int, int, int, SDL_Surface *);
 	void paint();
 
 	// a 'semaphore' of sorts used to synchonize with the class which instanciated it
@@ -87,20 +109,31 @@ public:
 
 // #####################################################################################################
 
+class ShopScreen : public Screen
+{
+private:
+	// temp
+	Uint32 bgColor;
+public:
+	ShopScreen(int, int, int, int, SDL_Surface*);
+	void paint();
+};
+
+// #####################################################################################################
+
 /*
  * Class MainGame: Once the main character has been chosen, the main game class
  *   will take care of implementing the game rules involved in playing. This
  *   includes but is not limited to: determining who will go first, maintaining
  *   proper turns, etc...
  */
-class MainGame
+class MainGame : public Screen
 {
 private:
-	// pointer to the main screen which will be painted to
-	SDL_Surface *screen;
-
 	Map gameMap;
 	Level *level;
+	ShopScreen *shopScreen;
+
 	Character *currentPlayer;
 	int currSpeed;
 	int numPlayers;
@@ -122,6 +155,8 @@ private:
 	static const int STATE_LEVEL_START = 0;
 	static const int STATE_HUMAN_TURN = 1;
 	static const int STATE_AI_TURN = 2;
+	static const int STATE_SHOP = 3;
+	static const int STATE_BATTLE = 4;
 
 	void loadLevel();
 	void paintNow();
@@ -133,8 +168,7 @@ private:
 	void doAITurn();
 
 public:
-	MainGame();
-	MainGame(SDL_Surface *);
+	MainGame(int, int, int, int, SDL_Surface *);
 	void init();
 	void paint();
 
@@ -143,6 +177,8 @@ public:
 	void keyDown();
 	void keyLeft();
 	void keyRight();
+
+	void showShop();
 };
 
 // #####################################################################################################

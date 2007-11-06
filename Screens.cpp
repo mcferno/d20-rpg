@@ -5,17 +5,23 @@ Character *mainCharacter = NULL;
 
 // #####################################################################################################
 
+Screen::Screen(int newX, int newY, int newW, int newH, SDL_Surface *newScreen)
+{
+	screen = newScreen;
+	x = newX;
+	y = newY;
+	w = newW;
+	h = newH;
+}
+
+// #####################################################################################################
+
 enum playerClass {FIGHTER};
 playerClass myClass;
 race myRace;
 
-SelectionScreen::SelectionScreen()
+SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH, SDL_Surface *newScreen) : Screen(newX,newY,newW,newH,newScreen)
 {
-}
-
-SelectionScreen::SelectionScreen(SDL_Surface *newScreen)
-{
-	screen = newScreen;
 	init();
 }
 
@@ -236,19 +242,15 @@ void SelectionScreen::mouseRight(int x, int y)
 
 // #####################################################################################################
 
-MainGame::MainGame()
+MainGame::MainGame(int newX, int newY, int newW, int newH, SDL_Surface *newScreen) : Screen(newX,newY,newW,newH,newScreen)
 {
-}
-
-MainGame::MainGame(SDL_Surface *newScreen)
-{
-	screen = newScreen;
 	currentLevel = LEVEL_1;
 	gameMap = Map(16,16,672,512);
 	numPlayers = -1;
 	numEnemies = -1;
 	currSpeed = -1;
 	currentPlayer = NULL;
+	shopScreen = NULL;
 }
 
 // begins the game by loading the level and all of its enemies
@@ -457,6 +459,11 @@ void MainGame::paint()
 	paintObject(&enemies[0]);
 	paintObject(&enemies[1]);
 	paintObject(&enemies[2]);
+
+	if(state == STATE_SHOP)
+	{
+		shopScreen->paint();
+	}
 }
 
 void MainGame::paintObject(Object* obj)
@@ -534,4 +541,37 @@ void MainGame::keyRight()
 	}
 }
 
+void MainGame::showShop()
+{
+	if(state != STATE_SHOP)
+	{
+		std::cout << "SHOW SHOP!\n";
+		if(shopScreen == NULL)
+			shopScreen = new ShopScreen(50,50,400,200,screen);
+		state = STATE_SHOP;
+	}
+	else
+	{
+		std::cout << "HIDE SHOP!\n";
+
+		// you can only enter the shop during the human turn, so restore the human turn
+		state = STATE_HUMAN_TURN;
+	}
+}
+
 // #####################################################################################################
+
+ShopScreen::ShopScreen(int newX, int newY, int newW, int newH, SDL_Surface *newScreen) : Screen(newX,newY,newW,newH,newScreen)
+{
+	bgColor = SDL_MapRGB( screen->format, 0xFF, 0x00, 0x00 );
+}
+
+void ShopScreen::paint()
+{
+	SDL_Rect tempClip;
+	tempClip.x = x;
+	tempClip.y = y;
+	tempClip.w = w;
+	tempClip.h = h;
+	SDL_FillRect(screen,&tempClip,bgColor);
+}
