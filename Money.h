@@ -6,6 +6,10 @@
  *   Gold	  = 100 Copper Pieces
  *   Platinum = 1000 Copper Pieces
  */
+
+#ifndef MONEY_H
+	#define MONEY_H
+
 class Money
 {
 private:
@@ -15,6 +19,11 @@ private:
 
 	int totalCopper;
 public:
+	static const int COPPER = 0;
+	static const int SILVER = 1;
+	static const int GOLD = 2;
+	static const int PLATINUM = 3;
+
 	// create a coin purse of copper, silver, gold, platinum
 	Money(int = 0, int = 0, int = 0, int = 0);
 
@@ -23,6 +32,9 @@ public:
 	void addSilver(int);
 	void addGold(int);
 	void addPlatinum(int);
+
+	// adds any kind of coin to the current purse amount
+	void addCoin(int,int);
 
 	void removeCopper(int);
 	void removeSilver(int);
@@ -44,3 +56,5 @@ public:
 	Money & Money::operator+=(const Money &);
 	Money & Money::operator-=(const Money &);
 };
+
+#endif

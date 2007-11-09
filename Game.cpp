@@ -1,12 +1,11 @@
-#include "Graphics.h"
+#include "SDL.h"
 #include "Screens.h"
 #include <time.h>
 
-//Screen attributes 
-const int SCREEN_WIDTH = 800; 
-const int SCREEN_HEIGHT = 600; 
-const int SCREEN_BPP = 32;
-const char* WINDOW_TITLE = "COMP446: Final Project";
+static const int SCREEN_WIDTH = 800; 
+static const int SCREEN_HEIGHT = 600; 
+static const int SCREEN_BPP = 32;
+static const char* WINDOW_TITLE = "COMP446: Final Project";
 const int FRAME_RATE_SLEEP = 40;
 
 //The event structure that will be used 
@@ -65,6 +64,8 @@ int main( int argc, char* args[] )
 	// Initialize the main graphics screen 
 	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE ); 
 
+	Screen::setScreen(screen);
+
 	bgColor = SDL_MapRGB( screen->format, 0, 0, 0 );
 	
 	// set the window title for the main window
@@ -74,10 +75,10 @@ int main( int argc, char* args[] )
 	srand ((unsigned int)time(NULL));
 
 	bool isDone = false;
-	selectionScreen = new SelectionScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,screen);
+	selectionScreen = new SelectionScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 	selectionScreen->setSignal(&isDone);
 
-	mainGame = new MainGame(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,screen);
+	mainGame = new MainGame(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 
 	// initial paint
 	paint();

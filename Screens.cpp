@@ -1,13 +1,18 @@
 #include "Screens.h"
-#include <iostream>
-
-Character *mainCharacter = NULL;
 
 // #####################################################################################################
 
-Screen::Screen(int newX, int newY, int newW, int newH, SDL_Surface *newScreen)
+// initialize the static pointers
+Character* Screen::mainCharacter = NULL;
+SDL_Surface* Screen::screen = NULL;
+
+void Screen::setScreen(SDL_Surface *newScreen)
 {
-	screen = newScreen;
+	Screen::screen = newScreen;
+}
+
+Screen::Screen(int newX, int newY, int newW, int newH)
+{
 	x = newX;
 	y = newY;
 	w = newW;
@@ -16,11 +21,7 @@ Screen::Screen(int newX, int newY, int newW, int newH, SDL_Surface *newScreen)
 
 // #####################################################################################################
 
-enum playerClass {FIGHTER};
-playerClass myClass;
-race myRace;
-
-SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH, SDL_Surface *newScreen) : Screen(newX,newY,newW,newH,newScreen)
+SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
 {
 	init();
 }
@@ -161,7 +162,6 @@ void SelectionScreen::mouseLeft(int x, int y)
 			//switch statement to call appropriate class for which class you selected
 			switch (myClass) {
 				case FIGHTER:
-					std::cout << "Now rolling your abilities...\n";
 					mainCharacter = new Fighter(myRace);
 					mainCharacter->graphics = characterSprites;
 
@@ -242,7 +242,7 @@ void SelectionScreen::mouseRight(int x, int y)
 
 // #####################################################################################################
 
-MainGame::MainGame(int newX, int newY, int newW, int newH, SDL_Surface *newScreen) : Screen(newX,newY,newW,newH,newScreen)
+MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
 {
 	currentLevel = LEVEL_1;
 	gameMap = Map(16,16,672,512);
@@ -251,12 +251,14 @@ MainGame::MainGame(int newX, int newY, int newW, int newH, SDL_Surface *newScree
 	currSpeed = -1;
 	currentPlayer = NULL;
 	shopScreen = NULL;
+	weapons = NULL;
 }
 
 // begins the game by loading the level and all of its enemies
 void MainGame::init()
 {
 	loadLevel();
+	weapons = WeaponFactory::getAllWeapons();
 	numPlayers = numEnemies+1;
 
 	gameMap.loadGraphics(level->graphics, level->alphaR, level->alphaG, level->alphaB);
@@ -547,7 +549,7 @@ void MainGame::showShop()
 	{
 		std::cout << "SHOW SHOP!\n";
 		if(shopScreen == NULL)
-			shopScreen = new ShopScreen(50,50,400,200,screen);
+			shopScreen = new ShopScreen(50,50,400,200);
 		state = STATE_SHOP;
 	}
 	else
@@ -561,9 +563,10 @@ void MainGame::showShop()
 
 // #####################################################################################################
 
-ShopScreen::ShopScreen(int newX, int newY, int newW, int newH, SDL_Surface *newScreen) : Screen(newX,newY,newW,newH,newScreen)
+ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
 {
 	bgColor = SDL_MapRGB( screen->format, 0xFF, 0x00, 0x00 );
+	weapons = WeaponFactory::getAllWeapons();
 }
 
 void ShopScreen::paint()
@@ -574,4 +577,7 @@ void ShopScreen::paint()
 	tempClip.w = w;
 	tempClip.h = h;
 	SDL_FillRect(screen,&tempClip,bgColor);
+
+	applySurface(x,y,weapons[0].graphics->image,screen,&weapons[0].graphics->clip[weapons[0].index]);
+	applySurface(x+16,y,weapons[1].graphics->image,screen,&weapons[1].graphics->clip[weapons[1].index]);
 }

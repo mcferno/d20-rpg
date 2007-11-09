@@ -16,6 +16,7 @@ automatically creates a player when it is called.
 
 #include "Dice.h"
 #include "Graphics.h"
+#include "Money.h"
 #include <iostream>
 
 //These are the types of races allowed in the game
@@ -60,16 +61,32 @@ class InatemateObject : public Object
 // Character defines the basic rules and attributes of Characters in the game world
 class Character : public Object
 {
-private:
+protected:
 	// abilities common to all characters: strength, dexterity, consitution, wisdom, charisma
 	int str, dex, con, ite, wis, cha;
 	
 	// hit points, current level, speed (in tiles)
 	int hp, level, speed;
 
+	// how much money a character starts with
+	// currently: 4d4 of gold
+	static const int STARTING_MONEY_DICE_TYPE = Dice::D4;
+	static const int STARTING_MONEY_DICE_ROLLS = 4;
+	static const int STARTING_MONEY_TYPE = Money::GOLD;
+
+	// how to determine a randomly rolled character ability
+	static const int ABILITY_ROLL_DICE_TYPE = Dice::D6;
+	static const int ABILITY_ROLL_DICE_ROLLS = 4;
+
 	int getModifier(int);
-	
+
+	void rollStartingMoney();
+
+	// get the sum of a number of rolls, discarding the lowest
+	int getAbilityRoll();
 public:
+	Money money;
+
 	Character();
 
 	//mutators

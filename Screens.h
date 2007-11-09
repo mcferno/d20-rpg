@@ -12,12 +12,10 @@ All classes related to screens (ex: Character selection
 
 #include "Graphics.h"
 #include "Sprites.h"
+#include "Items.h"
 #include <queue>
-
+#include <iostream>
 using std::queue;
-
-// the chosen character, shared among the selection screen and main game
-extern Character *mainCharacter;
 
 // #####################################################################################################
 
@@ -26,23 +24,16 @@ class Screen : public Rect
 {
 protected:
 	//static SDL_Surface *defaultScreen;
-	SDL_Surface *screen;
+	static SDL_Surface *screen;
+
+	// the chosen character, shared among the selection screen and main game
+	static Character *mainCharacter;
 public:
-	// handles key interaction
-	//virtual void keyUp();
-	//virtual void keyDown();
-	//virtual void keyLeft();
-	//virtual void keyRight();
-
-	// handles mouse interactions
-	//void mouseLeft(int,int);
-	//void mouseRight(int,int);
-
 	virtual void paint() = 0;
 
-	Screen(int,int,int,int,SDL_Surface *);
+	Screen(int,int,int,int);
 
-	//void setScreen(SDL_Surface *);
+	static void setScreen(SDL_Surface *);
 };
 
 // #####################################################################################################
@@ -75,8 +66,12 @@ private:
 	void paintGraphicsSelection(GraphicsSelection &);
 	bool inBounds(GraphicsSelection &, int, int);
 
+	enum playerClass {FIGHTER};
+	playerClass myClass;
+	race myRace;
+
 public:
-	SelectionScreen(int, int, int, int, SDL_Surface *);
+	SelectionScreen(int, int, int, int);
 	void paint();
 
 	// a 'semaphore' of sorts used to synchonize with the class which instanciated it
@@ -114,8 +109,10 @@ class ShopScreen : public Screen
 private:
 	// temp
 	Uint32 bgColor;
+
+	Weapon *weapons;
 public:
-	ShopScreen(int, int, int, int, SDL_Surface*);
+	ShopScreen(int, int, int, int);
 	void paint();
 };
 
@@ -133,6 +130,7 @@ private:
 	Map gameMap;
 	Level *level;
 	ShopScreen *shopScreen;
+	Weapon *weapons;
 
 	Character *currentPlayer;
 	int currSpeed;
@@ -168,7 +166,7 @@ private:
 	void doAITurn();
 
 public:
-	MainGame(int, int, int, int, SDL_Surface *);
+	MainGame(int, int, int, int);
 	void init();
 	void paint();
 

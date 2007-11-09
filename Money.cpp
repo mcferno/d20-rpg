@@ -5,6 +5,24 @@ Money::Money(int copper, int silver, int gold, int platinum)
 	totalCopper = copper + (silver * SILVER_TO_COPPER) + (gold * GOLD_TO_COPPER) + (platinum * PLATINUM_TO_COPPER);
 }
 
+void Money::addCoin(int amount, int coinType)
+{
+	switch(coinType)
+	{
+		case COPPER:
+			addCopper(amount);
+			break;
+		case SILVER:
+			addSilver(amount);
+			break;
+		case GOLD:
+			addGold(amount);
+			break;
+		case PLATINUM:
+			addPlatinum(amount);
+	}
+}
+
 void Money::addCopper(int copper)
 {
 	totalCopper += copper;
@@ -62,17 +80,17 @@ int Money::getCopper()
 
 int Money::getSilver()
 {
-	return totalCopper % SILVER_TO_COPPER;
+	return totalCopper / SILVER_TO_COPPER;
 }
 
 int Money::getGold()
 {
-	return totalCopper % GOLD_TO_COPPER;
+	return totalCopper / GOLD_TO_COPPER;
 }
 
 int Money::getPlatinum()
 {
-	return totalCopper % PLATINUM_TO_COPPER;
+	return totalCopper / PLATINUM_TO_COPPER;
 }
 
 bool Money::operator>(const Money &rhs)

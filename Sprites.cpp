@@ -13,6 +13,12 @@ Object::Object()
 
 Character::Character() : Object()
 {
+	rollStartingMoney();
+}
+
+void Character::rollStartingMoney()
+{
+	money.addCoin(Dice::roll(STARTING_MONEY_DICE_TYPE,STARTING_MONEY_DICE_ROLLS),STARTING_MONEY_TYPE);
 }
 
 //BEGIN MODIFIERS
@@ -142,14 +148,48 @@ int Character::getAC(){
 //END ACCESSORS
 
 void Character::showCharacter() {
-	std::cout << "STR: " << getStr() << "\n";
-	std::cout << "DEX: " << getDex() << "\n";
-	std::cout << "CON: " << getCon() << "\n";
-	std::cout << "ITE: " << getIte() << "\n";
-	std::cout << "WIS: " << getWis() << "\n";
-	std::cout << "CHA: " << getCha() << "\n";
-	std::cout << "SPEED: " << getSpeed() << "\n";
-	std::cout << "HP: " << getHp() << "\n";
+	std::cout << "\nYour character (after Race based adjustments):\n"
+		<< "STR: " << getStr() << ", Mod: " << getStrMod() << "\n"
+		<< "DEX: " << getDex() << ", Mod: " << getDexMod() << "\n"
+		<< "CON: " << getCon() << ", Mod: " << getConMod() << "\n"
+		<< "ITE: " << getIte() << ", Mod: " << getIteMod() << "\n"
+		<< "WIS: " << getWis() << ", Mod: " << getWisMod() << "\n"
+		<< "CHA: " << getCha() << ", Mod: " << getChaMod() << "\n"
+		<< "SPEED: " << getSpeed() << "\n"
+		<< "HP: " << getHp() << "\n"
+		<< "Starting Money: " << money.getGold() << " gold.\n";
+}
+
+int Character::getAbilityRoll()
+{
+	int smallestRoll = 0;
+	int rollAmount;
+	int runningSum = 0;
+
+	// roll the dice a number of times, calculate the running sum and locate the smallest roll
+	std::cout << "Rolling: ";
+	for(int i=0;i<ABILITY_ROLL_DICE_ROLLS;i++)
+	{
+		rollAmount = Dice::roll(ABILITY_ROLL_DICE_TYPE);
+		runningSum += rollAmount;
+		std::cout << rollAmount << ",";
+
+		// track the smallest roll if it isn't the only roll to be performed
+		if(i == 0 && ABILITY_ROLL_DICE_ROLLS > 1)
+		{
+			smallestRoll = rollAmount;
+		}
+		else
+		{
+			if(smallestRoll > rollAmount)
+				smallestRoll = rollAmount;
+		}
+	}
+
+	std::cout << " discarding: " << smallestRoll << ", total: " << (runningSum - smallestRoll) << "\n" ;
+	
+	// discard the smallest roll and return the sum
+	return (runningSum - smallestRoll);
 }
 
 // #####################################################################################################
@@ -164,51 +204,52 @@ Fighter::Fighter()
 //Each race may have specific additions to the modifiers
 //Hitpoints, Level, and AC begin at a predetermined base
 //Str, Dex, Con, Ite, Wis, Cha are all determined randomly by the character roll.
-Fighter::Fighter(race myrace) {
+Fighter::Fighter(race myrace) : Character() {
 
 	setHp(FIGHTER_HP);
 	setLevel(1);
-	Dice myDice;
+
+	std::cout << "\nNow rolling your abilities using a " << ABILITY_ROLL_DICE_ROLLS << "d" << ABILITY_ROLL_DICE_TYPE << " ...\n";
 
 	switch (myrace)
 	{
 		case HUMAN:
-			setStr(myDice.characterRoll() + HumanRace::STR_ADJ);
-			setDex(myDice.characterRoll() + HumanRace::DEX_ADJ);
-			setCon(myDice.characterRoll() + HumanRace::CON_ADJ);
-			setIte(myDice.characterRoll() + HumanRace::ITE_ADJ);
-			setWis(myDice.characterRoll() + HumanRace::WIS_ADJ);
-			setCha(myDice.characterRoll() + HumanRace::CHA_ADJ);
+			setStr(getAbilityRoll() + HumanRace::STR_ADJ);
+			setDex(getAbilityRoll() + HumanRace::DEX_ADJ);
+			setCon(getAbilityRoll() + HumanRace::CON_ADJ);
+			setIte(getAbilityRoll() + HumanRace::ITE_ADJ);
+			setWis(getAbilityRoll() + HumanRace::WIS_ADJ);
+			setCha(getAbilityRoll() + HumanRace::CHA_ADJ);
 			setSpeed(HumanRace::SPEED);
 			showCharacter();
 			break;
 		case DWARF:
-			setStr(myDice.characterRoll() + DwarfRace::STR_ADJ);
-			setDex(myDice.characterRoll() + DwarfRace::DEX_ADJ);
-			setCon(myDice.characterRoll() + DwarfRace::CON_ADJ);
-			setIte(myDice.characterRoll() + DwarfRace::ITE_ADJ);
-			setWis(myDice.characterRoll() + DwarfRace::WIS_ADJ);
-			setCha(myDice.characterRoll() + DwarfRace::CHA_ADJ);
+			setStr(getAbilityRoll() + DwarfRace::STR_ADJ);
+			setDex(getAbilityRoll() + DwarfRace::DEX_ADJ);
+			setCon(getAbilityRoll() + DwarfRace::CON_ADJ);
+			setIte(getAbilityRoll() + DwarfRace::ITE_ADJ);
+			setWis(getAbilityRoll() + DwarfRace::WIS_ADJ);
+			setCha(getAbilityRoll() + DwarfRace::CHA_ADJ);
 			setSpeed(DwarfRace::SPEED);
 			showCharacter();
 			break;
 		case ELF:
-			setStr(myDice.characterRoll() + ElfRace::STR_ADJ);
-			setDex(myDice.characterRoll() + ElfRace::DEX_ADJ);
-			setCon(myDice.characterRoll() + ElfRace::CON_ADJ);
-			setIte(myDice.characterRoll() + ElfRace::ITE_ADJ);
-			setWis(myDice.characterRoll() + ElfRace::WIS_ADJ);
-			setCha(myDice.characterRoll() + ElfRace::CHA_ADJ);
+			setStr(getAbilityRoll() + ElfRace::STR_ADJ);
+			setDex(getAbilityRoll() + ElfRace::DEX_ADJ);
+			setCon(getAbilityRoll() + ElfRace::CON_ADJ);
+			setIte(getAbilityRoll() + ElfRace::ITE_ADJ);
+			setWis(getAbilityRoll() + ElfRace::WIS_ADJ);
+			setCha(getAbilityRoll() + ElfRace::CHA_ADJ);
 			setSpeed(ElfRace::SPEED);
 			showCharacter();
 			break;
 		case GNOME:
-			setStr(myDice.characterRoll() + GnomeRace::STR_ADJ);
-			setDex(myDice.characterRoll() + GnomeRace::DEX_ADJ);
-			setCon(myDice.characterRoll() + GnomeRace::CON_ADJ);
-			setIte(myDice.characterRoll() + GnomeRace::ITE_ADJ);
-			setWis(myDice.characterRoll() + GnomeRace::WIS_ADJ);
-			setCha(myDice.characterRoll() + GnomeRace::CHA_ADJ);
+			setStr(getAbilityRoll() + GnomeRace::STR_ADJ);
+			setDex(getAbilityRoll() + GnomeRace::DEX_ADJ);
+			setCon(getAbilityRoll() + GnomeRace::CON_ADJ);
+			setIte(getAbilityRoll() + GnomeRace::ITE_ADJ);
+			setWis(getAbilityRoll() + GnomeRace::WIS_ADJ);
+			setCha(getAbilityRoll() + GnomeRace::CHA_ADJ);
 			setSpeed(GnomeRace::SPEED);
 			showCharacter();
 			break;
