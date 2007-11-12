@@ -1,7 +1,7 @@
 /********************************************************
 Author: Christopher Karpyszyn
 Created: Oct 8th 2007
-Version 1.0
+
 
 This is the Base Object class
 Which contains information about anything that will be 

@@ -36,6 +36,8 @@ void SelectionScreen::init()
 	selectedSprite = -1;
 	selectedRace = -1;
 	selectedClass = -1;
+	//initialize roll button to never pressed
+	hasRolled = false;
 
 	//location of available sprites on clip sheet
 	availableSprites[0].clip.x = 0;
@@ -124,37 +126,8 @@ void SelectionScreen::mouseLeft(int x, int y)
 	//START BUTTON
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
-		//Check to make sure you have selected everything
-		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1)
-		{
-			std::cout << "You have selected a: ";
-			//decide which race you selected
-			switch (selectedRace) {
-				case 0:
-					myRace = HUMAN;
-					std::cout << "human ";
-					break;
-				case 1:
-					myRace = DWARF;
-					std::cout << "dwarf ";
-					break;
-				case 2:
-					myRace = ELF;
-					std::cout << "elf ";
-					break;
-				case 3:
-					myRace = GNOME;
-					std::cout << "gnome ";
-			}
-			//decide which class you selected
-			switch (selectedClass) {
-				case 0:
-					myClass = FIGHTER;
-					std::cout << "fighter.";
-					break;
-				case -1:
-					break;
-			}
+
+
 			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n\n";
 			//call the character you selected
 			SDL_Rect *characterRect = new SDL_Rect();
@@ -191,6 +164,23 @@ void SelectionScreen::mouseLeft(int x, int y)
 		selectedClass = -1;
 	}
 	//END CLEAR BUTTON
+
+	//ROLL BUTTON
+	if (x >=38*16 && x<=42*16 && y>=23*16 && y<=24*16)
+	{
+		switch (selectedRace)
+			case -1:
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+	}
+	//END ROLL BUTTON
 
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
