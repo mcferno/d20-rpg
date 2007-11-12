@@ -111,6 +111,10 @@ private:
 	Uint32 bgColor;
 
 	Weapon *weapons;
+	int numWeapons;
+
+	Armor *armor;
+	int numArmor;
 public:
 	ShopScreen(int, int, int, int);
 	void paint();

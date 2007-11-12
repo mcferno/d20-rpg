@@ -563,10 +563,14 @@ void MainGame::showShop()
 
 // #####################################################################################################
 
-ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
+ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) : 
+	Screen(newX,newY,newW,newH)
 {
 	bgColor = SDL_MapRGB( screen->format, 0xFF, 0x00, 0x00 );
 	weapons = WeaponFactory::getAllWeapons();
+	numWeapons = WeaponFactory::getNumWeapons();
+	armor = ArmorFactory::getAllArmor();
+	numArmor = ArmorFactory::getNumArmor();
 }
 
 void ShopScreen::paint()
@@ -578,6 +582,9 @@ void ShopScreen::paint()
 	tempClip.h = h;
 	SDL_FillRect(screen,&tempClip,bgColor);
 
-	applySurface(x,y,weapons[0].graphics->image,screen,&weapons[0].graphics->clip[weapons[0].index]);
-	applySurface(x+16,y,weapons[1].graphics->image,screen,&weapons[1].graphics->clip[weapons[1].index]);
+	for(int i=0;i<numWeapons;i++)
+		applySurface(x+(i*16),y,weapons[i].graphics->image,screen,&weapons[i].graphics->clip[weapons[i].index]);
+
+	for(int i=0;i<numArmor;i++)
+		applySurface(x+(i*16),y+16,armor[i].graphics->image,screen,&armor[i].graphics->clip[armor[i].index]);
 }

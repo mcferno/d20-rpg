@@ -19,11 +19,29 @@ Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, 
 
 //#####################################################################################################
 
+Armor::Armor(char* newName, int newBonus,int newMaxDex, int newCheckPenalty, int newCostInGold, int graphicOffset, ItemTypes newType) : 
+	ARMOR_BONUS(newBonus),
+	MAX_DEX_BONUS(newMaxDex),
+	ARMOR_CHECK_PENALTY(newCheckPenalty)
+{
+	name = newName;
+	cost.addGold(newCostInGold);
+	itemType = newType;
+
+	index = graphicOffset;
+}
+
+//#####################################################################################################
+
 // statically create the set of all available weapons in the game
+// (char* newName, int newDamage,int newCritical, int newCostInGold, int graphicOffset, int newRange)
 Weapon WeaponFactory::availableWeapons[] = { 
-	Weapon("Small Short Sword",Dice::D4,2,10,12),
-	Weapon("Medium Short Sword",Dice::D6,2,10,13)
+	Weapon("Small Short Sword",Dice::D4,2,10,4),
+	Weapon("Medium Short Sword",Dice::D6,2,10,26)
 };
+
+// must match the number of elements created above
+int WeaponFactory::numAvailableWeapons = 2;
 
 void WeaponFactory::loadGraphics()
 {
@@ -35,4 +53,39 @@ Weapon* WeaponFactory::getAllWeapons()
 	if(Item::graphics == NULL)
 		loadGraphics();
 	return availableWeapons;
+}
+
+int WeaponFactory::getNumWeapons()
+{
+	return numAvailableWeapons;
+}
+
+//#####################################################################################################
+
+// statically create the set of all available weapons in the game
+// (char* newName, int newBonus,int newMaxDex, int newCheckPenalty, int newCostInGold, int graphicOffset, itemType
+Armor ArmorFactory::availableArmor[] = { 
+	Armor("Padded Light Armor",1,8,0,5,33,EquipableItem::CHEST),
+	Armor("Basic Helm",1,0,0,10,3,EquipableItem::HEAD),
+	Armor("Buckler",1,0,-1,15,1,EquipableItem::SHIELD)
+};
+
+// must match the number of elements created above
+int ArmorFactory::numAvailableArmor = 3;
+
+void ArmorFactory::loadGraphics()
+{
+	Item::graphics = new Graphics(ITEM_GRAPHICS,0xFF,0x0,0xFF);
+}
+
+Armor* ArmorFactory::getAllArmor()
+{
+	if(Item::graphics == NULL)
+		loadGraphics();
+	return availableArmor;
+}
+
+int ArmorFactory::getNumArmor()
+{
+	return numAvailableArmor;
 }
