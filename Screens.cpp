@@ -173,20 +173,22 @@ void SelectionScreen::mouseLeft(int x, int y)
 				case FIGHTER:
 					if (!hasRolled)
 						mainCharacter = new Fighter(myRace);
-					else
+					//else
 						//mainCharacter = newFighter(myRace, str, ...)
-					mainCharacter->graphics = characterSprites;
-
-					characterRect->x = availableSprites[selectedSprite].clip.x;
-					characterRect->y = availableSprites[selectedSprite].clip.y;
-					characterRect->w = availableSprites[selectedSprite].clip.w;
-					characterRect->h = availableSprites[selectedSprite].clip.h;
-						
-					mainCharacter->x = 10;
-					mainCharacter->y = 14;
-
-					mainCharacter->clip = characterRect;
+			
 			}
+
+			mainCharacter->graphics = characterSprites;
+			characterRect->x = availableSprites[selectedSprite].clip.x;
+			characterRect->y = availableSprites[selectedSprite].clip.y;
+			characterRect->w = availableSprites[selectedSprite].clip.w;
+			characterRect->h = availableSprites[selectedSprite].clip.h;
+				
+			mainCharacter->x = 10;
+			mainCharacter->y = 14;
+
+			mainCharacter->clip = characterRect;
+			
 			//pass a call back to Game.cpp
 			*signalCompletion = true;
 		}
