@@ -52,9 +52,12 @@ private:
 	GraphicsSelection availableSprites[NUM_CHARACTERS];
 	GraphicsSelection availableRaces[NUM_RACES];
 	GraphicsSelection availableClasses[NUM_CLASSES];
+	//which is selected, -1 means nothing selected
 	int selectedSprite; 
 	int selectedRace;
 	int selectedClass;
+	//if youve clicked the roll button or not
+	bool hasRolled;
 	Graphics *characterSprites;
 	SDL_Surface *highlightTile;
 	SDL_Surface *selectScreen;
