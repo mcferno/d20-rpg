@@ -5,6 +5,8 @@
 // initialize the static pointers
 Character* Screen::mainCharacter = NULL;
 SDL_Surface* Screen::screen = NULL;
+SDL_Surface* Screen::message = NULL;
+TTF_Font* Screen::font = NULL;
 
 void Screen::setScreen(SDL_Surface *newScreen)
 {
@@ -28,6 +30,11 @@ SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH) : Scree
 
 void SelectionScreen::init()
 {
+	if (TTF_Init() == -1)
+		std::cout << "TTF NOT INITLAIZED/n";
+
+	font = TTF_OpenFont( ".\\fonts\\callibri.ttf", 12 );
+
 	characterSprites = new Graphics(".\\images\\characters.png");
 	selectScreen = loadImage(".\\images\\selectScreen.png");
 	highlightTile = loadImage(".\\images\\highlight.png",0x0,0xFF,0xFF);
@@ -164,7 +171,10 @@ void SelectionScreen::mouseLeft(int x, int y)
 			//switch statement to call appropriate class for which class you selected
 			switch (myClass) {
 				case FIGHTER:
-					mainCharacter = new Fighter(myRace);
+					if (!hasRolled)
+						mainCharacter = new Fighter(myRace);
+					else
+						//mainCharacter = newFighter(myRace, str, ...)
 					mainCharacter->graphics = characterSprites;
 
 					characterRect->x = availableSprites[selectedSprite].clip.x;

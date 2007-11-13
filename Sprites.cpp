@@ -256,6 +256,56 @@ Fighter::Fighter(race myrace) : Character() {
 	}
 }
 
+Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int cha) : Character() {
+
+	setHp(FIGHTER_HP);
+	setLevel(1);
+
+	switch (myrace)
+	{
+		case HUMAN:
+			setStr(str + HumanRace::STR_ADJ);
+			setDex(dex + HumanRace::DEX_ADJ);
+			setCon(con + HumanRace::CON_ADJ);
+			setIte(ite + HumanRace::ITE_ADJ);
+			setWis(wis + HumanRace::WIS_ADJ);
+			setCha(cha + HumanRace::CHA_ADJ);
+			setSpeed(HumanRace::SPEED);
+			showCharacter();
+			break;
+		case DWARF:
+			setStr(str + DwarfRace::STR_ADJ);
+			setDex(dex + DwarfRace::DEX_ADJ);
+			setCon(con + DwarfRace::CON_ADJ);
+			setIte(ite + DwarfRace::ITE_ADJ);
+			setWis(wis + DwarfRace::WIS_ADJ);
+			setCha(cha + DwarfRace::CHA_ADJ);
+			setSpeed(DwarfRace::SPEED);
+			showCharacter();
+			break;
+		case ELF:
+			setStr(str + ElfRace::STR_ADJ);
+			setDex(dex + ElfRace::DEX_ADJ);
+			setCon(con + ElfRace::CON_ADJ);
+			setIte(ite + ElfRace::ITE_ADJ);
+			setWis(wis + ElfRace::WIS_ADJ);
+			setCha(cha + ElfRace::CHA_ADJ);
+			setSpeed(ElfRace::SPEED);
+			showCharacter();
+			break;
+		case GNOME:
+			setStr(str + GnomeRace::STR_ADJ);
+			setDex(dex + GnomeRace::DEX_ADJ);
+			setCon(con + GnomeRace::CON_ADJ);
+			setIte(ite + GnomeRace::ITE_ADJ);
+			setWis(wis + GnomeRace::WIS_ADJ);
+			setCha(cha + GnomeRace::CHA_ADJ);
+			setSpeed(GnomeRace::SPEED);
+			showCharacter();
+			break;
+	}
+}
+
 // #####################################################################################################
 
 // to be implemented..

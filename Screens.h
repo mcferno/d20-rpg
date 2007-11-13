@@ -11,6 +11,7 @@ All classes related to screens (ex: Character selection
 	#define SCREENS_H
 
 #include "Graphics.h"
+#include "SDL_ttf.h"
 #include "Sprites.h"
 #include "Items.h"
 #include <queue>
@@ -25,6 +26,8 @@ class Screen : public Rect
 protected:
 	//static SDL_Surface *defaultScreen;
 	static SDL_Surface *screen;
+	static SDL_Surface *message;
+	static TTF_Font *font;
 
 	// the chosen character, shared among the selection screen and main game
 	static Character *mainCharacter;
@@ -45,6 +48,8 @@ public:
 class SelectionScreen : public Screen
 {
 private:
+	//color of text
+	SDL_Color textColor;
 	// variables needed to offer the user a set of choices for their character
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;

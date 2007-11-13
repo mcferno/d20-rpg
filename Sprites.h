@@ -143,7 +143,10 @@ class Fighter : public Character {
 public:
 	const static int FIGHTER_HP = 10;
 	Fighter();
+	//does the roll by default, with a given race
 	Fighter(race);
+	//takes the values to be added for the rolls.
+	Fighter(race, int, int, int, int, int, int);
 };
 
 // #####################################################################################################
