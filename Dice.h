@@ -31,7 +31,7 @@ class Dice
 	static const int D12 = 12;
 	static const int D20 = 20;
 
-	// rolls a given dice a certain number of times (default: once)
+	// rolls a given given dice a certain number of times (default: once)
 	static int roll(int, int = 1);
 };
 
