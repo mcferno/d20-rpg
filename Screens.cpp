@@ -1,12 +1,17 @@
 #include "Screens.h"
 
+
+
 // #####################################################################################################
 
 // initialize the static pointers
 Character* Screen::mainCharacter = NULL;
 SDL_Surface* Screen::screen = NULL;
+SDL_Surface* Screen::characterMessage = NULL;
+SDL_Surface* Screen::attributes = NULL;
 SDL_Surface* Screen::message = NULL;
-TTF_Font* Screen::font = NULL;
+TTF_Font* Screen::fontCalibri = NULL;
+TTF_Font* Screen::fontCalibriBold = NULL;
 
 void Screen::setScreen(SDL_Surface *newScreen)
 {
@@ -33,7 +38,12 @@ void SelectionScreen::init()
 	if (TTF_Init() == -1)
 		std::cout << "TTF NOT INITLAIZED/n";
 
-	Screen::font = TTF_OpenFont( ".\\fonts\\calibri.ttf", 12 );
+	//font colors
+	SDL_Color textColorWhite = {255,255,255};
+	SDL_Color textColorBlack = {0, 0, 0};
+	//font types
+	Screen::fontCalibri = TTF_OpenFont( ".\\fonts\\calibri.ttf", 16 );
+	Screen::fontCalibriBold = TTF_OpenFont ( ".\\fonts\\calibrib.ttf", 16 );
 
 	characterSprites = new Graphics(".\\images\\characters.png");
 	selectScreen = loadImage(".\\images\\selectScreen.png");
@@ -119,11 +129,66 @@ void SelectionScreen::paint()
 		applySurface(availableRaces[selectedRace].x,availableRaces[selectedRace].y,highlightTile,screen);
 	if(selectedClass != -1)
 		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile,screen);
+
+	paintMessage(34, 8);
+	paintCharacterMessage(selectedRace, selectedClass);
+
 	
 	if(hasRolled) {
-				SDL_Color textColor = {255,255,255};
-		message = TTF_RenderText_Solid(font, "The quick brown fox jumps over the lazy hound", textColor );
-		applySurface( 0, 0, message, screen );}
+		
+		int temp = 4;	
+		char *s1;
+		s1 = "not";
+		//message = TTF_RenderText_Solid(fontCalibri, "The quick brown fox BANANAS jumps over the lazy hound", textColorWhite );
+		//applySurface( 30, 0, message, screen );
+		//message = TTF_RenderText_Solid(font, s1, textColor );
+		//applySurface( 30, 100, message, screen );
+	}
+}
+
+void SelectionScreen::paintMessage(int x, int y)
+{
+	message = TTF_RenderText_Solid(fontCalibri, "STR:", textColorWhite );
+	applySurface( x*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "DEX:", textColorWhite );
+	applySurface( x*16, (y+2)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "CON:", textColorWhite );
+	applySurface( x*16, (y+4)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "ITE:", textColorWhite );
+	applySurface( x*16, (y+6)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "WIS:", textColorWhite );
+	applySurface( x*16, (y+8)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "CHA:", textColorWhite );
+	applySurface( x*16, (y+10)*16, message, screen );
+}
+
+void SelectionScreen::paintCharacterMessage(int race, int clas) 
+{
+	int x = 35*16;
+	int y = 5*16+8;
+	switch (race)
+	{
+		case -1:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 0:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "HUMAN ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 1:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "DWARF ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 2:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "ELF ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 3:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "GNOME ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+	}
 }
 
 //paints the sprites
@@ -212,7 +277,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 	//END CLEAR BUTTON
 
 	//ROLL BUTTON
-	if (x >=38*16 && x<=42*16 && y>=23*16 && y<=24*16)
+	if (x >=37*16 && x<=42*16 && y>=22*16 && y<=24*16)
 	{
 		hasRolled = true;
 

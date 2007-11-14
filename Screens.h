@@ -27,7 +27,10 @@ protected:
 	//static SDL_Surface *defaultScreen;
 	static SDL_Surface *screen;
 	static SDL_Surface *message;
-	static TTF_Font *font;
+	static SDL_Surface *attributes;
+	static SDL_Surface *characterMessage;
+	static TTF_Font *fontCalibri;
+	static TTF_Font *fontCalibriBold;
 
 	// the chosen character, shared among the selection screen and main game
 	static Character *mainCharacter;
@@ -49,8 +52,8 @@ class SelectionScreen : public Screen
 {
 private:
 	//color of text
-
-	SDL_Color textColor;
+	SDL_Color textColorWhite;
+	SDL_Color textColorBlack;
 	// variables needed to offer the user a set of choices for their character
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;
@@ -73,6 +76,9 @@ private:
 
 	void init();
 	void paintGraphicsSelection(GraphicsSelection &);
+	//two variables to determine starting point
+	void paintMessage(int, int);
+	void paintCharacterMessage(int, int);
 	bool inBounds(GraphicsSelection &, int, int);
 
 	enum playerClass {FIGHTER};
