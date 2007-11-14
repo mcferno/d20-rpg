@@ -49,6 +49,7 @@ class SelectionScreen : public Screen
 {
 private:
 	//color of text
+
 	SDL_Color textColor;
 	// variables needed to offer the user a set of choices for their character
 	static const int NUM_CHARACTERS = 5;

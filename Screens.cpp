@@ -33,7 +33,7 @@ void SelectionScreen::init()
 	if (TTF_Init() == -1)
 		std::cout << "TTF NOT INITLAIZED/n";
 
-	font = TTF_OpenFont( ".\\fonts\\callibri.ttf", 12 );
+	Screen::font = TTF_OpenFont( ".\\fonts\\calibri.ttf", 12 );
 
 	characterSprites = new Graphics(".\\images\\characters.png");
 	selectScreen = loadImage(".\\images\\selectScreen.png");
@@ -119,6 +119,11 @@ void SelectionScreen::paint()
 		applySurface(availableRaces[selectedRace].x,availableRaces[selectedRace].y,highlightTile,screen);
 	if(selectedClass != -1)
 		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile,screen);
+	
+	if(hasRolled) {
+				SDL_Color textColor = {255,255,255};
+		message = TTF_RenderText_Solid(font, "The quick brown fox jumps over the lazy hound", textColor );
+		applySurface( 0, 0, message, screen );}
 }
 
 //paints the sprites
@@ -173,8 +178,8 @@ void SelectionScreen::mouseLeft(int x, int y)
 				case FIGHTER:
 					if (!hasRolled)
 						mainCharacter = new Fighter(myRace);
-					//else
-						//mainCharacter = newFighter(myRace, str, ...)
+					else
+						mainCharacter = new Fighter(myRace);
 			
 			}
 
@@ -209,6 +214,8 @@ void SelectionScreen::mouseLeft(int x, int y)
 	//ROLL BUTTON
 	if (x >=38*16 && x<=42*16 && y>=23*16 && y<=24*16)
 	{
+		hasRolled = true;
+
 		switch (selectedRace)
 		{
 			case -1:
