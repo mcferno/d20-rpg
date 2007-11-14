@@ -22,6 +22,7 @@ automatically creates a player when it is called.
 //These are the types of races allowed in the game
 //As of October 10th only HUMAN and DWARF have been implemented
 enum race {HUMAN, DWARF, ELF, GNOME};
+enum playerClass {FIGHTER};
 
 // conversion between feet and tile size (5ft per tile)
 const int FT_TO_TILES = 5;
@@ -78,16 +79,23 @@ protected:
 	static const int ABILITY_ROLL_DICE_TYPE = Dice::D6;
 	static const int ABILITY_ROLL_DICE_ROLLS = 4;
 
-	int getModifier(int);
+
 
 	void rollStartingMoney();
 
-	// get the sum of a number of rolls, discarding the lowest
-	int getAbilityRoll();
+	
+
 public:
 	Money money;
 
+	static int getModifier(int);
+
+	static int getAbilityRoll();
+
 	Character();
+
+	// get the sum of a number of rolls, discarding the lowest
+
 
 	//mutators
 	void setStr(int);

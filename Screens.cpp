@@ -40,7 +40,7 @@ void SelectionScreen::init()
 
 	//font colors
 	SDL_Color textColorWhite = {255,255,255};
-	SDL_Color textColorBlack = {0, 0, 0};
+	SDL_Color textColorBlack = {0xFF, 0xFF, 0xFF};
 	//font types
 	Screen::fontCalibri = TTF_OpenFont( ".\\fonts\\calibri.ttf", 16 );
 	Screen::fontCalibriBold = TTF_OpenFont ( ".\\fonts\\calibrib.ttf", 16 );
@@ -146,51 +146,6 @@ void SelectionScreen::paint()
 	}
 }
 
-void SelectionScreen::paintMessage(int x, int y)
-{
-	message = TTF_RenderText_Solid(fontCalibri, "STR:", textColorWhite );
-	applySurface( x*16, (y)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "DEX:", textColorWhite );
-	applySurface( x*16, (y+2)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "CON:", textColorWhite );
-	applySurface( x*16, (y+4)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "ITE:", textColorWhite );
-	applySurface( x*16, (y+6)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "WIS:", textColorWhite );
-	applySurface( x*16, (y+8)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "CHA:", textColorWhite );
-	applySurface( x*16, (y+10)*16, message, screen );
-}
-
-void SelectionScreen::paintCharacterMessage(int race, int clas) 
-{
-	int x = 35*16;
-	int y = 5*16+8;
-	switch (race)
-	{
-		case -1:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", textColorBlack );
-			applySurface( x, y, characterMessage, screen );
-			break;
-		case 0:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "HUMAN ", textColorBlack );
-			applySurface( x, y, characterMessage, screen );
-			break;
-		case 1:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "DWARF ", textColorBlack );
-			applySurface( x, y, characterMessage, screen );
-			break;
-		case 2:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "ELF ", textColorBlack );
-			applySurface( x, y, characterMessage, screen );
-			break;
-		case 3:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "GNOME ", textColorBlack );
-			applySurface( x, y, characterMessage, screen );
-			break;
-	}
-}
-
 //paints the sprites
 void SelectionScreen::paintGraphicsSelection(GraphicsSelection &ss)
 {
@@ -204,48 +159,29 @@ void SelectionScreen::mouseLeft(int x, int y)
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
 		//Check to make sure you have selected everything
-		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1)
+		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1) 
 		{
-			std::cout << "You have selected a: ";
-			//decide which race you selected
-			switch (selectedRace) {
-				case 0:
-					myRace = HUMAN;
-					std::cout << "human ";
-					break;
-				case 1:
-					myRace = DWARF;
-					std::cout << "dwarf ";
-					break;
-				case 2:
-					myRace = ELF;
-					std::cout << "elf ";
-					break;
-				case 3:
-					myRace = GNOME;
-					std::cout << "gnome ";
-			}
-			//decide which class you selected
-			switch (selectedClass) {
-				case 0:
-					myClass = FIGHTER;
-					std::cout << "fighter.";
-					break;
-				case -1:
-					break;
-			}
+
+
+			myRace = findRace(selectedRace);
+			myClass = findClass(selectedClass);
+			
 			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n\n";
 			//call the character you selected
 			SDL_Rect *characterRect = new SDL_Rect();
 
 			//switch statement to call appropriate class for which class you selected
-			switch (myClass) {
-				case FIGHTER:
-					if (!hasRolled)
-						mainCharacter = new Fighter(myRace);
-					else
-						mainCharacter = new Fighter(myRace);
 			
+			switch (myClass) 
+			{
+				case FIGHTER:
+				if (!hasRolled) {
+					mainCharacter = new Fighter(myRace);
+					mainCharacter->showCharacter();
+				}
+				else
+					mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
+					mainCharacter->showCharacter();
 			}
 
 			mainCharacter->graphics = characterSprites;
@@ -253,12 +189,12 @@ void SelectionScreen::mouseLeft(int x, int y)
 			characterRect->y = availableSprites[selectedSprite].clip.y;
 			characterRect->w = availableSprites[selectedSprite].clip.w;
 			characterRect->h = availableSprites[selectedSprite].clip.h;
-				
+
 			mainCharacter->x = 10;
 			mainCharacter->y = 14;
 
 			mainCharacter->clip = characterRect;
-			
+
 			//pass a call back to Game.cpp
 			*signalCompletion = true;
 		}
@@ -280,20 +216,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 	if (x >=37*16 && x<=42*16 && y>=22*16 && y<=24*16)
 	{
 		hasRolled = true;
-
-		switch (selectedRace)
-		{
-			case -1:
-				break;
-			case 0:
-				break;
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-		}
+		rollButton();
 	}
 	//END ROLL BUTTON
 
@@ -314,6 +237,46 @@ void SelectionScreen::mouseLeft(int x, int y)
 	{
 		if(inBounds(availableClasses[i],x,y))
 			selectedClass = i;
+	}
+}
+
+void SelectionScreen::rollButton() 
+{
+	rollStr = Character::getAbilityRoll();
+	rollDex = Character::getAbilityRoll();
+	rollCon = Character::getAbilityRoll();
+	rollIte = Character::getAbilityRoll();
+	rollWis = Character::getAbilityRoll();
+	rollCha = Character::getAbilityRoll();
+}
+
+race SelectionScreen::findRace(int selectedRace)
+{
+	std::cout << "You have selected a: ";
+	//decide which race you selected
+	switch (selectedRace) {
+		case 0:
+			std::cout << "human ";
+			return HUMAN;
+		case 1:
+			std::cout << "dwarf ";
+			return DWARF;
+		case 2:
+			std::cout << "elf ";
+			return ELF;
+		case 3:
+			std::cout << "gnome ";
+			return GNOME;
+	}
+}
+
+playerClass SelectionScreen::findClass(int selectedClass)
+{
+	switch (selectedClass) 
+	{
+		case 0:
+			std::cout << "fighter.";
+			return FIGHTER;
 	}
 }
 
@@ -692,4 +655,95 @@ void ShopScreen::paint()
 
 	for(int i=0;i<numArmor;i++)
 		applySurface(x+(i*16),y+16,armor[i].graphics->image,screen,&armor[i].graphics->clip[armor[i].index]);
+}
+
+void SelectionScreen::paintMessage(int x, int y)
+{
+	message = TTF_RenderText_Solid(fontCalibri, "STR:", textColorWhite );
+	applySurface( (x)*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	applySurface( (x+3)*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	applySurface( (x+5)*16, (y)*16, message, screen );
+
+	y = y+2;
+	message = TTF_RenderText_Solid(fontCalibri, "DEX:", textColorWhite );
+	applySurface( x*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	applySurface( (x+3)*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	applySurface( (x+5)*16, (y)*16, message, screen );
+
+	y = y+2;
+	message = TTF_RenderText_Solid(fontCalibri, "CON:", textColorWhite );
+	applySurface( x*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	applySurface( (x+3)*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	applySurface( (x+5)*16, (y)*16, message, screen );
+
+	y = y+2;
+	message = TTF_RenderText_Solid(fontCalibri, "ITE:", textColorWhite );
+	applySurface( x*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	applySurface( (x+3)*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	applySurface( (x+5)*16, (y)*16, message, screen );
+
+	y = y+2;
+	message = TTF_RenderText_Solid(fontCalibri, "WIS:", textColorWhite );
+	applySurface( x*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	applySurface( (x+3)*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	applySurface( (x+5)*16, (y)*16, message, screen );
+
+	y = y+2;
+	message = TTF_RenderText_Solid(fontCalibri, "CHA:", textColorWhite );
+	applySurface( x*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	applySurface( (x+3)*16, (y)*16, message, screen );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	applySurface( (x+5)*16, (y)*16, message, screen );
+}
+
+void SelectionScreen::paintCharacterMessage(int race, int clas) 
+{
+	int x = 36*16;
+	int y = 5*16+8;
+	switch (race)
+	{
+		case -1:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 0:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "HUMAN ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 1:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "DWARF ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 2:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "ELF ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 3:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "GNOME ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+	}
+	x = 40*16;
+	switch (clas)
+	{
+		case -1:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+		case 0:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "FIGHTER ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
+	}
 }

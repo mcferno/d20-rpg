@@ -65,6 +65,10 @@ private:
 	int selectedSprite; 
 	int selectedRace;
 	int selectedClass;
+
+	//temp holders for each roll when clicking roll button
+	int rollStr, rollDex, rollCon, rollIte, rollWis, rollCha;
+
 	//if youve clicked the roll button or not
 	bool hasRolled;
 	Graphics *characterSprites;
@@ -76,14 +80,19 @@ private:
 
 	void init();
 	void paintGraphicsSelection(GraphicsSelection &);
+	void rollButton();
+
 	//two variables to determine starting point
 	void paintMessage(int, int);
 	void paintCharacterMessage(int, int);
+
 	bool inBounds(GraphicsSelection &, int, int);
 
-	enum playerClass {FIGHTER};
 	playerClass myClass;
 	race myRace;
+
+	race findRace(int);
+	playerClass findClass(int);
 
 public:
 	SelectionScreen(int, int, int, int);

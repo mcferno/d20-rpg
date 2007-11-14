@@ -221,7 +221,7 @@ Fighter::Fighter(race myrace) : Character() {
 			setWis(getAbilityRoll() + HumanRace::WIS_ADJ);
 			setCha(getAbilityRoll() + HumanRace::CHA_ADJ);
 			setSpeed(HumanRace::SPEED);
-			showCharacter();
+			
 			break;
 		case DWARF:
 			setStr(getAbilityRoll() + DwarfRace::STR_ADJ);
@@ -231,7 +231,7 @@ Fighter::Fighter(race myrace) : Character() {
 			setWis(getAbilityRoll() + DwarfRace::WIS_ADJ);
 			setCha(getAbilityRoll() + DwarfRace::CHA_ADJ);
 			setSpeed(DwarfRace::SPEED);
-			showCharacter();
+			
 			break;
 		case ELF:
 			setStr(getAbilityRoll() + ElfRace::STR_ADJ);
@@ -241,7 +241,7 @@ Fighter::Fighter(race myrace) : Character() {
 			setWis(getAbilityRoll() + ElfRace::WIS_ADJ);
 			setCha(getAbilityRoll() + ElfRace::CHA_ADJ);
 			setSpeed(ElfRace::SPEED);
-			showCharacter();
+			
 			break;
 		case GNOME:
 			setStr(getAbilityRoll() + GnomeRace::STR_ADJ);
@@ -251,7 +251,7 @@ Fighter::Fighter(race myrace) : Character() {
 			setWis(getAbilityRoll() + GnomeRace::WIS_ADJ);
 			setCha(getAbilityRoll() + GnomeRace::CHA_ADJ);
 			setSpeed(GnomeRace::SPEED);
-			showCharacter();
+			
 			break;
 	}
 }
@@ -271,7 +271,7 @@ Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int c
 			setWis(wis + HumanRace::WIS_ADJ);
 			setCha(cha + HumanRace::CHA_ADJ);
 			setSpeed(HumanRace::SPEED);
-			showCharacter();
+			
 			break;
 		case DWARF:
 			setStr(str + DwarfRace::STR_ADJ);
@@ -281,7 +281,7 @@ Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int c
 			setWis(wis + DwarfRace::WIS_ADJ);
 			setCha(cha + DwarfRace::CHA_ADJ);
 			setSpeed(DwarfRace::SPEED);
-			showCharacter();
+			
 			break;
 		case ELF:
 			setStr(str + ElfRace::STR_ADJ);
@@ -291,7 +291,7 @@ Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int c
 			setWis(wis + ElfRace::WIS_ADJ);
 			setCha(cha + ElfRace::CHA_ADJ);
 			setSpeed(ElfRace::SPEED);
-			showCharacter();
+			
 			break;
 		case GNOME:
 			setStr(str + GnomeRace::STR_ADJ);
@@ -301,7 +301,7 @@ Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int c
 			setWis(wis + GnomeRace::WIS_ADJ);
 			setCha(cha + GnomeRace::CHA_ADJ);
 			setSpeed(GnomeRace::SPEED);
-			showCharacter();
+			
 			break;
 	}
 }
