@@ -68,8 +68,9 @@ private:
 
 	//two variables to determine starting point
 	void paintMessage(int, int);
+	void paintAttributes(int, int);
+	//two varibles to determine race, class
 	void paintCharacterMessage(int, int);
-	void paintAttributes();
 
 	//find your race/class depending on which button you select
 	race findRace(int);

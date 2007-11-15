@@ -135,53 +135,18 @@ void SelectionScreen::rollButton()
 	rollCha = Character::getAbilityRoll();
 }
 
-void SelectionScreen::paintAttributes()
+void SelectionScreen::paintAttributes(int x, int y)
 {
-	int temp = 4;	
-		string s1;
-		s1 = "not";
-		
-		//sprintf(s1, "%d",temp);
-		std::cout << s1;
-		//message = TTF_RenderText_Solid(fontCalibri, "The quick brown fox BANANAS jumps over the lazy hound", textColorWhite );
-		//applySurface( 30, 0, message, screen );
-		//message = TTF_RenderText_Solid(font, s1, textColor );
-		//applySurface( 30, 100, message, screen );
-}
+	sStr = int2string(rollStr);
+	sDex = int2string(rollDex);
+	sCon = int2string(rollCon);
+	sIte = int2string(rollIte);
+	sWis = int2string(rollWis);
+	sCha = int2string(rollCha);
 
-race SelectionScreen::findRace(int selectedRace)
-{
-	std::cout << "You have selected a: ";
-	//decide which race you selected
-	switch (selectedRace) {
-		case 0:
-			std::cout << "human ";
-			return HUMAN;
-		case 1:
-			std::cout << "dwarf ";
-			return DWARF;
-		case 2:
-			std::cout << "elf ";
-			return ELF;
-		case 3:
-			std::cout << "gnome ";
-			return GNOME;
-	}
-}
+	//attributes = TTF_RenderText_Solid(fontCalibri, sStr, textColorWhite );
+	//applySurface( (x)*16, (y)*16, message, screen );
 
-playerClass SelectionScreen::findClass(int selectedClass)
-{
-	switch (selectedClass) 
-	{
-		case 0:
-			std::cout << "fighter.";
-			return FIGHTER;
-	}
-}
-
-bool SelectionScreen::inBounds(GraphicsSelection &gs, int x, int y)
-{
-	return (x >= gs.x && x <= (gs.x + gs.clip.w) && y >= gs.y && y <= (gs.y + gs.clip.h));
 }
 
 void SelectionScreen::paintMessage(int x, int y)
@@ -280,6 +245,41 @@ string SelectionScreen::int2string(const int i)
 	std::ostringstream stream;
 	stream << i;
 	return stream.str();
+}
+
+race SelectionScreen::findRace(int selectedRace)
+{
+	std::cout << "You have selected a: ";
+	//decide which race you selected
+	switch (selectedRace) {
+		case 0:
+			std::cout << "human ";
+			return HUMAN;
+		case 1:
+			std::cout << "dwarf ";
+			return DWARF;
+		case 2:
+			std::cout << "elf ";
+			return ELF;
+		case 3:
+			std::cout << "gnome ";
+			return GNOME;
+	}
+}
+
+playerClass SelectionScreen::findClass(int selectedClass)
+{
+	switch (selectedClass) 
+	{
+		case 0:
+			std::cout << "fighter.";
+			return FIGHTER;
+	}
+}
+
+bool SelectionScreen::inBounds(GraphicsSelection &gs, int x, int y)
+{
+	return (x >= gs.x && x <= (gs.x + gs.clip.w) && y >= gs.y && y <= (gs.y + gs.clip.h));
 }
 
 //LEFT MOUSE EVENT POLLING
