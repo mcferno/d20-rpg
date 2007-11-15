@@ -45,6 +45,8 @@ private:
 
 	//temp holders for each roll when clicking roll button
 	int rollStr, rollDex, rollCon, rollIte, rollWis, rollCha;
+	//temp holders for the string representation to print to screen
+	string sStr, sDex, sCon, sIte, sWis, sCha;
 
 	//if youve clicked the roll button or not
 	bool hasRolled;
@@ -67,6 +69,7 @@ private:
 	//two variables to determine starting point
 	void paintMessage(int, int);
 	void paintCharacterMessage(int, int);
+	void paintAttributes();
 
 	//find your race/class depending on which button you select
 	race findRace(int);

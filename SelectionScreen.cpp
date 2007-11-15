@@ -109,23 +109,13 @@ void SelectionScreen::paint()
 	if(selectedClass != -1)
 		applySurface(availableClasses[selectedClass].x,availableClasses[selectedClass].y,highlightTile,screen);
 
+	//paints static message
 	paintMessage(34, 8);
+	//paints dynamic selected race and class
 	paintCharacterMessage(selectedRace, selectedClass);
-
 	
 	if(hasRolled) {
-		
-		int temp = 4;	
-		string s1;
-		s1 = "not";
-		
-
-		//sprintf(s1, "%d",temp);
-		std::cout << s1;
-		//message = TTF_RenderText_Solid(fontCalibri, "The quick brown fox BANANAS jumps over the lazy hound", textColorWhite );
-		//applySurface( 30, 0, message, screen );
-		//message = TTF_RenderText_Solid(font, s1, textColor );
-		//applySurface( 30, 100, message, screen );
+		//paint
 	}
 }
 
@@ -133,94 +123,6 @@ void SelectionScreen::paint()
 void SelectionScreen::paintGraphicsSelection(GraphicsSelection &ss)
 {
 	applySurface(ss.x,ss.y,characterSprites->image,screen,&ss.clip);
-}
-
-//LEFT MOUSE EVENT POLLING
-void SelectionScreen::mouseLeft(int x, int y)
-{
-	//START BUTTON
-	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
-	{
-		//Check to make sure you have selected everything
-		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1) 
-		{
-
-
-			myRace = findRace(selectedRace);
-			myClass = findClass(selectedClass);
-			
-			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n\n";
-			//call the character you selected
-			SDL_Rect *characterRect = new SDL_Rect();
-
-			//switch statement to call appropriate class for which class you selected
-			
-			switch (myClass) 
-			{
-				case FIGHTER:
-				if (!hasRolled) {
-					mainCharacter = new Fighter(myRace);
-					mainCharacter->showCharacter();
-				}
-				else
-					mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
-					mainCharacter->showCharacter();
-			}
-
-			mainCharacter->graphics = characterSprites;
-			characterRect->x = availableSprites[selectedSprite].clip.x;
-			characterRect->y = availableSprites[selectedSprite].clip.y;
-			characterRect->w = availableSprites[selectedSprite].clip.w;
-			characterRect->h = availableSprites[selectedSprite].clip.h;
-
-			mainCharacter->x = 10;
-			mainCharacter->y = 14;
-
-			mainCharacter->clip = characterRect;
-
-			//pass a call back to Game.cpp
-			*signalCompletion = true;
-		}
-		else
-			std::cout << "ERROR: You must select a character, race and class!\n";
-	}
-	//END START BUTTON
-
-	//CLEAR BUTTON
-	if (x >= 672 && x <= 784 && y >= 480 && y <= 527)
-	{
-		selectedSprite = -1;
-		selectedRace = -1;
-		selectedClass = -1;
-	}
-	//END CLEAR BUTTON
-
-	//ROLL BUTTON
-	if (x >=37*16 && x<=42*16 && y>=22*16 && y<=24*16)
-	{
-		hasRolled = true;
-		rollButton();
-	}
-	//END ROLL BUTTON
-
-	// check if any of the sprites were selected
-	for(int i=0;i<NUM_CHARACTERS;i++)
-	{
-		if(inBounds(availableSprites[i],x,y))
-			selectedSprite = i;
-	}
-	//check if any of the races were selected
-	for(int i=0;i<NUM_RACES;i++)
-	{
-		if(inBounds(availableRaces[i],x,y))
-			selectedRace = i;
-	}
-	//check if any of the races were selected
-	for(int i=0;i<NUM_CLASSES;i++)
-	{
-		if(inBounds(availableClasses[i],x,y))
-			selectedClass = i;
-	}
 }
 
 void SelectionScreen::rollButton() 
@@ -231,6 +133,20 @@ void SelectionScreen::rollButton()
 	rollIte = Character::getAbilityRoll();
 	rollWis = Character::getAbilityRoll();
 	rollCha = Character::getAbilityRoll();
+}
+
+void SelectionScreen::paintAttributes()
+{
+	int temp = 4;	
+		string s1;
+		s1 = "not";
+		
+		//sprintf(s1, "%d",temp);
+		std::cout << s1;
+		//message = TTF_RenderText_Solid(fontCalibri, "The quick brown fox BANANAS jumps over the lazy hound", textColorWhite );
+		//applySurface( 30, 0, message, screen );
+		//message = TTF_RenderText_Solid(font, s1, textColor );
+		//applySurface( 30, 100, message, screen );
 }
 
 race SelectionScreen::findRace(int selectedRace)
@@ -266,29 +182,6 @@ playerClass SelectionScreen::findClass(int selectedClass)
 bool SelectionScreen::inBounds(GraphicsSelection &gs, int x, int y)
 {
 	return (x >= gs.x && x <= (gs.x + gs.clip.w) && y >= gs.y && y <= (gs.y + gs.clip.h));
-}
-
-//Right mouse even polling
-void SelectionScreen::mouseRight(int x, int y)
-{
-	// check if any of the sprites were selected
-	for(int i=0;i<NUM_CHARACTERS;i++)
-	{
-		if(inBounds(availableSprites[i],x,y))
-			selectedSprite = -1;
-	}
-	//check if any of the races were selected
-	for(int i=0;i<NUM_RACES;i++)
-	{
-		if(inBounds(availableRaces[i],x,y))
-			selectedRace = -1;
-	}
-	//check if any of the races were selected
-	for(int i=0;i<NUM_CLASSES;i++)
-	{
-		if(inBounds(availableClasses[i],x,y))
-			selectedClass = -1;
-	}
 }
 
 void SelectionScreen::paintMessage(int x, int y)
@@ -388,3 +281,116 @@ string SelectionScreen::int2string(const int i)
 	stream << i;
 	return stream.str();
 }
+
+//LEFT MOUSE EVENT POLLING
+void SelectionScreen::mouseLeft(int x, int y)
+{
+	//START BUTTON
+	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
+	{
+		//Check to make sure you have selected everything
+		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1) 
+		{
+
+
+			myRace = findRace(selectedRace);
+			myClass = findClass(selectedClass);
+			
+			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n\n";
+			//call the character you selected
+			SDL_Rect *characterRect = new SDL_Rect();
+
+			//switch statement to call appropriate class for which class you selected
+			
+			switch (myClass) 
+			{
+				case FIGHTER:
+				if (!hasRolled) {
+					mainCharacter = new Fighter(myRace);
+					mainCharacter->showCharacter();
+				}
+				else
+					mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
+					mainCharacter->showCharacter();
+			}
+
+			mainCharacter->graphics = characterSprites;
+			characterRect->x = availableSprites[selectedSprite].clip.x;
+			characterRect->y = availableSprites[selectedSprite].clip.y;
+			characterRect->w = availableSprites[selectedSprite].clip.w;
+			characterRect->h = availableSprites[selectedSprite].clip.h;
+
+			mainCharacter->x = 10;
+			mainCharacter->y = 14;
+
+			mainCharacter->clip = characterRect;
+
+			//pass a call back to Game.cpp
+			*signalCompletion = true;
+		}
+		else
+			std::cout << "ERROR: You must select a character, race and class!\n";
+	}
+	//END START BUTTON
+
+	//CLEAR BUTTON
+	if (x >= 672 && x <= 784 && y >= 480 && y <= 527)
+	{
+		selectedSprite = -1;
+		selectedRace = -1;
+		selectedClass = -1;
+	}
+	//END CLEAR BUTTON
+
+	//ROLL BUTTON
+	if (x >=37*16 && x<=42*16 && y>=22*16 && y<=24*16)
+	{
+		hasRolled = true;
+		rollButton();
+	}
+	//END ROLL BUTTON
+
+	// check if any of the sprites were selected
+	for(int i=0;i<NUM_CHARACTERS;i++)
+	{
+		if(inBounds(availableSprites[i],x,y))
+			selectedSprite = i;
+	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_RACES;i++)
+	{
+		if(inBounds(availableRaces[i],x,y))
+			selectedRace = i;
+	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_CLASSES;i++)
+	{
+		if(inBounds(availableClasses[i],x,y))
+			selectedClass = i;
+	}
+}
+//END LEFT MOUSE EVENT POLLING
+
+//RIGHT MOUSE EVENT POLLING
+void SelectionScreen::mouseRight(int x, int y)
+{
+	// check if any of the sprites were selected
+	for(int i=0;i<NUM_CHARACTERS;i++)
+	{
+		if(inBounds(availableSprites[i],x,y))
+			selectedSprite = -1;
+	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_RACES;i++)
+	{
+		if(inBounds(availableRaces[i],x,y))
+			selectedRace = -1;
+	}
+	//check if any of the races were selected
+	for(int i=0;i<NUM_CLASSES;i++)
+	{
+		if(inBounds(availableClasses[i],x,y))
+			selectedClass = -1;
+	}
+}
+//END RIGHT MOUSE POLLING
