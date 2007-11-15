@@ -43,10 +43,13 @@ private:
 	int selectedRace;
 	int selectedClass;
 
-	//temp holders for each roll when clicking roll button
+	//temp holders for each roll/mod when clicking roll button
 	int rollStr, rollDex, rollCon, rollIte, rollWis, rollCha;
+	int modStr, modDex, modCon, modIte, modWis, modCha;
 	//temp holders for the string representation to print to screen
-	string sStr, sDex, sCon, sIte, sWis, sCha;
+	char sStr[4], sDex[4], sCon[4], sIte[4], sWis[4], sCha[4]; //roll
+	char smStr[4], smDex[4], smCon[4], smIte[4], smWis[4], smCha[4]; //mod roll
+	char sadjStr[4], sadjDex[4], sadjCon[4], sadjIte[4], sadjWis[4], sadjCha[4];
 
 	//if youve clicked the roll button or not
 	bool hasRolled;
@@ -76,8 +79,13 @@ private:
 	race findRace(int);
 	playerClass findClass(int);
 
+	//prints out the ADJ for the selected RACE (int selectedRace) and CHARACTERISTC (int)
+	void printADJ(int, int, int, int);
+
 	//converts a given int to a string
 	string int2string(const int);
+
+	int abs(int);
 
 public:
 	SelectionScreen(int, int, int, int);
