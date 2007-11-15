@@ -11,11 +11,11 @@ All classes related to screens (ex: Character selection
 	#define SCREENS_H
 
 #include "Graphics.h"
+//#include "SelectionScreen.h"
 #include "SDL_ttf.h"
 #include "Sprites.h"
 #include "Items.h"
 #include <queue>
-#include <iostream>
 using std::queue;
 
 // #####################################################################################################
@@ -26,9 +26,6 @@ class Screen : public Rect
 protected:
 	//static SDL_Surface *defaultScreen;
 	static SDL_Surface *screen;
-	static SDL_Surface *message;
-	static SDL_Surface *attributes;
-	static SDL_Surface *characterMessage;
 	static TTF_Font *fontCalibri;
 	static TTF_Font *fontCalibriBold;
 
@@ -43,69 +40,6 @@ public:
 };
 
 // #####################################################################################################
-
-/*
- * Class SelectionScreen: Allows the user to visually chose his/her character
- *   to use throughout the game.
- */
-class SelectionScreen : public Screen
-{
-private:
-	//color of text
-	SDL_Color textColorWhite;
-	SDL_Color textColorBlack;
-	// variables needed to offer the user a set of choices for their character
-	static const int NUM_CHARACTERS = 5;
-	static const int NUM_RACES = 4;
-	static const int NUM_CLASSES = 1;
-	GraphicsSelection availableSprites[NUM_CHARACTERS];
-	GraphicsSelection availableRaces[NUM_RACES];
-	GraphicsSelection availableClasses[NUM_CLASSES];
-	//which is selected, -1 means nothing selected
-	int selectedSprite; 
-	int selectedRace;
-	int selectedClass;
-
-	//temp holders for each roll when clicking roll button
-	int rollStr, rollDex, rollCon, rollIte, rollWis, rollCha;
-
-	//if youve clicked the roll button or not
-	bool hasRolled;
-	Graphics *characterSprites;
-	SDL_Surface *highlightTile;
-	SDL_Surface *selectScreen;
-
-	// whether or not the main character has been created
-	bool *signalCompletion;
-
-	void init();
-	void paintGraphicsSelection(GraphicsSelection &);
-	void rollButton();
-
-	//two variables to determine starting point
-	void paintMessage(int, int);
-	void paintCharacterMessage(int, int);
-
-	bool inBounds(GraphicsSelection &, int, int);
-
-	playerClass myClass;
-	race myRace;
-
-	race findRace(int);
-	playerClass findClass(int);
-
-public:
-	SelectionScreen(int, int, int, int);
-	void paint();
-
-	// a 'semaphore' of sorts used to synchonize with the class which instanciated it
-	void setSignal(bool *);
-
-	// handles mouse interactions
-	void mouseLeft(int,int);
-	void mouseRight(int,int);
-};
-
 // #####################################################################################################
 
 /*
