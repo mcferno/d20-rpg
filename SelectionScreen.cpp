@@ -143,19 +143,19 @@ void SelectionScreen::rollButton()
 	modWis = Character::getModifier(rollWis);
 	modCha = Character::getModifier(rollCha);
 
-	itoa(rollStr,sStr,10); 
-	itoa(rollDex,sDex,10); 
-	itoa(rollCon,sCon,10); 
-	itoa(rollIte,sIte,10); 
-	itoa(rollWis,sWis,10); 
-	itoa(rollCha,sCha,10); 
+	_itoa(rollStr,sStr,10); 
+	_itoa(rollDex,sDex,10); 
+	_itoa(rollCon,sCon,10); 
+	_itoa(rollIte,sIte,10); 
+	_itoa(rollWis,sWis,10); 
+	_itoa(rollCha,sCha,10); 
 
-	itoa(modStr,smStr,10);
-	itoa(modDex,smDex,10); 
-	itoa(modCon,smCon,10); 
-	itoa(modIte,smIte,10); 
-	itoa(modWis,smWis,10); 
-	itoa(modCha,smCha,10); 
+	_itoa(modStr,smStr,10);
+	_itoa(modDex,smDex,10); 
+	_itoa(modCon,smCon,10); 
+	_itoa(modIte,smIte,10); 
+	_itoa(modWis,smWis,10); 
+	_itoa(modCha,smCha,10); 
 }
 
 void SelectionScreen::paintAttributes(int x, int y)

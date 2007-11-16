@@ -25,6 +25,7 @@ MainGame *mainGame;
 // Game states
 const int STATE_CHARACTER_SELECTION = 0;
 const int STATE_MAIN_GAME = 1;
+const int STATE_MONSTER_MOVE = 2;
 
 int state = STATE_CHARACTER_SELECTION;
 
@@ -106,7 +107,7 @@ int main( int argc, char* args[] )
 						break;
 					case SDLK_UP:
 						if(state == STATE_MAIN_GAME)
-							mainGame->keyUp();
+								mainGame->keyUp();
 						break;
 					case SDLK_DOWN:
 						if(state == STATE_MAIN_GAME)

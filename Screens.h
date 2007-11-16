@@ -117,7 +117,6 @@ private:
 	static const int STATE_AI_TURN = 2;
 	static const int STATE_SHOP = 3;
 	static const int STATE_BATTLE = 4;
-
 	void loadLevel();
 	void paintNow();
 	void paintObject(Object*);
