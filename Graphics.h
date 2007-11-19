@@ -97,6 +97,15 @@ public:
 
 // #####################################################################################################
 
+// data storage to implement a simple GUI button
+struct Button 
+{
+	int x, y;
+	SDL_Rect clip;
+};
+
+// #####################################################################################################
+
 /* Class Graphics: Represents an image which is a combination of smaller images
  *   all relatively the same size. This image is loaded as one file, but is then
  *   logically cut up into the appropriate pieces so that individual sections of

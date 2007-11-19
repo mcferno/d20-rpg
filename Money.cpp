@@ -98,9 +98,19 @@ bool Money::operator>(const Money &rhs)
 	return (this->totalCopper > rhs.totalCopper);
 }
 
+bool Money::operator>=(const Money &rhs)
+{
+	return (this->totalCopper >= rhs.totalCopper);
+}
+
 bool Money::operator<(const Money &rhs)
 {
 	return (this->totalCopper < rhs.totalCopper);
+}
+
+bool Money::operator<=(const Money &rhs)
+{
+	return (this->totalCopper <= rhs.totalCopper);
 }
 
 bool Money::operator==(const Money &rhs)

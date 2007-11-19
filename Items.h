@@ -47,11 +47,11 @@ public:
 class ArmorFactory
 {
 private:
-	static Armor availableArmor[];
+	static Armor* availableArmor[];
 	static int numAvailableArmor;
 	static void loadGraphics();
 public:
-	static Armor* getAllArmor();
+	static Armor** getAllArmor();
 	static int getNumArmor();
 };
 
@@ -79,11 +79,11 @@ public:
 class WeaponFactory
 {
 private:
-	static Weapon availableWeapons[];
+	static Weapon* availableWeapons[];
 	static int numAvailableWeapons;
 	static void loadGraphics();
 public:
-	static Weapon* getAllWeapons();
+	static Weapon** getAllWeapons();
 	static int getNumWeapons();
 };
 

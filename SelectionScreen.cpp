@@ -14,19 +14,12 @@ SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH) : Scree
 
 void SelectionScreen::init()
 {
-	if (TTF_Init() == -1)
-		std::cout << "TTF NOT INITLAIZED/n";
-
 	//font colors
 	SDL_Color textColorWhite = {255,255,255};
-	SDL_Color textColorBlack = {0xFF, 0xFF, 0xFF};
-	//font types
-	Screen::fontCalibri = TTF_OpenFont( ".\\fonts\\calibri.ttf", 16 );
-	Screen::fontCalibriBold = TTF_OpenFont ( ".\\fonts\\calibrib.ttf", 16 );
+	SDL_Color textColorBlack = {0, 0, 0};
 
 	characterSprites = new Graphics(".\\images\\characters.png");
 	selectScreen = loadImage(".\\images\\selectScreen.png");
-	highlightTile = loadImage(".\\images\\highlight.png",0x0,0xFF,0xFF);
 
 	//initialize to non-selected
 	selectedSprite = -1;
@@ -143,19 +136,19 @@ void SelectionScreen::rollButton()
 	modWis = Character::getModifier(rollWis);
 	modCha = Character::getModifier(rollCha);
 
-	_itoa(rollStr,sStr,10); 
-	_itoa(rollDex,sDex,10); 
-	_itoa(rollCon,sCon,10); 
-	_itoa(rollIte,sIte,10); 
-	_itoa(rollWis,sWis,10); 
-	_itoa(rollCha,sCha,10); 
+	_itoa_s(rollStr,sStr,10); 
+	_itoa_s(rollDex,sDex,10); 
+	_itoa_s(rollCon,sCon,10); 
+	_itoa_s(rollIte,sIte,10); 
+	_itoa_s(rollWis,sWis,10); 
+	_itoa_s(rollCha,sCha,10); 
 
-	_itoa(modStr,smStr,10);
-	_itoa(modDex,smDex,10); 
-	_itoa(modCon,smCon,10); 
-	_itoa(modIte,smIte,10); 
-	_itoa(modWis,smWis,10); 
-	_itoa(modCha,smCha,10); 
+	_itoa_s(modStr,smStr,10);
+	_itoa_s(modDex,smDex,10); 
+	_itoa_s(modCon,smCon,10); 
+	_itoa_s(modIte,smIte,10); 
+	_itoa_s(modWis,smWis,10); 
+	_itoa_s(modCha,smCha,10); 
 }
 
 void SelectionScreen::paintAttributes(int x, int y)
@@ -365,12 +358,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			break;
 
 		case 0:
-			itoa(abs(HumanRace::STR_ADJ),sadjStr,10);
-			itoa(abs(HumanRace::DEX_ADJ),sadjDex,10);
-			itoa(abs(HumanRace::CON_ADJ),sadjCon,10);
-			itoa(abs(HumanRace::ITE_ADJ),sadjIte,10);
-			itoa(abs(HumanRace::WIS_ADJ),sadjWis,10);
-			itoa(abs(HumanRace::CHA_ADJ),sadjCha,10);
+			_itoa_s(abs(HumanRace::STR_ADJ),sadjStr,10);
+			_itoa_s(abs(HumanRace::DEX_ADJ),sadjDex,10);
+			_itoa_s(abs(HumanRace::CON_ADJ),sadjCon,10);
+			_itoa_s(abs(HumanRace::ITE_ADJ),sadjIte,10);
+			_itoa_s(abs(HumanRace::WIS_ADJ),sadjWis,10);
+			_itoa_s(abs(HumanRace::CHA_ADJ),sadjCha,10);
 			switch (characteristic)
 			{
 				case 1:
@@ -400,12 +393,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			}
 			break;
 		case 1:
-			itoa(abs(DwarfRace::STR_ADJ),sadjStr,10);
-			itoa(abs(DwarfRace::DEX_ADJ),sadjDex,10);
-			itoa(abs(DwarfRace::CON_ADJ),sadjCon,10);
-			itoa(abs(DwarfRace::ITE_ADJ),sadjIte,10);
-			itoa(abs(DwarfRace::WIS_ADJ),sadjWis,10);
-			itoa(abs(DwarfRace::CHA_ADJ),sadjCha,10);
+			_itoa_s(abs(DwarfRace::STR_ADJ),sadjStr,10);
+			_itoa_s(abs(DwarfRace::DEX_ADJ),sadjDex,10);
+			_itoa_s(abs(DwarfRace::CON_ADJ),sadjCon,10);
+			_itoa_s(abs(DwarfRace::ITE_ADJ),sadjIte,10);
+			_itoa_s(abs(DwarfRace::WIS_ADJ),sadjWis,10);
+			_itoa_s(abs(DwarfRace::CHA_ADJ),sadjCha,10);
 			switch (characteristic)
 			{
 				case 1:
@@ -435,12 +428,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			}
 			break;
 		case 2:
-			itoa(abs(ElfRace::STR_ADJ),sadjStr,10);
-			itoa(abs(ElfRace::DEX_ADJ),sadjDex,10);
-			itoa(abs(ElfRace::CON_ADJ),sadjCon,10);
-			itoa(abs(ElfRace::ITE_ADJ),sadjIte,10);
-			itoa(abs(ElfRace::WIS_ADJ),sadjWis,10);
-			itoa(abs(ElfRace::CHA_ADJ),sadjCha,10);
+			_itoa_s(abs(ElfRace::STR_ADJ),sadjStr,10);
+			_itoa_s(abs(ElfRace::DEX_ADJ),sadjDex,10);
+			_itoa_s(abs(ElfRace::CON_ADJ),sadjCon,10);
+			_itoa_s(abs(ElfRace::ITE_ADJ),sadjIte,10);
+			_itoa_s(abs(ElfRace::WIS_ADJ),sadjWis,10);
+			_itoa_s(abs(ElfRace::CHA_ADJ),sadjCha,10);
 			switch (characteristic)
 			{
 				case 1:
@@ -470,12 +463,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			}
 			break;
 		case 3:
-			itoa(abs(GnomeRace::STR_ADJ),sadjStr,10);
-			itoa(abs(GnomeRace::DEX_ADJ),sadjDex,10);
-			itoa(abs(GnomeRace::CON_ADJ),sadjCon,10);
-			itoa(abs(GnomeRace::ITE_ADJ),sadjIte,10);
-			itoa(abs(GnomeRace::WIS_ADJ),sadjWis,10);
-			itoa(abs(GnomeRace::CHA_ADJ),sadjCha,10);
+			_itoa_s(abs(GnomeRace::STR_ADJ),sadjStr,10);
+			_itoa_s(abs(GnomeRace::DEX_ADJ),sadjDex,10);
+			_itoa_s(abs(GnomeRace::CON_ADJ),sadjCon,10);
+			_itoa_s(abs(GnomeRace::ITE_ADJ),sadjIte,10);
+			_itoa_s(abs(GnomeRace::WIS_ADJ),sadjWis,10);
+			_itoa_s(abs(GnomeRace::CHA_ADJ),sadjCha,10);
 			switch (characteristic)
 			{
 				case 1:

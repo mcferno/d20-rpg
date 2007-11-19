@@ -47,9 +47,11 @@ public:
 	int getGold();
 	int getPlatinum();
 
-	// comparison operators: >, <, ==
+	// comparison operators: >, >=, <, <=, ==
 	bool Money::operator>(const Money &);
+	bool Money::operator>=(const Money &);
 	bool Money::operator<(const Money &);
+	bool Money::operator<=(const Money &);
 	bool Money::operator==(const Money &);
 
 	// += and -= operators

@@ -17,6 +17,7 @@ automatically creates a player when it is called.
 #include "Dice.h"
 #include "Graphics.h"
 #include "Money.h"
+#include "Inventory.h"
 #include <iostream>
 
 //These are the types of races allowed in the game
@@ -87,6 +88,7 @@ protected:
 
 public:
 	Money money;
+	Inventory inventory;
 
 	static int getModifier(int);
 

@@ -35,9 +35,9 @@ Armor::Armor(char* newName, int newBonus,int newMaxDex, int newCheckPenalty, int
 
 // statically create the set of all available weapons in the game
 // (char* newName, int newDamage,int newCritical, int newCostInGold, int graphicOffset, int newRange)
-Weapon WeaponFactory::availableWeapons[] = { 
-	Weapon("Small Short Sword",Dice::D4,2,10,4),
-	Weapon("Medium Short Sword",Dice::D6,2,10,26)
+Weapon* WeaponFactory::availableWeapons[] = { 
+	new Weapon("Small Short Sword",Dice::D4,2,10,4),
+	new Weapon("Medium Short Sword",Dice::D6,2,10,26)
 };
 
 // must match the number of elements created above
@@ -48,7 +48,7 @@ void WeaponFactory::loadGraphics()
 	Item::graphics = new Graphics(ITEM_GRAPHICS,0xFF,0x0,0xFF);
 }
 
-Weapon* WeaponFactory::getAllWeapons()
+Weapon** WeaponFactory::getAllWeapons()
 {
 	if(Item::graphics == NULL)
 		loadGraphics();
@@ -64,10 +64,10 @@ int WeaponFactory::getNumWeapons()
 
 // statically create the set of all available weapons in the game
 // (char* newName, int newBonus,int newMaxDex, int newCheckPenalty, int newCostInGold, int graphicOffset, itemType
-Armor ArmorFactory::availableArmor[] = { 
-	Armor("Padded Light Armor",1,8,0,5,33,EquipableItem::CHEST),
-	Armor("Basic Helm",1,0,0,10,3,EquipableItem::HEAD),
-	Armor("Buckler",1,0,-1,15,1,EquipableItem::SHIELD)
+Armor* ArmorFactory::availableArmor[] = { 
+	new Armor("Padded Light Armor",1,8,0,5,33,EquipableItem::CHEST),
+	new Armor("Basic Helm",1,0,0,10,3,EquipableItem::HEAD),
+	new Armor("Buckler",1,0,-1,15,1,EquipableItem::SHIELD)
 };
 
 // must match the number of elements created above
@@ -78,7 +78,7 @@ void ArmorFactory::loadGraphics()
 	Item::graphics = new Graphics(ITEM_GRAPHICS,0xFF,0x0,0xFF);
 }
 
-Armor* ArmorFactory::getAllArmor()
+Armor** ArmorFactory::getAllArmor()
 {
 	if(Item::graphics == NULL)
 		loadGraphics();

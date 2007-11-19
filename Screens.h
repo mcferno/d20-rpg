@@ -15,6 +15,7 @@ All classes related to screens (ex: Character selection
 #include "SDL_ttf.h"
 #include "Sprites.h"
 #include "Items.h"
+#include "Inventory.h"
 #include <queue>
 using std::queue;
 
@@ -24,10 +25,11 @@ using std::queue;
 class Screen : public Rect
 {
 protected:
-	//static SDL_Surface *defaultScreen;
 	static SDL_Surface *screen;
 	static TTF_Font *fontCalibri;
 	static TTF_Font *fontCalibriBold;
+	static TTF_Font *fontCalibriTiny;
+	static SDL_Surface *highlightTile;
 
 	// the chosen character, shared among the selection screen and main game
 	static Character *mainCharacter;
@@ -36,10 +38,9 @@ public:
 
 	Screen(int,int,int,int);
 
-	static void setScreen(SDL_Surface *);
+	static void init(SDL_Surface *);
 };
 
-// #####################################################################################################
 // #####################################################################################################
 
 /*
@@ -68,76 +69,45 @@ private:
 	// temp
 	Uint32 bgColor;
 
-	Weapon *weapons;
-	int numWeapons;
+	SDL_Surface *background;
+	SDL_Surface *buttons;
 
-	Armor *armor;
-	int numArmor;
+	SDL_Surface *msgItem;
+	SDL_Surface *msgName;
+	SDL_Surface *msgPrice;
+	SDL_Surface *msgGold;
+	SDL_Surface *msgNoMoney;
+	SDL_Surface *msgCurrItemName;
+	SDL_Surface *msgCurrItemPrice;
+	bool showPurchaseError;
+
+	Button buyButton;
+	Button sellButton;
+
+	Inventory storeInventory;
+
+	int selectedStoreItem;
+	int selectedClientItem;
+
+	SDL_Color fontColorWhite;
+
+	static const int ITEMS_PER_ROW = 13;
+	static const int SELL_SECTION_X = 2;
+	static const int SELL_SECTION_Y = 5;
+	static const int BUY_SECTION_X = 2;
+	static const int BUY_SECTION_Y = 12;
+	static const int INFO_SECTION_X = 18;
+	static const int INFO_SECTION_Y = 5;
+
+	bool clickedButton(int,int,Button);
+	void selectedItem(Item*);
+	void deselectItems();
+	void paintItem(int, int, Item*);
 public:
 	ShopScreen(int, int, int, int);
 	void paint();
-};
-
-// #####################################################################################################
-
-/*
- * Class MainGame: Once the main character has been chosen, the main game class
- *   will take care of implementing the game rules involved in playing. This
- *   includes but is not limited to: determining who will go first, maintaining
- *   proper turns, etc...
- */
-class MainGame : public Screen
-{
-private:
-	Map gameMap;
-	Level *level;
-	ShopScreen *shopScreen;
-	Weapon *weapons;
-
-	Character *currentPlayer;
-	int currSpeed;
-	int numPlayers;
-
-	// queue used to track the players and their relative turns
-	queue<Character*> playOrder;
-
-	// an array of Monsters for the current level
-	Monster *enemies;
-	int numEnemies;
-
-	// simple states tracking the current level
-	int currentLevel;
-	static const int LEVEL_1 = 1;
-	static const int LEVEL_2 = 2;
-
-	// simple states tracking level progress
-	int state;
-	static const int STATE_LEVEL_START = 0;
-	static const int STATE_HUMAN_TURN = 1;
-	static const int STATE_AI_TURN = 2;
-	static const int STATE_SHOP = 3;
-	static const int STATE_BATTLE = 4;
-	void loadLevel();
-	void paintNow();
-	void paintObject(Object*);
-	void doInitiativeRoll();
-	void nextTurn();
-
-	// does simple AI for enemies of the level
-	void doAITurn();
-
-public:
-	MainGame(int, int, int, int);
-	void init();
-	void paint();
-
-	// keyboard interaction, allowing the human player to control his character
-	void keyUp();
-	void keyDown();
-	void keyLeft();
-	void keyRight();
-
-	void showShop();
+	void mouseLeft(int,int);
+	void mouseRight(int,int);
 };
 
 // #####################################################################################################

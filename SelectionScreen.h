@@ -24,7 +24,6 @@ private:
 
 	//graphics to be loaded
 	Graphics *characterSprites;
-	SDL_Surface *highlightTile;
 	SDL_Surface *selectScreen;
 
 	//color of text

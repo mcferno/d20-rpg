@@ -1,6 +1,7 @@
 #include "SDL.h"
 #include "Screens.h"
 #include "SelectionScreen.h"
+#include "MainGame.h"
 #include <time.h>
 
 static const int SCREEN_WIDTH = 800; 
@@ -62,11 +63,16 @@ int main( int argc, char* args[] )
 	{ 
 		return 1; 
 	} 
+
+	if (TTF_Init() == -1)
+	{
+		return 1;
+	}
 	
 	// Initialize the main graphics screen 
 	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE ); 
 
-	Screen::setScreen(screen);
+	Screen::init(screen);
 
 	bgColor = SDL_MapRGB( screen->format, 0, 0, 0 );
 	
@@ -131,12 +137,16 @@ int main( int argc, char* args[] )
 				{
 					if (state == STATE_CHARACTER_SELECTION)
 						selectionScreen->mouseLeft(event.button.x,event.button.y);
+					if(state == STATE_MAIN_GAME)
+						mainGame->mouseLeft(event.button.x,event.button.y);
 
 				}
 				if( event.button.button == SDL_BUTTON_RIGHT )
 				{
 					if (state == STATE_CHARACTER_SELECTION)
 						selectionScreen->mouseRight(event.button.x,event.button.y);
+					if(state == STATE_MAIN_GAME)
+						mainGame->mouseRight(event.button.x,event.button.y);
 				}
 			}
 
