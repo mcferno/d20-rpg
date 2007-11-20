@@ -13,17 +13,8 @@ Object::Object()
 
 Character::Character() : Object()
 {
-	rollStartingMoney();
-	equippedWeapon = NULL;
-	equippedShield = NULL;
-	equippedHelmet = NULL;
-	equippedVest = NULL;
 }
 
-void Character::rollStartingMoney()
-{
-	money.addCoin(Dice::roll(STARTING_MONEY_DICE_TYPE,STARTING_MONEY_DICE_ROLLS),STARTING_MONEY_TYPE);
-}
 
 //BEGIN MODIFIERS
 void Character::setStr(int str){
@@ -160,11 +151,27 @@ void Character::showCharacter() {
 		<< "WIS: " << getWis() << ", Mod: " << getWisMod() << "\n"
 		<< "CHA: " << getCha() << ", Mod: " << getChaMod() << "\n"
 		<< "SPEED: " << getSpeed() << "\n"
-		<< "HP: " << getHp() << "\n"
-		<< "Starting Money: " << money.getGold() << " gold.\n";
+		<< "HP: " << getHp() << "\n";
 }
 
-int Character::getAbilityRoll()
+
+// #####################################################################################################
+
+ControllableCharacter::ControllableCharacter() : Character()
+{
+	rollStartingMoney();
+	equippedWeapon = NULL;
+	equippedShield = NULL;
+	equippedHelmet = NULL;
+	equippedVest = NULL;
+}
+
+void ControllableCharacter::rollStartingMoney()
+{
+	money.addCoin(Dice::roll(STARTING_MONEY_DICE_TYPE,STARTING_MONEY_DICE_ROLLS),STARTING_MONEY_TYPE);
+}
+
+int ControllableCharacter::getAbilityRoll()
 {
 	int smallestRoll = 0;
 	int rollAmount;
@@ -196,7 +203,7 @@ int Character::getAbilityRoll()
 	return (runningSum - smallestRoll);
 }
 
-void Character::unEquip(Item* toUnequip)
+void ControllableCharacter::unEquip(Item* toUnequip)
 {
 	if(equippedHelmet == toUnequip)
 		equippedHelmet = NULL;
@@ -209,17 +216,16 @@ void Character::unEquip(Item* toUnequip)
 	else {}
 }
 
-void Character::removeItem(Item* toRemove)
+void ControllableCharacter::removeItem(Item* toRemove)
 {
 	unEquip(toRemove);
 	inventory.removeItem(toRemove);
 }
 
-bool Character::isEquipped(Item* toFind)
+bool ControllableCharacter::isEquipped(Item* toFind)
 {
 	return(equippedHelmet == toFind || equippedWeapon == toFind || equippedShield == toFind || equippedVest == toFind);
 }
-
 
 // #####################################################################################################
 
@@ -233,7 +239,7 @@ Fighter::Fighter()
 //Each race may have specific additions to the modifiers
 //Hitpoints, Level, and AC begin at a predetermined base
 //Str, Dex, Con, Ite, Wis, Cha are all determined randomly by the character roll.
-Fighter::Fighter(race myrace) : Character() {
+Fighter::Fighter(race myrace) : ControllableCharacter() {
 
 	setHp(FIGHTER_HP);
 	setLevel(1);
@@ -285,7 +291,7 @@ Fighter::Fighter(race myrace) : Character() {
 	}
 }
 
-Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int cha) : Character() {
+Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int cha) : ControllableCharacter() {
 
 	setHp(FIGHTER_HP);
 	setLevel(1);

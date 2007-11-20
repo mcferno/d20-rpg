@@ -27,7 +27,7 @@ protected:
 	static SDL_Surface *highlightTile;
 
 	// the chosen character, shared among the selection screen and main game
-	static Character *mainCharacter;
+	static ControllableCharacter *mainCharacter;
 public:
 	virtual void paint() = 0;
 

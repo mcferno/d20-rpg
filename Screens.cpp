@@ -3,7 +3,7 @@
 // #####################################################################################################
 
 // initialize the static pointers
-Character* Screen::mainCharacter = NULL;
+ControllableCharacter* Screen::mainCharacter = NULL;
 SDL_Surface* Screen::screen = NULL;
 TTF_Font* Screen::fontCalibri = NULL;
 TTF_Font* Screen::fontCalibriBold = NULL;

@@ -122,19 +122,19 @@ void SelectionScreen::paintGraphicsSelection(GraphicsSelection &ss)
 
 void SelectionScreen::rollButton() 
 {
-	rollStr = Character::getAbilityRoll();
-	rollDex = Character::getAbilityRoll();
-	rollCon = Character::getAbilityRoll();
-	rollIte = Character::getAbilityRoll();
-	rollWis = Character::getAbilityRoll();
-	rollCha = Character::getAbilityRoll();
+	rollStr = ControllableCharacter::getAbilityRoll();
+	rollDex = ControllableCharacter::getAbilityRoll();
+	rollCon = ControllableCharacter::getAbilityRoll();
+	rollIte = ControllableCharacter::getAbilityRoll();
+	rollWis = ControllableCharacter::getAbilityRoll();
+	rollCha = ControllableCharacter::getAbilityRoll();
 
-	modStr = Character::getModifier(rollStr);
-	modDex = Character::getModifier(rollDex);
-	modCon = Character::getModifier(rollCon);
-	modIte = Character::getModifier(rollIte);
-	modWis = Character::getModifier(rollWis);
-	modCha = Character::getModifier(rollCha);
+	modStr = ControllableCharacter::getModifier(rollStr);
+	modDex = ControllableCharacter::getModifier(rollDex);
+	modCon = ControllableCharacter::getModifier(rollCon);
+	modIte = ControllableCharacter::getModifier(rollIte);
+	modWis = ControllableCharacter::getModifier(rollWis);
+	modCha = ControllableCharacter::getModifier(rollCha);
 
 	_itoa_s(rollStr,sStr,10); 
 	_itoa_s(rollDex,sDex,10); 

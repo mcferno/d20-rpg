@@ -93,6 +93,7 @@ void MainGame::nextTurn()
 	{
 		state = STATE_HUMAN_TURN;
 		std::cout << "Your turn, make your move\n";
+		paintNow();
 	}
 	else 
 	{
@@ -231,6 +232,12 @@ void MainGame::paintObject(Object* obj)
 	{
 		int x = gameMap.limit.x + (obj->x - gameMap.x)*16;
 		int y = gameMap.limit.y + (obj->y - gameMap.y)*16;
+
+		if(currentPlayer == obj)
+		{
+			applySurface(x, y, highlightTile, screen);
+		}
+
 		applySurface(x, y, obj->graphics->image, screen, obj->clip);
 	}
 }
