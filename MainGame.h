@@ -15,11 +15,13 @@ private:
 	Map gameMap;
 	Level *level;
 	ShopScreen *shopScreen;
-	//Weapon *weapons;
+	//EquipScreen *equipScreen;
 
 	Character *currentPlayer;
 	int currSpeed;
 	int numPlayers;
+
+	bool subScreenSignal;
 
 	// queue used to track the players and their relative turns
 	queue<Character*> playOrder;
@@ -39,7 +41,8 @@ private:
 	static const int STATE_HUMAN_TURN = 1;
 	static const int STATE_AI_TURN = 2;
 	static const int STATE_SHOP = 3;
-	static const int STATE_BATTLE = 4;
+	static const int STATE_EQUIP = 4;
+	static const int STATE_BATTLE = 5;
 	void loadLevel();
 	void paintNow();
 	void paintObject(Object*);
@@ -65,6 +68,7 @@ public:
 	void mouseRight(int,int);
 
 	void showShop();
+	void showEquipScreen();
 };
 
 #endif

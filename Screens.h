@@ -66,9 +66,6 @@ public:
 class ShopScreen : public Screen
 {
 private:
-	// temp
-	Uint32 bgColor;
-
 	SDL_Surface *background;
 	SDL_Surface *buttons;
 
@@ -80,6 +77,7 @@ private:
 	SDL_Surface *msgCurrItemName;
 	SDL_Surface *msgCurrItemPrice;
 	bool showPurchaseError;
+	bool *notifyCompletion;
 
 	Button buyButton;
 	Button sellButton;
@@ -100,6 +98,7 @@ private:
 	static const int INFO_SECTION_Y = 5;
 
 	bool clickedButton(int,int,Button);
+	bool clickedExit(int,int);
 	void selectedItem(Item*);
 	void deselectItems();
 	void paintItem(int, int, Item*);
@@ -108,8 +107,11 @@ public:
 	void paint();
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
+	void userExited();
+	void setSignal(bool*);
 };
 
 // #####################################################################################################
+
 
 #endif

@@ -36,13 +36,12 @@ Screen::Screen(int newX, int newY, int newW, int newH)
 ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) : 
 	Screen(newX,newY,newW,newH)
 {
-	bgColor = SDL_MapRGB( screen->format, 0xFF, 0x00, 0x00 );
-
 	int numWeapons = WeaponFactory::getNumWeapons();
 	int numArmor = ArmorFactory::getNumArmor();
 	background = loadImage(".\\images\\shopScreen.png");
 	buttons = loadImage(".\\images\\buySellButtons.png");
 	showPurchaseError = false;
+	notifyCompletion = NULL;
 
 	// initialize the buttons used to buy and sell
 	buyButton.clip.x = buyButton.clip.y = sellButton.clip.y = 0;
@@ -60,6 +59,8 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 	msgPrice = TTF_RenderText_Solid(fontCalibri,"Price:",fontColorWhite);
 	msgGold = TTF_RenderText_Solid(fontCalibri,"gold",fontColorWhite);
 	msgNoMoney = TTF_RenderText_Solid(fontCalibri,"You don't have enough gold to purchase that item!",fontColorWhite);
+	msgCurrItemName = NULL;
+	msgCurrItemPrice = NULL;
 
 	Weapon** weapons = WeaponFactory::getAllWeapons();
 	Armor** armor = ArmorFactory::getAllArmor();
@@ -74,8 +75,15 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 	selectedStoreItem = selectedClientItem = -1;
 }
 
+void ShopScreen::setSignal(bool* signal)
+{
+	notifyCompletion = signal;
+}
+
 void ShopScreen::mouseLeft(int clickX, int clickY)
 {
+	bool clickResolved = false;
+
 	int col = 0;
 	int row = 0;
 
@@ -94,25 +102,34 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 		{
 			selectedItem(storeInventory.get(i));
 			selectedStoreItem = i;
-			return;
+			clickResolved = true;
+			break;
 		}
 		col++;
 	}
 
-	numItems = mainCharacter->inventory.getSize();
-	for(int i=0;i<numItems;i++)
+	if(!clickResolved)
 	{
-		if(clickX >= x+(i+BUY_SECTION_X)*16
-		 && clickX <= x+(i+BUY_SECTION_X+1)*16
-		 && clickY >= y+(BUY_SECTION_Y)*16
-		 && clickY <= y+(BUY_SECTION_Y+1)*16)
+		numItems = mainCharacter->inventory.getSize();
+		for(int i=0;i<numItems;i++)
 		{
-			selectedItem(mainCharacter->inventory.get(i));
-			selectedClientItem = i;
-			return;
+			if(clickX >= x+(i+BUY_SECTION_X)*16
+			 && clickX <= x+(i+BUY_SECTION_X+1)*16
+			 && clickY >= y+(BUY_SECTION_Y)*16
+			 && clickY <= y+(BUY_SECTION_Y+1)*16)
+			{
+				selectedItem(mainCharacter->inventory.get(i));
+				selectedClientItem = i;
+				clickResolved = true;
+				break;
+			}
 		}
 	}
 
+	if(clickResolved)
+		return;
+
+	
 	if(selectedStoreItem != -1 && clickedButton(clickX, clickY, buyButton))
 	{
 		Item *toBuy = storeInventory.get(selectedStoreItem);
@@ -129,8 +146,11 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 		}
 		return;
 	}
-
-	if(selectedClientItem != -1 && clickedButton(clickX, clickY, sellButton))
+	else if(clickedExit(clickX, clickY))
+	{
+		*notifyCompletion = true;
+	}
+	else if(selectedClientItem != -1 && clickedButton(clickX, clickY, sellButton))
 	{
 		Item *toSell = mainCharacter->inventory.get(selectedClientItem);
 		mainCharacter->money += toSell->cost;
@@ -138,14 +158,18 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 		mainCharacter->inventory.removeItem(toSell);
 		deselectItems();
 	}
-
-
+	else { /* no default action */ }
 }
 
 bool ShopScreen::clickedButton(int clickX, int clickY, Button toCheck)
 {
 	// check the bounds of the button
 	return (clickX >= toCheck.x && clickX < toCheck.x + toCheck.clip.w && clickY >= toCheck.y && clickY < toCheck.y + toCheck.clip.h);
+}
+
+bool ShopScreen::clickedExit(int clickX, int clickY)
+{
+	return (clickX >= x+w-16 && clickX < x+w && clickY >= y && clickY < y+16);
 }
 
 void ShopScreen::selectedItem(Item* item)
@@ -164,9 +188,15 @@ void ShopScreen::deselectItems()
 {
 	selectedStoreItem = selectedClientItem = -1;
 	if(msgCurrItemName != NULL)
+	{
 		SDL_FreeSurface(msgCurrItemName);
+		msgCurrItemName = NULL;
+	}
 	if(msgCurrItemPrice != NULL)
+	{
 		SDL_FreeSurface(msgCurrItemPrice);
+		msgCurrItemPrice = NULL;
+	}
 	showPurchaseError = false;
 }
 
@@ -242,6 +272,11 @@ void ShopScreen::paint()
 		}
 
 	}
+}
+
+void ShopScreen::userExited()
+{
+	deselectItems();
 }
 
 

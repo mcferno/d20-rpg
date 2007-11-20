@@ -14,6 +14,10 @@ Object::Object()
 Character::Character() : Object()
 {
 	rollStartingMoney();
+	equippedWeapon = NULL;
+	equippedShield = NULL;
+	equippedHelmet = NULL;
+	equippedVest = NULL;
 }
 
 void Character::rollStartingMoney()

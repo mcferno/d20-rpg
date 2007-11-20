@@ -80,15 +80,14 @@ protected:
 	static const int ABILITY_ROLL_DICE_TYPE = Dice::D6;
 	static const int ABILITY_ROLL_DICE_ROLLS = 4;
 
-
-
 	void rollStartingMoney();
-
-	
 
 public:
 	Money money;
 	Inventory inventory;
+
+	Weapon *equippedWeapon;
+	Armor *equippedShield, *equippedHelmet, *equippedVest;
 
 	static int getModifier(int);
 

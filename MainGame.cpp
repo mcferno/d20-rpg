@@ -9,6 +9,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	currSpeed = -1;
 	currentPlayer = NULL;
 	shopScreen = NULL;
+	subScreenSignal = false;
 	//weapons = NULL;
 }
 
@@ -305,7 +306,16 @@ void MainGame::keyRight()
 void MainGame::mouseLeft(int clickX, int clickY)
 {
 	if(state == STATE_SHOP)
+	{
 		shopScreen->mouseLeft(clickX,clickY);
+
+		// if the user closed the shop screen, toggle it to off
+		if(subScreenSignal)
+		{
+			subScreenSignal = false;
+			showShop();
+		}
+	}
 }
 void MainGame::mouseRight(int clickX, int clickY)
 {
@@ -317,14 +327,16 @@ void MainGame::showShop()
 {
 	if(state != STATE_SHOP)
 	{
-		std::cout << "SHOW SHOP!\n";
 		if(shopScreen == NULL)
+		{
 			shopScreen = new ShopScreen(50,50,448,256);
+			shopScreen->setSignal(&subScreenSignal);
+		}
 		state = STATE_SHOP;
 	}
 	else
 	{
-		std::cout << "HIDE SHOP!\n";
+		shopScreen->userExited();
 
 		// you can only enter the shop during the human turn, so restore the human turn
 		state = STATE_HUMAN_TURN;
