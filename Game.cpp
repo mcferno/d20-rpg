@@ -176,6 +176,12 @@ int main( int argc, char* args[] )
 			}
 		}
 
+		if(state == STATE_MAIN_GAME)
+		{
+			// send the main game ticks to move game logic (ex: AI)
+			mainGame->tick();
+		}
+
 		// momentary sleep to avoid using too much CPU
 		SDL_Delay(FRAME_RATE_SLEEP);
 	}

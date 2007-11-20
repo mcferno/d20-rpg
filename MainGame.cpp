@@ -97,30 +97,17 @@ void MainGame::nextTurn()
 	else 
 	{
 		state = STATE_AI_TURN;
-	}
 
-	// play the computer's turn
-	if(state == STATE_AI_TURN)
-	{
+		// kick-start the AI turn timer
+		startAITurn = SDL_GetTicks();
 		std::cout << "AI's turn ";
-		paintNow();
-		SDL_Delay(500);
-
-		for( ;currSpeed>0;currSpeed--)
-		{
-			std::cout << ".";
-			doAITurn();
-			paintNow();
-			SDL_Delay(250);
-		}
-		std::cout << " Done!\n";
-		nextTurn();
 	}
 }
 
 // super simplistic AI, randomly goes up, down, left or right
 void MainGame::doAITurn()
 {
+	std::cout << ".";
 	switch(rand() % 4)
 	{
 		case 0:
@@ -148,6 +135,12 @@ void MainGame::doAITurn()
 					currentPlayer->x +=1;
 			break;
 	}
+	// decrement the AI's turn
+	currSpeed--;
+
+	// reset the time for the last AI turn played
+	if(currSpeed > 0)
+		startAITurn = SDL_GetTicks();
 }
 
 // initialize the current level, including the map and the enemies
@@ -332,7 +325,6 @@ void MainGame::mouseLeft(int clickX, int clickY)
 			showEquipScreen();
 		}
 	}
-	else {}
 }
 void MainGame::mouseRight(int clickX, int clickY)
 {
@@ -381,5 +373,26 @@ void MainGame::showEquipScreen()
 
 		// you can only enter the equip screen during the human turn, so restore the human turn
 		state = STATE_HUMAN_TURN;
+	}
+}
+
+void MainGame::tick()
+{
+	if(state == STATE_AI_TURN)
+	{
+		if(currSpeed == 0)
+		{
+			std::cout << " Done!\n";
+			nextTurn();
+		}
+		else
+		{
+			// only play the AI's turn if enough time has passed
+			if((SDL_GetTicks() - startAITurn) > AI_TURN_TIME)
+			{
+				doAITurn();
+				paintNow();
+			}
+		}
 	}
 }

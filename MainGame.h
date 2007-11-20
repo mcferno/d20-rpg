@@ -75,6 +75,11 @@ private:
 	void doInitiativeRoll();
 	void nextTurn();
 
+	Uint32 startAITurn;
+	// time in milliseconds to wait between AI actions, obeyed when possible
+	// actual turns will occur in the time range [ AI_TURN_TIME, AI_TURN_TIME+FRAME_RATE_SLEEP [
+	static const Uint32 AI_TURN_TIME = 200; 
+
 	// does simple AI for enemies of the level
 	void doAITurn();
 
@@ -95,6 +100,9 @@ public:
 
 	void showShop();
 	void showEquipScreen();
+
+	// used to move game logic independently of key/mouse events
+	void tick();
 };
 
 #endif
