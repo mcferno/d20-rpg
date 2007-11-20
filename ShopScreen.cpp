@@ -5,6 +5,8 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 {
 	int numWeapons = WeaponFactory::getNumWeapons();
 	int numArmor = ArmorFactory::getNumArmor();
+	int numItems = UsableItemFactory::getNumUsableItems();
+
 	background = loadImage(".\\images\\shopScreen.png");
 	buttons = loadImage(".\\images\\buySellButtons.png");
 	showPurchaseError = false;
@@ -31,6 +33,7 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 
 	Weapon** weapons = WeaponFactory::getAllWeapons();
 	Armor** armor = ArmorFactory::getAllArmor();
+	UsableItem** items = UsableItemFactory::getAllUsableItems();
 
 	// make a local copy of the pointers
 	for(int i=0;i<numWeapons;i++)
@@ -38,6 +41,9 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 
 	for(int i=0;i<numArmor;i++)
 		storeInventory.addItem(armor[i]);
+
+	for(int i=0;i<numItems;i++)
+		storeInventory.addItem(items[i]);
 	
 	selectedStoreItem = selectedClientItem = -1;
 }
@@ -104,7 +110,16 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 		{
 			mainCharacter->money -= toBuy->cost;
 			mainCharacter->inventory.addItem(toBuy);
-			storeInventory.removeItem(toBuy);
+
+			if(toBuy->isItemOfQuantity())
+			{
+				std::cout << "you're buying a usable item\n";
+			}
+			else
+			{	
+				std::cout << "you're buying a regular item\n";
+				storeInventory.removeItem(toBuy);
+			}
 			deselectItems();
 		}
 		else

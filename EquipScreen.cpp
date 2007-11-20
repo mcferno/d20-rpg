@@ -239,7 +239,8 @@ void EquipScreen::highlightInInventory(Item* toHighlight)
 
 void EquipScreen::selectedItem(Item* item)
 {
-	selectedEquipableItem = (EquipableItem*)item;
+	if(!item->isItemOfQuantity())
+		selectedEquipableItem = (EquipableItem*)item;
 
 	if(selectedEquipableItem != NULL)
 	{
@@ -248,7 +249,7 @@ void EquipScreen::selectedItem(Item* item)
 		_itoa_s(selectedEquipableItem->cost.getGold(),tempBuffer,10);
 		msgItemCost = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
 
-		if(selectedEquipableItem->itemType == EquipableItem::WEAPON)
+		if(selectedEquipableItem->equipType == EquipableItem::WEAPON)
 		{
 			Weapon* tempWeapon = (Weapon*)selectedEquipableItem;
 			if(tempWeapon != NULL)
@@ -293,7 +294,7 @@ void EquipScreen::equipItem()
 {
 	if(selectedEquipableItem != NULL)
 	{
-		switch(selectedEquipableItem->itemType)
+		switch(selectedEquipableItem->equipType)
 		{
 			case EquipableItem::WEAPON:
 				mainCharacter->equippedWeapon = (Weapon*)selectedEquipableItem;

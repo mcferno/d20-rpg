@@ -15,18 +15,68 @@ public:
 	// tile offset for the clip
 	int index;
 	static Graphics* graphics;
+	Item(char*,int,int);
+	virtual bool isItemOfQuantity();
 };
 
 class UsableItem : public Item
 {
+protected:
+	int num;
+public:
+	enum UsableItemType { WEAPON_CONSUMABLE, POTION, OTHER };
+	UsableItemType usableType;
+
+	UsableItem(char*, int, int, UsableItemType, int = 0);
+
+	void add(int);
+	bool isEmpty();
+	int numLeft();
+	void useOne();
+	virtual bool isItemOfQuantity();
 };
+
+class WeaponConsumable : public UsableItem
+{
+public:
+	enum WeaponConsumableType { ARROW, BOLT, NONE };
+	WeaponConsumableType consumableType;
+
+	// name, costInGold, num, typeOfConsumable
+	WeaponConsumable(char*,int,int,int,WeaponConsumableType);
+};
+
+class Potion : public UsableItem
+{
+private:
+	int hpBonus;
+public:
+	Potion(char*,int,int,int);
+};
+
+/* Class UsableItemFactory: Creates a finite number of items which will be
+ *   available across the game. Only one set of finite items will exist
+ *   and it is this class' responsibility to pass those items along.
+ */
+class UsableItemFactory
+{
+private:
+	static UsableItem* availableUsableItems[];
+	static int numAvailableUsableItems;
+	static void loadGraphics();
+public:
+	static UsableItem** getAllUsableItems();
+	static int getNumUsableItems();
+};
+
 
 class EquipableItem : public Item
 {
 public:
 	// to identify the difference between equipable items
-	enum ItemTypes { HEAD, CHEST, WEAPON, SHIELD };
-	ItemTypes itemType;
+	enum EquipableItemType { HEAD, CHEST, WEAPON, SHIELD };
+	EquipableItemType equipType;
+	EquipableItem(char*,int,int,EquipableItemType);
 };
 
 class Armor : public EquipableItem
@@ -37,7 +87,7 @@ private:
 	const int ARMOR_CHECK_PENALTY;
 public:
 	// name, armor bonus, max dex bonus, armor check penalty, cost in gold, graphicOffset, itemType
-	Armor(char*,int,int,int,int,int,ItemTypes);
+	Armor(char*,int,int,int,int,int,EquipableItemType);
 	int getArmorBonus();
 	int getMaxDexBonus();
 	int getArmorCheckPenalty();
@@ -68,9 +118,15 @@ private:
 	const int DAMAGE_DICE_TYPE;
 	const int RANGE_INCREMENT;
 	const int CRITICAL_MULTIPLIER;
+
+	WeaponConsumable::WeaponConsumableType requiredConsumable;
 public:
-	// name, damage dice type, critical multiplier, cost in gold, graphicOffset, range (optional)
-	Weapon(char*,int,int,int,int,int = 0);
+	// name, damage dice type, critical multiplier, cost in gold, graphicOffset
+	Weapon(char*,int,int,int,int);
+
+	// name, damage dice type, critical multiplier, cost in gold, graphicOffset, range, requiredItem
+	Weapon(char*,int,int,int,int,int,WeaponConsumable::WeaponConsumableType);
+	
 	int getDamage();
 	int getRangeIncrement();
 	int getCriticalMultiplier();
