@@ -72,8 +72,10 @@ protected:
 
 	// how much money a character starts with
 	// currently: 4d4 of gold
-	static const int STARTING_MONEY_DICE_TYPE = Dice::D4;
-	static const int STARTING_MONEY_DICE_ROLLS = 4;
+	//static const int STARTING_MONEY_DICE_TYPE = Dice::D4;
+	static const int STARTING_MONEY_DICE_TYPE = Dice::D20;
+	//static const int STARTING_MONEY_DICE_ROLLS = 4;
+	static const int STARTING_MONEY_DICE_ROLLS = 15;
 	static const int STARTING_MONEY_TYPE = Money::GOLD;
 
 	// how to determine a randomly rolled character ability
@@ -129,6 +131,10 @@ public:
 	int getIteMod();
 	int getWisMod();
 	int getChaMod();
+
+	void removeItem(Item*);
+	bool isEquipped(Item*);
+	void unEquip(Item*);
 
 	//output
 	void showCharacter();

@@ -9,6 +9,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	currSpeed = -1;
 	currentPlayer = NULL;
 	shopScreen = NULL;
+	equipScreen = NULL;
 	subScreenSignal = false;
 	//weapons = NULL;
 }
@@ -225,6 +226,10 @@ void MainGame::paint()
 	{
 		shopScreen->paint();
 	}
+	else if(state == STATE_EQUIP)
+	{
+		equipScreen->paint();
+	}
 }
 
 void MainGame::paintObject(Object* obj)
@@ -316,11 +321,27 @@ void MainGame::mouseLeft(int clickX, int clickY)
 			showShop();
 		}
 	}
+	else if(state == STATE_EQUIP)
+	{
+		equipScreen->mouseLeft(clickX,clickY);
+
+		// if the user closed the shop screen, toggle it to off
+		if(subScreenSignal)
+		{
+			subScreenSignal = false;
+			showEquipScreen();
+		}
+	}
+	else {}
 }
 void MainGame::mouseRight(int clickX, int clickY)
 {
 	if(state == STATE_SHOP)
 		shopScreen->mouseRight(clickX,clickY);
+	else if(state == STATE_EQUIP)
+		equipScreen->mouseRight(clickX,clickY);
+	else
+	{}
 }
 
 void MainGame::showShop()
@@ -339,6 +360,26 @@ void MainGame::showShop()
 		shopScreen->userExited();
 
 		// you can only enter the shop during the human turn, so restore the human turn
+		state = STATE_HUMAN_TURN;
+	}
+}
+
+void MainGame::showEquipScreen()
+{
+	if(state != STATE_EQUIP)
+	{
+		if(equipScreen == NULL)
+		{
+			equipScreen = new EquipScreen(50,50,352,336);
+			equipScreen->setSignal(&subScreenSignal);
+		}
+		state = STATE_EQUIP;
+	}
+	else
+	{
+		equipScreen->userExited();
+
+		// you can only enter the equip screen during the human turn, so restore the human turn
 		state = STATE_HUMAN_TURN;
 	}
 }

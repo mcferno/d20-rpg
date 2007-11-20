@@ -17,6 +17,21 @@ Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, 
 	index = graphicOffset;
 }
 
+int Weapon::getDamage()
+{
+	return DAMAGE_DICE_TYPE;
+}
+
+int Weapon::getRangeIncrement()
+{
+	return RANGE_INCREMENT;
+}
+
+int Weapon::getCriticalMultiplier()
+{
+	return CRITICAL_MULTIPLIER;
+}
+
 //#####################################################################################################
 
 Armor::Armor(char* newName, int newBonus,int newMaxDex, int newCheckPenalty, int newCostInGold, int graphicOffset, ItemTypes newType) : 
@@ -29,6 +44,19 @@ Armor::Armor(char* newName, int newBonus,int newMaxDex, int newCheckPenalty, int
 	itemType = newType;
 
 	index = graphicOffset;
+}
+
+int Armor::getArmorBonus()
+{
+	return ARMOR_BONUS;
+}
+int Armor::getMaxDexBonus()
+{
+	return MAX_DEX_BONUS;
+}
+int Armor::getArmorCheckPenalty()
+{
+	return ARMOR_CHECK_PENALTY;
 }
 
 //#####################################################################################################

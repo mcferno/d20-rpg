@@ -111,9 +111,13 @@ int main( int argc, char* args[] )
 						if(state == STATE_MAIN_GAME)
 							mainGame->showShop();
 						break;
+					case SDLK_e:
+						if(state == STATE_MAIN_GAME)
+							mainGame->showEquipScreen();
+						break;
 					case SDLK_UP:
 						if(state == STATE_MAIN_GAME)
-								mainGame->keyUp();
+							mainGame->keyUp();
 						break;
 					case SDLK_DOWN:
 						if(state == STATE_MAIN_GAME)

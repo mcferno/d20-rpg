@@ -2,6 +2,32 @@
 	#define MAINGAME_H
 
 #include "Screens.h"
+#include "ShopScreen.h"
+#include "EquipScreen.h"
+#include <queue>
+using std::queue;
+
+// #####################################################################################################
+
+/*
+ * Class Level: A simple structure to store information needed to load a level.
+ *   A level is basically a set of graphics, and a set of indexes which define
+ *   the map for that level.
+ */
+class Level
+{
+public:
+	// relative path to the graphics file on disk
+	char *graphics;
+
+	// the transparent color to mask out of the graphics image (RGB, in hex)
+	int alphaR, alphaG, alphaB;
+
+	// relative path to the map index on disk
+	char *index;
+};
+
+// #####################################################################################################
 
 /*
  * Class MainGame: Once the main character has been chosen, the main game class
@@ -15,7 +41,7 @@ private:
 	Map gameMap;
 	Level *level;
 	ShopScreen *shopScreen;
-	//EquipScreen *equipScreen;
+	EquipScreen *equipScreen;
 
 	Character *currentPlayer;
 	int currSpeed;

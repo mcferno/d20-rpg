@@ -38,6 +38,9 @@ private:
 public:
 	// name, armor bonus, max dex bonus, armor check penalty, cost in gold, graphicOffset, itemType
 	Armor(char*,int,int,int,int,int,ItemTypes);
+	int getArmorBonus();
+	int getMaxDexBonus();
+	int getArmorCheckPenalty();
 };
 
 /* Class ArmorFactory: Creates a finite number of armor which will be
@@ -70,6 +73,7 @@ public:
 	Weapon(char*,int,int,int,int,int = 0);
 	int getDamage();
 	int getRangeIncrement();
+	int getCriticalMultiplier();
 };
 
 /* Class WeaponFactory: Creates a finite number of weapons which will be

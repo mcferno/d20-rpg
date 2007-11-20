@@ -196,6 +196,31 @@ int Character::getAbilityRoll()
 	return (runningSum - smallestRoll);
 }
 
+void Character::unEquip(Item* toUnequip)
+{
+	if(equippedHelmet == toUnequip)
+		equippedHelmet = NULL;
+	else if(equippedWeapon == toUnequip)
+		equippedWeapon = NULL;
+	else if(equippedShield == toUnequip)
+		equippedShield = NULL;
+	else if(equippedVest == toUnequip)
+		equippedVest = NULL;
+	else {}
+}
+
+void Character::removeItem(Item* toRemove)
+{
+	unEquip(toRemove);
+	inventory.removeItem(toRemove);
+}
+
+bool Character::isEquipped(Item* toFind)
+{
+	return(equippedHelmet == toFind || equippedWeapon == toFind || equippedShield == toFind || equippedVest == toFind);
+}
+
+
 // #####################################################################################################
 
 Fighter::Fighter()
