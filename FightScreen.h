@@ -55,6 +55,8 @@ public:
 	void mouseRight(int,int);
 	void userExited();
 	void setSignal(bool*);
+
+	
 };
 
 #endif

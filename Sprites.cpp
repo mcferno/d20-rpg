@@ -15,6 +15,21 @@ Character::Character() : Object()
 {
 }
 
+int Character::getBaseAttackBonus(){
+	return getLevel()-1;
+}
+
+int Character::getAttackBonus(){
+	return (getBaseAttackBonus() + getStrMod());
+}
+
+int Character::getInitiativeRoll(){
+	return (Dice::roll(Dice::D20,1) + getDexMod());
+}
+
+
+
+
 int Character::getRace()
 {
 	return imyRace;
