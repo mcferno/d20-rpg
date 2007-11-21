@@ -164,6 +164,14 @@ ControllableCharacter::ControllableCharacter() : Character()
 	equippedShield = NULL;
 	equippedHelmet = NULL;
 	equippedVest = NULL;
+
+	UsableItem** tempItems = UsableItemFactory::getAllUsableItems();
+
+	// all characters start with 0 potions, 0 arrows and 0 bolts
+	numArrows = numBolts = numPotions = 0;
+	inventory.addItem(tempItems[0]);
+	inventory.addItem(tempItems[1]);
+	inventory.addItem(tempItems[2]);
 }
 
 void ControllableCharacter::rollStartingMoney()
@@ -216,6 +224,30 @@ void ControllableCharacter::unEquip(Item* toUnequip)
 	else {}
 }
 
+void ControllableCharacter::addItem(Item* toAdd)
+{
+	if(toAdd->isItemOfQuantity())
+	{
+		UsableItem* tempUsableItem =  static_cast<UsableItem*>(toAdd);
+		switch(tempUsableItem->usableType)
+		{
+			case UsableItem::POTION:
+				numPotions += tempUsableItem->numLeft();
+				break;
+			case UsableItem::ARROW:
+				numArrows += tempUsableItem->numLeft();
+				break;
+			case UsableItem::BOLT:
+				numBolts += tempUsableItem->numLeft();
+				break;
+		}
+	}
+	else
+	{
+		inventory.addItem(toAdd);
+	}
+}
+
 void ControllableCharacter::removeItem(Item* toRemove)
 {
 	unEquip(toRemove);
@@ -225,6 +257,19 @@ void ControllableCharacter::removeItem(Item* toRemove)
 bool ControllableCharacter::isEquipped(Item* toFind)
 {
 	return(equippedHelmet == toFind || equippedWeapon == toFind || equippedShield == toFind || equippedVest == toFind);
+}
+
+int ControllableCharacter::getNumArrows()
+{
+	return numArrows;
+}
+int ControllableCharacter::getNumBolts()
+{
+	return numBolts;
+}
+int ControllableCharacter::getNumPotions()
+{
+	return numPotions;
 }
 
 // #####################################################################################################

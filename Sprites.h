@@ -132,6 +132,8 @@ protected:
 	static const int ABILITY_ROLL_DICE_ROLLS = 4;
 
 	void rollStartingMoney();
+
+	int numArrows, numBolts, numPotions;
 public:
 	Money money;
 	Inventory inventory;
@@ -139,10 +141,14 @@ public:
 	Armor *equippedShield, *equippedHelmet, *equippedVest;
 
 	ControllableCharacter();
+	void addItem(Item*);
 	void removeItem(Item*);
 	bool isEquipped(Item*);
 	void unEquip(Item*);
 	static int getAbilityRoll();
+	int getNumArrows();
+	int getNumBolts();
+	int getNumPotions();
 };
 
 // #####################################################################################################

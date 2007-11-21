@@ -16,6 +16,8 @@ private:
 	SDL_Surface *msgNoMoney;
 	SDL_Surface *msgCurrItemName;
 	SDL_Surface *msgCurrItemPrice;
+	SDL_Surface *msgQuantity;
+	SDL_Surface *msgItemQuantity;
 	bool showPurchaseError;
 	bool *notifyCompletion;
 
@@ -39,7 +41,7 @@ private:
 
 	bool clickedButton(int,int,Button);
 	bool clickedExit(int,int);
-	void selectedItem(Item*);
+	void selectedItem(Item*,bool);
 	void deselectItems();
 	void paintItem(int, int, Item*);
 public:

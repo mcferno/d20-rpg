@@ -44,7 +44,7 @@ private:
 	void selectedItem(Item*);
 	void equipItem();
 	void deselectItems();
-	void highlightInInventory(Item*);
+	int findInventoryNumber(Item*);
 	bool clickedButton(int,int,Button);
 	bool clickedEquiped(int,int,int,int);
 	bool clickedExit(int,int);

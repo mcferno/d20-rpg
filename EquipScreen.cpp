@@ -50,6 +50,13 @@ void EquipScreen::paint()
 			applySurface(x+(INVENTORY_X+i)*16,y+INVENTORY_Y*16,highlightTile,screen);
 		}
 	}
+	if(selectedInventory != -1)
+	{
+		applySurface(x+INFO_SECTION_X*16,y+INFO_SECTION_Y*16,msgItemName,screen);
+		applySurface(x+INFO_SECTION_X*16,y+(INFO_SECTION_Y+1)*16,msgWorth[0],screen);
+		applySurface(x+msgWorth[0]->w+INFO_SECTION_X*16,y+(INFO_SECTION_Y+1)*16,msgItemCost,screen);
+		applySurface(x+msgWorth[0]->w+msgItemCost->w+INFO_SECTION_X*16,y+(INFO_SECTION_Y+1)*16,msgWorth[1],screen);
+	}
 
 	if(selectedEquipableItem != NULL)
 	{
@@ -63,10 +70,6 @@ void EquipScreen::paint()
 			applySurface(x+TITLE_X*16,y+TITLE_Y*16,msgTitleSelected, screen);
 			applySurface(equipButton.x,equipButton.y,buttons,screen,&equipButton.clip);
 		}
-		applySurface(x+INFO_SECTION_X*16,y+INFO_SECTION_Y*16,msgItemName,screen);
-		applySurface(x+INFO_SECTION_X*16,y+(INFO_SECTION_Y+1)*16,msgWorth[0],screen);
-		applySurface(x+msgWorth[0]->w+INFO_SECTION_X*16,y+(INFO_SECTION_Y+1)*16,msgItemCost,screen);
-		applySurface(x+msgWorth[0]->w+msgItemCost->w+INFO_SECTION_X*16,y+(INFO_SECTION_Y+1)*16,msgWorth[1],screen);
 
 		for(int i=0;i<NUM_CUSTOM;i++)
 		{
@@ -181,32 +184,36 @@ void EquipScreen::mouseLeft(int clickX, int clickY)
 	{
 		if(mainCharacter->equippedHelmet != NULL)
 		{
-			highlightInInventory(mainCharacter->equippedHelmet);
+			int selected = findInventoryNumber(mainCharacter->equippedHelmet);
 			selectedItem(mainCharacter->equippedHelmet);
+			selectedInventory = selected;
 		}
 	}
 	else if(clickedEquiped(clickX, clickY, EQUIP_BODY_X, EQUIP_BODY_Y))
 	{
 		if(mainCharacter->equippedVest != NULL)
 		{
-			highlightInInventory(mainCharacter->equippedVest);
+			int selected = findInventoryNumber(mainCharacter->equippedVest);
 			selectedItem(mainCharacter->equippedVest);
+			selectedInventory = selected;
 		}
 	}
 	else if(clickedEquiped(clickX, clickY, EQUIP_WEAPON_X, EQUIP_WEAPON_Y))
 	{
 		if(mainCharacter->equippedWeapon != NULL)
 		{
-			highlightInInventory(mainCharacter->equippedWeapon);
+			int selected = findInventoryNumber(mainCharacter->equippedWeapon);
 			selectedItem(mainCharacter->equippedWeapon);
+			selectedInventory = selected;
 		}
 	}
 	else if(clickedEquiped(clickX, clickY, EQUIP_SHIELD_X, EQUIP_SHIELD_Y))
 	{
 		if(mainCharacter->equippedShield != NULL)
 		{
-			highlightInInventory(mainCharacter->equippedShield);
+			int selected = findInventoryNumber(mainCharacter->equippedShield);
 			selectedItem(mainCharacter->equippedShield);
+			selectedInventory = selected;
 		}
 	}
 	else
@@ -223,31 +230,35 @@ bool EquipScreen::clickedEquiped(int clickX, int clickY,int xLoc,int yLoc)
 	return (clickX >= x+xLoc*16 && clickX < x+xLoc*16 + 16 && clickY >= y+yLoc*16 && clickY < y+yLoc*16 + 16);
 }
 
-void EquipScreen::highlightInInventory(Item* toHighlight)
+int EquipScreen::findInventoryNumber(Item* toHighlight)
 {
 	int size = mainCharacter->inventory.getSize();
 	for(int i=0;i<size;i++)
 	{
 		if(mainCharacter->inventory.get(i) == toHighlight)
 		{
-			selectedInventory = i;
-			return;
+			return i;
 		}
 	}
-	selectedInventory = -1;
+	return -1;
 }
 
 void EquipScreen::selectedItem(Item* item)
 {
+	// free up any residual data
+	if(selectedInventory != -1)
+		deselectItems();
+
+	char tempBuffer[5];
+	msgItemName = TTF_RenderText_Solid(fontCalibri,item->name,fontColorWhite);
+	_itoa_s(item->cost.getGold(),tempBuffer,10);
+	msgItemCost = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+
 	if(!item->isItemOfQuantity())
 		selectedEquipableItem = (EquipableItem*)item;
 
 	if(selectedEquipableItem != NULL)
 	{
-		char tempBuffer[5];
-		msgItemName = TTF_RenderText_Solid(fontCalibri,selectedEquipableItem->name,fontColorWhite);
-		_itoa_s(selectedEquipableItem->cost.getGold(),tempBuffer,10);
-		msgItemCost = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
 
 		if(selectedEquipableItem->equipType == EquipableItem::WEAPON)
 		{

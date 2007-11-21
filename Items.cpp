@@ -61,15 +61,6 @@ bool UsableItem::isItemOfQuantity()
 
 //#####################################################################################################
 
-// name, costInGold, num, typeOfConsumable
-WeaponConsumable::WeaponConsumable(char* newName, int newCostInGold,int graphicOffset,int newNum, WeaponConsumableType newConsumableType) :
-	UsableItem(newName,newCostInGold,graphicOffset,UsableItem::WEAPON_CONSUMABLE,newNum)
-{
-	consumableType = newConsumableType;
-}
-
-//#####################################################################################################
-
 Potion::Potion(char* newName,int newCostInGold, int graphicOffset, int newHpBonus) :
 	UsableItem(newName,newCostInGold,graphicOffset,UsableItem::POTION,1)
 {
@@ -80,9 +71,9 @@ Potion::Potion(char* newName,int newCostInGold, int graphicOffset, int newHpBonu
 
 // statically create the set of all available usable items in the game
 UsableItem* UsableItemFactory::availableUsableItems[] = { 
-	new WeaponConsumable("Arrow",1,59,20,WeaponConsumable::ARROW),
-	new WeaponConsumable("Bolt",1,57,10,WeaponConsumable::BOLT),
-	new Potion("Small Potion",3,60,5)
+	new UsableItem("Arrow",1,59,UsableItem::ARROW,20),
+	new UsableItem("Bolt",1,57,UsableItem::BOLT,10),
+	new Potion("Potion",3,60,5)
 };
 
 // must match the number of elements created above
@@ -113,10 +104,10 @@ Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, 
 	RANGE_INCREMENT(0),
 	EquipableItem(newName,newCostInGold,graphicOffset,EquipableItem::WEAPON)
 {
-	requiredConsumable = WeaponConsumable::NONE;
+	requiredConsumable = UsableItem::NONE;
 }
 
-Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, int graphicOffset, int newRange, WeaponConsumable::WeaponConsumableType newRequiredConsumable) : 
+Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, int graphicOffset, int newRange, UsableItem::UsableItemType newRequiredConsumable) : 
 	DAMAGE_DICE_TYPE(newDamage), 
 	CRITICAL_MULTIPLIER(newCritical),
 	RANGE_INCREMENT(newRange),
@@ -171,8 +162,8 @@ int Armor::getArmorCheckPenalty()
 Weapon* WeaponFactory::availableWeapons[] = { 
 	new Weapon("Small Short Sword",Dice::D4,2,10,4),
 	new Weapon("Medium Short Sword",Dice::D6,2,10,26),
-	new Weapon("Longbow",Dice::D6,3,75,58,100,WeaponConsumable::ARROW),
-	new Weapon("Crossbow",Dice::D4,2,100,46,30,WeaponConsumable::BOLT)
+	new Weapon("Longbow",Dice::D6,3,75,58,100,UsableItem::ARROW),
+	new Weapon("Crossbow",Dice::D4,2,100,46,30,UsableItem::BOLT)
 };
 
 // must match the number of elements created above

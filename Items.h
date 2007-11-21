@@ -24,7 +24,7 @@ class UsableItem : public Item
 protected:
 	int num;
 public:
-	enum UsableItemType { WEAPON_CONSUMABLE, POTION, OTHER };
+	enum UsableItemType { ARROW, BOLT, POTION, NONE };
 	UsableItemType usableType;
 
 	UsableItem(char*, int, int, UsableItemType, int = 0);
@@ -34,16 +34,6 @@ public:
 	int numLeft();
 	void useOne();
 	virtual bool isItemOfQuantity();
-};
-
-class WeaponConsumable : public UsableItem
-{
-public:
-	enum WeaponConsumableType { ARROW, BOLT, NONE };
-	WeaponConsumableType consumableType;
-
-	// name, costInGold, num, typeOfConsumable
-	WeaponConsumable(char*,int,int,int,WeaponConsumableType);
 };
 
 class Potion : public UsableItem
@@ -119,13 +109,13 @@ private:
 	const int RANGE_INCREMENT;
 	const int CRITICAL_MULTIPLIER;
 
-	WeaponConsumable::WeaponConsumableType requiredConsumable;
+	UsableItem::UsableItemType requiredConsumable;
 public:
 	// name, damage dice type, critical multiplier, cost in gold, graphicOffset
 	Weapon(char*,int,int,int,int);
 
 	// name, damage dice type, critical multiplier, cost in gold, graphicOffset, range, requiredItem
-	Weapon(char*,int,int,int,int,int,WeaponConsumable::WeaponConsumableType);
+	Weapon(char*,int,int,int,int,int,UsableItem::UsableItemType);
 	
 	int getDamage();
 	int getRangeIncrement();
