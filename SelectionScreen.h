@@ -57,8 +57,6 @@ private:
 	bool inBounds(GraphicsSelection &, int, int);
 
 	//enumerated types to show which race/class is selected
-	playerClass myClass;
-	race myRace;
 
 	// whether or not the main character has been created
 	bool *signalCompletion;
@@ -88,6 +86,11 @@ private:
 	int abs(int);
 
 public:
+
+	playerClass myClass;
+	race myRace;
+
+
 	SelectionScreen(int, int, int, int);
 	void paint();
 

@@ -10,6 +10,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	currentPlayer = NULL;
 	shopScreen = NULL;
 	equipScreen = NULL;
+	fightScreen = NULL;
 	subScreenSignal = false;
 	treasure = NULL;
 	//weapons = NULL;
@@ -338,6 +339,10 @@ void MainGame::paint()
 	{
 		equipScreen->paint();
 	}
+	else if(state == STATE_FIGHT)
+	{
+		fightScreen->paint();
+	}
 }
 
 void MainGame::paintObject(Object* obj)
@@ -450,6 +455,18 @@ void MainGame::mouseLeft(int clickX, int clickY)
 			showEquipScreen();
 		}
 	}
+	else if(state == STATE_FIGHT)
+	{
+		fightScreen->mouseLeft(clickX,clickY);
+
+		// if the user closed the shop screen, toggle it to off
+		if(subScreenSignal)
+		{
+			subScreenSignal = false;
+			showFightScreen();
+		}
+	}
+
 }
 void MainGame::mouseRight(int clickX, int clickY)
 {
@@ -457,6 +474,8 @@ void MainGame::mouseRight(int clickX, int clickY)
 		shopScreen->mouseRight(clickX,clickY);
 	else if(state == STATE_EQUIP)
 		equipScreen->mouseRight(clickX,clickY);
+	else if(state == STATE_FIGHT)
+		fightScreen->mouseRight(clickX,clickY);
 	else
 	{}
 }
@@ -498,6 +517,26 @@ void MainGame::showEquipScreen()
 
 		// you can only enter the equip screen during the human turn, so restore the human turn
 		state = STATE_HUMAN_TURN;
+	}
+}
+
+void MainGame::showFightScreen()
+{
+	if(state != STATE_FIGHT)
+	{
+		if(fightScreen == NULL)
+		{
+			fightScreen = new FightScreen(16*2,16*3,640,440);
+			fightScreen->setSignal(&subScreenSignal);
+		}
+		state = STATE_FIGHT;
+	}
+	else
+	{
+		fightScreen->userExited();
+
+		// you can only enter the FIGHT screen during the human turn, so restore the human turn
+		state = STATE_HUMAN_TURN; //but human turn could be over? last step.
 	}
 }
 

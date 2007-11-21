@@ -4,6 +4,7 @@
 #include "Screens.h"
 #include "ShopScreen.h"
 #include "EquipScreen.h"
+#include "FightScreen.h"
 #include <queue>
 using std::queue;
 
@@ -42,6 +43,7 @@ private:
 	Level *level;
 	ShopScreen *shopScreen;
 	EquipScreen *equipScreen;
+	FightScreen *fightScreen;
 
 	Character *currentPlayer;
 	int currSpeed;
@@ -74,7 +76,7 @@ private:
 	static const int STATE_AI_TURN = 2;
 	static const int STATE_SHOP = 3;
 	static const int STATE_EQUIP = 4;
-	static const int STATE_BATTLE = 5;
+	static const int STATE_FIGHT = 5;
 	void loadLevel();
 	void paintNow();
 	void paintObject(Object*);
@@ -114,6 +116,7 @@ public:
 
 	void showShop();
 	void showEquipScreen();
+	void showFightScreen();
 	void openTreasure();
 
 	// used to move game logic independently of key/mouse events

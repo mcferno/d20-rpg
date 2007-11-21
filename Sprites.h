@@ -69,7 +69,18 @@ protected:
 	
 	// hit points, current level, speed (in tiles)
 	int hp, level, speed;
+
+	int imyRace, imyClass;
+
+	static const int FIGHTER = 0;
+
+
 public:
+
+	void setRace(int);
+	void setClass(int);
+	int getRace();
+	int getClass();
 
 	static int getModifier(int);
 
@@ -80,6 +91,8 @@ public:
 	// get the sum of a number of rolls, discarding the lowest
 
 	//mutators
+
+
 	void setStr(int);
 	void setDex(int);
 	void setCon(int);
@@ -135,6 +148,7 @@ protected:
 
 	int numArrows, numBolts, numPotions;
 public:
+
 	Money money;
 	Inventory inventory;
 	Weapon *equippedWeapon;
@@ -187,6 +201,11 @@ public:
 	static const int ITE_ADJ = 0;
 	static const int WIS_ADJ = 0;
 	static const int CHA_ADJ = 0;
+
+	static const int HUMAN = 0;
+	static const int DWARF = 1;
+	static const int ELF = 2;
+	static const int GNOME = 3;
 };
 
 // #####################################################################################################

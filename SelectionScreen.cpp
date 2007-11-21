@@ -15,8 +15,8 @@ SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH) : Scree
 void SelectionScreen::init()
 {
 	//font colors
-	SDL_Color textColorWhite = {255,255,255};
-	SDL_Color textColorBlack = {0, 0, 0};
+	textColorWhite.r = textColorWhite.g = textColorWhite.b = 0xFF;
+	textColorBlack.r = textColorBlack.g = textColorBlack.b = 0x00;
 
 	characterSprites = new Graphics(".\\images\\characters.png");
 	selectScreen = loadImage(".\\images\\selectScreen.png");
@@ -509,6 +509,27 @@ bool SelectionScreen::inBounds(GraphicsSelection &gs, int x, int y)
 //LEFT MOUSE EVENT POLLING
 void SelectionScreen::mouseLeft(int x, int y)
 {
+	//DEBUG QUICKSTART!! CLICK TOP CORNER
+	if (x >= 0 && x <= 2*16 && y >= 0 && y <= 2*16)
+	{
+			selectedSprite = 1;
+			selectedRace = 0;
+			selectedClass = 0;
+			myRace = HUMAN; //WHEN DISABLED INFINITE WALKING WOOT!
+			SDL_Rect *characterRect = new SDL_Rect();
+			mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
+			mainCharacter->graphics = characterSprites;
+			characterRect->x = availableSprites[selectedSprite].clip.x;
+			characterRect->y = availableSprites[selectedSprite].clip.y;
+			characterRect->w = availableSprites[selectedSprite].clip.w;
+			characterRect->h = availableSprites[selectedSprite].clip.h;
+			mainCharacter->x = 10;
+			mainCharacter->y = 14;
+			mainCharacter->clip = characterRect;
+			*signalCompletion = true;
+	}
+
+
 	//START BUTTON
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
