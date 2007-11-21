@@ -11,7 +11,9 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	shopScreen = NULL;
 	equipScreen = NULL;
 	subScreenSignal = false;
+	treasure = NULL;
 	//weapons = NULL;
+	 shopDoorX = shopDoorY = exitDoorX = exitDoorY = -1;
 }
 
 // begins the game by loading the level and all of its enemies
@@ -43,7 +45,7 @@ void MainGame::doInitiativeRoll()
 		if(i==0)
 			std::cout << "You rolled a " << rolls[i] << "\n";
 		else
-			std::cout << "Monster #" << i+1 << " rolled a " << rolls[i] << "\n";
+			std::cout << "Monster #" << i << " rolled a " << rolls[i] << "\n";
 	}
 	std::cout << "\n";
 
@@ -93,6 +95,7 @@ void MainGame::nextTurn()
 	{
 		state = STATE_HUMAN_TURN;
 		std::cout << "Your turn, make your move\n";
+		currSpeed = 20; // to remove
 		paintNow();
 	}
 	else 
@@ -105,6 +108,26 @@ void MainGame::nextTurn()
 	}
 }
 
+bool MainGame::isTileOccupied(int xCoord, int yCoord)
+{
+	if(xCoord == mainCharacter->x && yCoord == mainCharacter->y)
+		return true;
+	for(int i=0;i<numEnemies;i++)
+		if(xCoord == enemies[i].x && yCoord == enemies[i].y)
+			return true;
+	for(int i=0;i<numTreasure;i++)
+		if(xCoord == treasure[i]->x && yCoord == treasure[i]->y)
+			return true;
+	return false;
+}
+
+bool MainGame::isTileWalkable(int xCoord, int yCoord)
+{
+	if(xCoord >= 0 && xCoord < gameMap.w && yCoord >= 0 && yCoord < gameMap.h)
+		return(gameMap.ts[xCoord][yCoord].isWalkable);
+	return false;
+}
+
 // super simplistic AI, randomly goes up, down, left or right
 void MainGame::doAITurn()
 {
@@ -113,27 +136,23 @@ void MainGame::doAITurn()
 	{
 		case 0:
 			// move up
-			if(currentPlayer->y > 0)
-				if(gameMap.ts[currentPlayer->x][currentPlayer->y-1].isWalkable)
-					currentPlayer->y -=1;
+			if(isTileWalkable(currentPlayer->x,currentPlayer->y-1) && !isTileOccupied(currentPlayer->x,currentPlayer->y-1))
+				currentPlayer->y -=1;
 			break;
 		case 1:
 			// move down
-			if(currentPlayer->y < gameMap.h-1)
-				if(gameMap.ts[currentPlayer->x][currentPlayer->y+1].isWalkable)
-					currentPlayer->y +=1;
+			if(isTileWalkable(currentPlayer->x,currentPlayer->y+1) && !isTileOccupied(currentPlayer->x,currentPlayer->y+1))
+				currentPlayer->y +=1;
 			break;
 		case 2:
 			// move left
-			if(currentPlayer->x > 0)
-				if(gameMap.ts[currentPlayer->x-1][currentPlayer->y].isWalkable)
-					currentPlayer->x -=1;
+			if(isTileWalkable(currentPlayer->x-1,currentPlayer->y) && !isTileOccupied(currentPlayer->x-1,currentPlayer->y))
+				currentPlayer->x -=1;
 			break;
 		default:
 			// move right
-			if(currentPlayer->x < gameMap.w-1)
-				if(gameMap.ts[currentPlayer->x+1][currentPlayer->y].isWalkable)
-					currentPlayer->x +=1;
+			if(isTileWalkable(currentPlayer->x+1,currentPlayer->y) && !isTileOccupied(currentPlayer->x+1,currentPlayer->y))
+				currentPlayer->x +=1;
 			break;
 	}
 	// decrement the AI's turn
@@ -147,23 +166,23 @@ void MainGame::doAITurn()
 // initialize the current level, including the map and the enemies
 void MainGame::loadLevel()
 {
+	Graphics *monsterGraphics;
 	switch(currentLevel)
 	{
 		case LEVEL_1:
 			std::cout << "\nNow Loading Level 1\n";
 
 			level = new Level();
-			level->graphics = ".\\levels\\level00\\graphicTiles.bmp";
-			level->index = ".\\levels\\level00\\index.map";
+			level->graphics = ".\\levels\\level01\\graphicTiles.bmp";
+			level->index = ".\\levels\\level01\\index.map";
 			level->alphaR = 0xFF;
 			level->alphaG = 0xE2;
 			level->alphaB = 0xAA;
 
 			// initialize a small set of enemies
-			Graphics *monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
+			monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
 
 			numEnemies = 3;
-
 			enemies = new Monster[numEnemies];
 
 			// skeleton
@@ -196,6 +215,99 @@ void MainGame::loadLevel()
 			enemies[2].y = 25;
 			enemies[2].setSpeed(20);
 
+			numTreasure = 3;
+			treasure = new Treasure*[3];
+			treasure[0] = new MoneyTreasure(50);
+			treasure[0]->x = 16;
+			treasure[0]->y = 12;
+			treasure[1] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[1]);
+			treasure[1]->x = 25;
+			treasure[1]->y = 26;
+			treasure[2] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[0]);
+			treasure[2]->x = 35;
+			treasure[2]->y = 25;
+
+			shopDoorX = 4;
+			shopDoorY = 6;
+			exitDoorX = 38;
+			exitDoorY = 1;
+
+			mainCharacter->x = 10;
+			mainCharacter->y = 14;
+
+			break;
+
+		case LEVEL_2:
+			std::cout << "\nNow Loading Level 2\n";
+
+			level = new Level();
+			level->graphics = ".\\levels\\level02\\graphicTiles.png";
+			level->index = ".\\levels\\level02\\index.map";
+			level->alphaR = 0xFF;
+			level->alphaG = 0xE2;
+			level->alphaB = 0xAA;
+
+			// initialize a small set of enemies
+			monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
+
+			numEnemies = 3;
+			enemies = new Monster[numEnemies];
+
+			// worm
+			enemies[0].graphics = monsterGraphics;
+			enemies[0].clip->x = 8*16;
+			enemies[0].clip->y = 1*16;
+			enemies[0].clip->w = 16;
+			enemies[0].clip->h = 16;
+			enemies[0].x = 15;
+			enemies[0].y = 20;
+			enemies[0].setSpeed(30);
+
+			// evil tree stump
+			enemies[1].graphics = monsterGraphics;
+			enemies[1].clip->x = 14*16;
+			enemies[1].clip->y = 1*16;
+			enemies[1].clip->w = 16;
+			enemies[1].clip->h = 16;
+			enemies[1].x = 25;
+			enemies[1].y = 10;
+			enemies[1].setSpeed(25);
+
+			// medusa
+			enemies[2].graphics = monsterGraphics;
+			enemies[2].clip->x = 1*16;
+			enemies[2].clip->y = 4*16;
+			enemies[2].clip->w = 16;
+			enemies[2].clip->h = 16;
+			enemies[2].x = 25;
+			enemies[2].y = 25;
+			enemies[2].setSpeed(20);
+
+			// initialize all treasure and its locations
+			numTreasure = 3;
+			treasure = new Treasure*[3];
+			treasure[0] = new MoneyTreasure(50);
+			treasure[0]->x = 16;
+			treasure[0]->y = 12;
+			treasure[1] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[1]);
+			treasure[1]->x = 25;
+			treasure[1]->y = 26;
+			treasure[2] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[0]);
+			treasure[2]->x = 35;
+			treasure[2]->y = 25;
+
+			// the tile which allows entry to the shop
+			shopDoorX = 4;
+			shopDoorY = 6;
+
+			// the tile which leads to the next level
+			exitDoorX = 38;
+			exitDoorY = 1;
+
+			// main character's starting point
+			mainCharacter->x = 10;
+			mainCharacter->y = 14;
+
 			break;
 	}
 }
@@ -212,9 +324,11 @@ void MainGame::paint()
 
 	paintObject(mainCharacter);
 
-	paintObject(&enemies[0]);
-	paintObject(&enemies[1]);
-	paintObject(&enemies[2]);
+	for(int i=0;i<numEnemies;i++)
+		paintObject(&enemies[i]);
+
+	for(int i=0;i<numTreasure;i++)
+		paintObject(treasure[i]);
 
 	if(state == STATE_SHOP)
 	{
@@ -246,13 +360,14 @@ void MainGame::keyUp()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(mainCharacter->y > 0)
+		if(isTileWalkable(mainCharacter->x,mainCharacter->y-1) && !isTileOccupied(mainCharacter->x,mainCharacter->y-1))
 		{
-			if(gameMap.ts[mainCharacter->x][mainCharacter->y-1].isWalkable)
-			{
-				mainCharacter->y -= 1;
-				currSpeed -= 1;
-			}
+			mainCharacter->y -= 1;
+			currSpeed -= 1;
+
+			// temporary
+			enterShop();
+			exitLevel();
 		}
 		if(currSpeed == 0)
 			nextTurn();
@@ -262,13 +377,14 @@ void MainGame::keyDown()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(mainCharacter->y < gameMap.h-1)
+		if(isTileWalkable(mainCharacter->x,mainCharacter->y+1) && !isTileOccupied(mainCharacter->x,mainCharacter->y+1))
 		{
-			if(gameMap.ts[mainCharacter->x][mainCharacter->y+1].isWalkable)
-			{
-				mainCharacter->y += 1;
-				currSpeed -= 1;
-			}
+			mainCharacter->y += 1;
+			currSpeed -= 1;
+			
+			// temporary
+			enterShop();
+			exitLevel();
 		}
 		if(currSpeed == 0)
 			nextTurn();
@@ -278,13 +394,14 @@ void MainGame::keyLeft()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(mainCharacter->x > 0)
+		if(isTileWalkable(mainCharacter->x-1,mainCharacter->y) && !isTileOccupied(mainCharacter->x-1,mainCharacter->y))
 		{
-			if(gameMap.ts[mainCharacter->x-1][mainCharacter->y].isWalkable)
-			{
-				mainCharacter->x -= 1;
-				currSpeed -= 1;
-			}
+			mainCharacter->x -= 1;
+			currSpeed -= 1;
+			
+			// temporary
+			enterShop();
+			exitLevel();
 		}
 		if(currSpeed == 0)
 			nextTurn();
@@ -294,13 +411,14 @@ void MainGame::keyRight()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(mainCharacter->x < gameMap.w-1)
+		if(isTileWalkable(mainCharacter->x+1,mainCharacter->y) && !isTileOccupied(mainCharacter->x+1,mainCharacter->y))
 		{
-			if(gameMap.ts[mainCharacter->x+1][mainCharacter->y].isWalkable)
-			{
-				mainCharacter->x += 1;
-				currSpeed -= 1;
-			}
+			mainCharacter->x += 1;
+			currSpeed -= 1;
+			
+			// temporary
+			enterShop();
+			exitLevel();
 		}
 		if(currSpeed == 0)
 			nextTurn();
@@ -380,6 +498,52 @@ void MainGame::showEquipScreen()
 
 		// you can only enter the equip screen during the human turn, so restore the human turn
 		state = STATE_HUMAN_TURN;
+	}
+}
+
+void MainGame::openTreasure()
+{
+	if(numTreasure > 0)
+	{
+		for(int i=0;i<numTreasure;i++)
+		{
+			// top, bottom
+			if(treasure[i]->x == mainCharacter->x && (treasure[i]->y == mainCharacter->y - 1 || treasure[i]->y == mainCharacter->y + 1))
+			{
+				treasure[i]->obtainTreasure(mainCharacter);
+				break;
+			}
+
+			//left right
+			if(treasure[i]->y == mainCharacter->y && (treasure[i]->x == mainCharacter->x - 1 || treasure[i]->x == mainCharacter->x + 1))
+			{
+				treasure[i]->obtainTreasure(mainCharacter);
+				break;
+			}
+		}
+	}
+}
+
+void MainGame::enterShop()
+{
+	if(shopDoorX == mainCharacter->x && shopDoorY == mainCharacter->y)
+		showShop();
+}
+
+// quick post level clean up, and loading of the new level
+void MainGame::exitLevel()
+{
+	if(exitDoorX == mainCharacter->x && exitDoorY == mainCharacter->y && currentLevel == LEVEL_1)
+	{
+		std::cout << "LEVEL COMPLETED!";
+		currentLevel = LEVEL_2;
+		
+		while(!playOrder.empty())
+			playOrder.pop();
+		
+		currentPlayer = NULL;
+
+		init();
 	}
 }
 

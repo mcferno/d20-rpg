@@ -56,6 +56,12 @@ private:
 	Monster *enemies;
 	int numEnemies;
 
+	// an array of treasure found scattered on the map
+	Treasure** treasure;
+	int numTreasure;
+
+	int shopDoorX, shopDoorY, exitDoorX, exitDoorY;
+
 	// simple states tracking the current level
 	int currentLevel;
 	static const int LEVEL_1 = 1;
@@ -74,6 +80,8 @@ private:
 	void paintObject(Object*);
 	void doInitiativeRoll();
 	void nextTurn();
+	bool isTileOccupied(int,int);
+	bool isTileWalkable(int,int);
 
 	Uint32 startAITurn;
 	// time in milliseconds to wait between AI actions, obeyed when possible
@@ -82,6 +90,12 @@ private:
 
 	// does simple AI for enemies of the level
 	void doAITurn();
+
+	// enters the shop if you are standing in its doorway
+	void enterShop();
+
+	// exits the level if you are in the exit door of the level
+	void exitLevel();
 
 public:
 	MainGame(int, int, int, int);
@@ -100,6 +114,7 @@ public:
 
 	void showShop();
 	void showEquipScreen();
+	void openTreasure();
 
 	// used to move game logic independently of key/mouse events
 	void tick();

@@ -183,7 +183,7 @@ void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 						_itoa_s(mainCharacter->getNumArrows(),tempBuffer,10);
 						break;
 					case UsableItem::BOLT:
-						_itoa_s(mainCharacter->getNumArrows(),tempBuffer,10);
+						_itoa_s(mainCharacter->getNumBolts(),tempBuffer,10);
 						break;
 					default:
 						_itoa_s(0,tempBuffer,10);

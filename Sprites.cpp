@@ -235,9 +235,11 @@ void ControllableCharacter::addItem(Item* toAdd)
 				numPotions += tempUsableItem->numLeft();
 				break;
 			case UsableItem::ARROW:
+				std::cout << "Increasing the number of arrows " << tempUsableItem->numLeft();
 				numArrows += tempUsableItem->numLeft();
 				break;
 			case UsableItem::BOLT:
+				std::cout << "Increasing the number of bolts " << tempUsableItem->numLeft();
 				numBolts += tempUsableItem->numLeft();
 				break;
 		}
@@ -395,6 +397,60 @@ Monster::Monster() : Character()
 
 // #####################################################################################################
 
+Graphics* Treasure::treasureGraphics = NULL;
+
+Treasure::Treasure()
+{
+	opened = false;
+	if(treasureGraphics == NULL)
+		treasureGraphics = new Graphics(".\\images\\treasure.png",0xFF,0x0,0xFF);
+	graphics = treasureGraphics;
+	clip = new SDL_Rect();
+	clip->x = clip->y = 0;
+	clip->w = clip->h = 16;
+}
+
+void Treasure::treasureOpened()
+{
+	opened = true;
+	clip->x = 16;
+}
+
+// #####################################################################################################
+
+MoneyTreasure::MoneyTreasure(int awardInGold) : Treasure()
+{
+	if(awardInGold > 0)
+		rewardMoney.addGold(awardInGold);
+}
+
+void MoneyTreasure::obtainTreasure(ControllableCharacter *recepient)
+{
+	if(!opened)
+	{
+		recepient->money += rewardMoney;
+		std::cout << "You found " << rewardMoney.getGold() << " gold in the treasure!\n";
+		treasureOpened();
+	}
+}
+
+// #####################################################################################################
+
+ItemTreasure::ItemTreasure(Item* newRewardItem) : Treasure()
+{
+	rewardItem = newRewardItem;
+}
 
 
+void ItemTreasure::obtainTreasure(ControllableCharacter *recepient)
+{
+	if(!opened)
+	{
+		recepient->addItem(rewardItem);
+		std::cout << "You found the item '" << rewardItem->name << "' in the treasure!\n";
+		treasureOpened();
+	}
+}
+
+// #####################################################################################################
 

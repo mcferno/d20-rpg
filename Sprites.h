@@ -229,5 +229,42 @@ public:
 
 // #####################################################################################################
 
+class Treasure : public Object
+{
+private:
+	static Graphics* treasureGraphics;
+protected:
+	bool opened;
+	void treasureOpened();
+public:
+	Treasure();
+	virtual void obtainTreasure(ControllableCharacter*) = 0;
+};
+
+// #####################################################################################################
+
+class MoneyTreasure : public Treasure
+{
+private:
+	Money rewardMoney;
+public:
+	MoneyTreasure(int);
+	virtual void obtainTreasure(ControllableCharacter*);
+};
+
+// #####################################################################################################
+
+class ItemTreasure : public Treasure
+{
+private:
+	Item* rewardItem;
+public:
+	ItemTreasure(Item*);
+	virtual void obtainTreasure(ControllableCharacter*);
+};
+
+// #####################################################################################################
+
+
 #endif
 

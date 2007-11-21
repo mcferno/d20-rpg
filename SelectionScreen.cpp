@@ -544,9 +544,6 @@ void SelectionScreen::mouseLeft(int x, int y)
 			characterRect->w = availableSprites[selectedSprite].clip.w;
 			characterRect->h = availableSprites[selectedSprite].clip.h;
 
-			mainCharacter->x = 10;
-			mainCharacter->y = 14;
-
 			mainCharacter->clip = characterRect;
 
 			//pass a call back to Game.cpp
