@@ -83,12 +83,26 @@ bool StartScreen::inBounds(GraphicsSelection &gs, int x, int y)
 
 void StartScreen::showMapEditor(int level)
 {
-	if(mapEditor == NULL)
+	if(state != STATE_MAP_EDITOR)
 	{
-		mapEditor = new MapEditor(x,y,w,h);
-		mapEditor->setSignal(&isDone);
-
+		if(mapEditor == NULL)
+		{
+			mapEditor = new MapEditor(x,y,w,h);
+			mapEditor->setSignal(&isDone);
+		}
+		switch(level)
+		{
+			case 1:
+				mapEditor->load(LEVEL_1_MAP, LEVEL_1_GRAPHICS);
+				break;
+			case 2:
+				mapEditor->load(LEVEL_2_MAP, LEVEL_2_GRAPHICS);
+				break;
+			default:
+				mapEditor->load();
+				break;
+		}
+		state = STATE_MAP_EDITOR;
 	}
-	state = STATE_MAP_EDITOR;
 }
 

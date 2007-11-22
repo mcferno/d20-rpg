@@ -35,7 +35,7 @@ public:
 
 	StartScreen(int, int, int, int);
 	void paint();
-	void showMapEditor(int=1);
+	void showMapEditor(int = 0);
 
 	// handles mouse interactions
 	void mouseLeft(int,int);

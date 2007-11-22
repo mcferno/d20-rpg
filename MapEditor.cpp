@@ -300,6 +300,11 @@ MapEditor::MapEditor(int newX, int newY, int width, int height) :
 	indexMsg = TTF_RenderText_Solid( fontCalibriTiny, "Index:", textColor );
 	walkableMsg = TTF_RenderText_Solid( fontCalibriTiny, "Walkable:", textColor );
 	std::cout << "Successful!\n";
+
+	customMap = NULL;
+	tileSet = NULL;
+
+	isLoaded = false;
 }
 
 MapEditor::~MapEditor()
@@ -340,6 +345,12 @@ void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW,
 	}
 
 	tileSet->loadGraphics(graphics);
+	isLoaded = true;
+}
+
+void MapEditor::unload()
+{
+
 }
 
 void MapEditor::paintInfoPanel()
@@ -404,17 +415,20 @@ void MapEditor::paint()
 {
 	applySurface(0,0,background,screen);
 
-	customMap->paint();
-	tileSet->paint(selectedTileX,selectedTileY);
-
-	// paint the 4 directional buttons for each scrolling window
-	for(int i=0;i<4;i++)
+	if(isLoaded)
 	{
-		applySurface(customMapBtns[i].x,customMapBtns[i].y,customMapBtns[i].image,screen);
-		applySurface(tileSetBtns[i].x,tileSetBtns[i].y,tileSetBtns[i].image,screen);
-	}
+		customMap->paint();
+		tileSet->paint(selectedTileX,selectedTileY);
 
-	paintInfoPanel();
+		// paint the 4 directional buttons for each scrolling window
+		for(int i=0;i<4;i++)
+		{
+			applySurface(customMapBtns[i].x,customMapBtns[i].y,customMapBtns[i].image,screen);
+			applySurface(tileSetBtns[i].x,tileSetBtns[i].y,tileSetBtns[i].image,screen);
+		}
+
+		paintInfoPanel();
+	}
 }
 
 void MapEditor::mouseLeft(int x, int y) 
