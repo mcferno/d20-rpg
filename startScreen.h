@@ -2,6 +2,7 @@
 	#define START_SCREENS_H
 
 #include "Screens.h"
+#include "MapEditor.h"
 
 class StartScreen : public Screen
 {
@@ -17,22 +18,24 @@ private:
 	SDL_Surface *startScreen5;
 	SDL_Surface *startScreen6;
 
-	bool *signalCompletionS;
+	MapEditor *mapEditor;
 
 	void init();
 
 	bool inBounds(GraphicsSelection &, int, int);
 	bool musicStarted;
 
-	
+	int state;
+	bool isDone;
+
+	static const int STATE_SHOW_SCREEN = 0;
+	static const int STATE_MAP_EDITOR = 1;
 
 public:
 
 	StartScreen(int, int, int, int);
 	void paint();
-
-	// a 'semaphore' of sorts used to synchonize with the class which instanciated it
-	void setSignalS(bool *);
+	void showMapEditor(int=1);
 
 	// handles mouse interactions
 	void mouseLeft(int,int);

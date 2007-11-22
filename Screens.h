@@ -29,12 +29,15 @@ protected:
 
 	// the chosen character, shared among the selection screen and main game
 	static ControllableCharacter *mainCharacter;
+
+	bool* signal;
+
+	void signalCompletion();
 public:
-	virtual void paint() = 0;
-
 	Screen(int,int,int,int);
-
+	virtual void paint() = 0;
 	static void init(SDL_Surface *);
+	void setSignal(bool *);
 };
 
 #endif

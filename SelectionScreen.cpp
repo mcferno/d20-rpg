@@ -80,11 +80,6 @@ void SelectionScreen::init()
 	availableClasses[0].clip.h = 16;
 }
 
-void SelectionScreen::setSignal(bool* signal)
-{
-	signalCompletion = signal;
-}
-
 void SelectionScreen::paint()
 {
 	// apply background image
@@ -526,7 +521,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 			mainCharacter->x = 10;
 			mainCharacter->y = 14;
 			mainCharacter->clip = characterRect;
-			*signalCompletion = true;
+			signalCompletion();
 	}
 
 
@@ -568,7 +563,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 			mainCharacter->clip = characterRect;
 
 			//pass a call back to Game.cpp
-			*signalCompletion = true;
+			signalCompletion();
 		}
 		else
 			std::cout << "ERROR: You must select a character, race and class!\n";

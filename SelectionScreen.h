@@ -56,11 +56,6 @@ private:
 
 	bool inBounds(GraphicsSelection &, int, int);
 
-
-
-	// whether or not the main character has been created
-	bool *signalCompletion;
-
 	void paintGraphicsSelection(GraphicsSelection &);
 
 	//what happens when you click the roll button
@@ -94,9 +89,6 @@ public:
 
 	void init();
 	void paint();
-
-	// a 'semaphore' of sorts used to synchonize with the class which instanciated it
-	void setSignal(bool *);
 
 	// handles mouse interactions
 	void mouseLeft(int,int);

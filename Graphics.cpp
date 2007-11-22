@@ -38,6 +38,11 @@ SDL_Surface *loadImage( char *filename, int r, int g, int b )
 	return optimizedImage; 
 }
 
+SDL_Surface *loadImage(const char *filename, int r, int g, int b ) 
+{ 
+	return (loadImage(const_cast<char*>(filename),r,g,b));
+}
+
 void applySurface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip ) 
 { 
 	SDL_Rect offset; 
@@ -103,6 +108,22 @@ void Graphics::chopUp()
 Graphics::Graphics()
 {}
 
+Graphics::Graphics(const char *filename, int r, int g, int b, int newTileSize)
+{
+	std::cout << "Opening graphics file \"" << filename << "\" ... ";
+	image = loadImage(filename,r,g,b);
+
+	if(image == NULL)
+	{
+		std::cout << "FAILED!\n";
+		return;
+	}
+	std::cout << "Successful!\n";
+
+	tileSize = newTileSize;
+	init();
+}
+
 Graphics::Graphics(char *filename, int r, int g, int b, int newTileSize)
 {
 	std::cout << "Opening graphics file \"" << filename << "\" ... ";
@@ -115,10 +136,15 @@ Graphics::Graphics(char *filename, int r, int g, int b, int newTileSize)
 	}
 	std::cout << "Successful!\n";
 
+	tileSize = newTileSize;
+	init();
+}
+
+void Graphics::init()
+{
 	x = y = 0;
 	w = image->w;
 	h = image->h;
-	tileSize = newTileSize;
 	wTiles = w/tileSize;  // check if its an even division
 	hTiles = h/tileSize;
 	totalTiles = wTiles*hTiles;
@@ -194,9 +220,19 @@ void Map::parseIndex(char *filename)
 	std::cout << "Successful!\n";
 }
 
+void Map::parseIndex(const char *filename)
+{
+	parseIndex(const_cast<char*>(filename));
+}
+
 void Map::loadGraphics(char *filename, int alphaR, int alphaG, int alphaB)
 {
 	loadGraphics(new Graphics(filename,alphaR,alphaG,alphaB));
+}
+
+void Map::loadGraphics(const char *filename, int alphaR, int alphaG, int alphaB)
+{
+	loadGraphics(const_cast<char*>(filename),alphaR, alphaG, alphaB);
 }
 
 void Map::loadGraphics(Graphics *newGraphics)
@@ -210,6 +246,11 @@ void Map::loadMap(Graphics *newGraphics, char *indexFilename)
 {
 	loadGraphics(newGraphics);
 	parseIndex(indexFilename);
+}
+
+void Map::loadMap(Graphics *newGraphics, const char *indexFilename)
+{
+	loadMap(newGraphics,const_cast<char*>(indexFilename));
 }
 
 Map::Map()

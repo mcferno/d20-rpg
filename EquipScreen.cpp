@@ -99,11 +99,6 @@ void EquipScreen::paintItem(int xLoc, int yLoc, Item* item)
 	applySurface(xLoc,yLoc,item->graphics->image,screen,&item->graphics->clip[item->index]);
 }
 
-void EquipScreen::setSignal(bool* signal)
-{
-	notifyCompletion = signal;
-}
-
 void EquipScreen::deselectItems()
 {
 	selectedInventory = -1;
@@ -167,7 +162,7 @@ void EquipScreen::mouseLeft(int clickX, int clickY)
 
 	if(clickedExit(clickX, clickY))
 	{
-		*notifyCompletion = true;
+		signalCompletion();
 	}
 	else if(selectedEquipableItem != NULL 
 		&& clickedButton(clickX, clickY, unEquipButton) 

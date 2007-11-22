@@ -19,7 +19,6 @@ private:
 	SDL_Surface *msgQuantity;
 	SDL_Surface *msgItemQuantity;
 	bool showPurchaseError;
-	bool *notifyCompletion;
 
 	Button buyButton;
 	Button sellButton;
@@ -50,7 +49,6 @@ public:
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
 	void userExited();
-	void setSignal(bool*);
 };
 
 #endif

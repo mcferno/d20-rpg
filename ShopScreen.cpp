@@ -10,7 +10,6 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 	background = loadImage(".\\images\\shopScreen.png");
 	buttons = loadImage(".\\images\\buySellButtons.png");
 	showPurchaseError = false;
-	notifyCompletion = NULL;
 
 	// initialize the buttons used to buy and sell
 	buyButton.clip.x = buyButton.clip.y = sellButton.clip.y = 0;
@@ -48,11 +47,6 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 		storeInventory.addItem(items[i]);
 	
 	selectedStoreItem = selectedClientItem = -1;
-}
-
-void ShopScreen::setSignal(bool* signal)
-{
-	notifyCompletion = signal;
 }
 
 void ShopScreen::mouseLeft(int clickX, int clickY)
@@ -127,7 +121,7 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 	}
 	else if(clickedExit(clickX, clickY))
 	{
-		*notifyCompletion = true;
+		signalCompletion();
 	}
 	else if(selectedClientItem != -1 && clickedButton(clickX, clickY, sellButton))
 	{

@@ -177,11 +177,6 @@ void FightScreen::paintStats(int xi, int yi, bool isPlayer)
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 }
 
-void FightScreen::setSignal(bool* signal)
-{
-	notifyCompletion = signal;
-}
-
 void FightScreen::mouseLeft(int clickX, int clickY)
 {
 

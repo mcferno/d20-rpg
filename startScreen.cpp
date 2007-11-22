@@ -3,6 +3,9 @@
 
 StartScreen::StartScreen(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
 {
+	mapEditor = NULL;
+	state = STATE_SHOW_SCREEN;
+	isDone = false;
 	init();
 }
 
@@ -21,47 +24,71 @@ void StartScreen::init()
 	startScreen6 = loadImage(".\\images\\anim\\Image6.png");
 }
 
-void StartScreen::setSignalS(bool* signal)
-{
-	signalCompletionS = signal;
-}
-
 void StartScreen::paint()
 {
-
-	//start music
-	if (!musicStarted)
+	if(state == STATE_SHOW_SCREEN)
 	{
-		Mix_PlayMusic( startMusic,-1 );
-		musicStarted=true;
+		//start music
+		if (!musicStarted)
+		{
+			Mix_PlayMusic( startMusic,-1 );
+			musicStarted=true;
+		}
+
+		// apply background image
+		applySurface(0,0,startScreen6,screen);
 	}
-
-	// apply background image
-	applySurface(0,0,startScreen6,screen);
-}
-
-void StartScreen::mouseLeft(int x, int y)
-{
-
-	if (x >= 0 && x <= 800 && y >= 0 && y <= 600)
+	else if(state == STATE_MAP_EDITOR)
 	{
-		Mix_HaltMusic();
-		*signalCompletionS = true;
+		mapEditor->paint();
 	}
 }
 
-void StartScreen::mouseRight(int x, int y)
+void StartScreen::mouseLeft(int clickX, int clickY)
 {
-
-	if (x >= 0 && x <= 800 && y >= 0 && y <= 600)
+	if(state == STATE_SHOW_SCREEN)
 	{
-		Mix_HaltMusic();
-		*signalCompletionS = true;
+		if (clickX >= x && clickX <= x+w && clickY >= y && clickY <= y+h)
+		{
+			Mix_HaltMusic();
+			signalCompletion();
+		}
+	}
+	else if(state == STATE_MAP_EDITOR)
+	{
+		mapEditor->mouseLeft(clickX, clickY);
+	}
+}
+
+void StartScreen::mouseRight(int clickX, int clickY)
+{
+	if(state == STATE_SHOW_SCREEN)
+	{
+		if (clickX >= x && clickX <= x+w && clickY >= y && clickY <= y+h)
+		{
+			Mix_HaltMusic();
+			signalCompletion();
+		}
+	}
+	else if(state == STATE_MAP_EDITOR)
+	{
+		mapEditor->mouseRight(clickX, clickY);
 	}
 }
 
 bool StartScreen::inBounds(GraphicsSelection &gs, int x, int y)
 {
 	return (x >= gs.x && x <= (gs.x + gs.clip.w) && y >= gs.y && y <= (gs.y + gs.clip.h));
+}
+
+void StartScreen::showMapEditor(int level)
+{
+	if(mapEditor == NULL)
+	{
+		mapEditor = new MapEditor(x,y,w,h);
+		mapEditor->setSignal(&isDone);
+
+	}
+	state = STATE_MAP_EDITOR;
 }
 

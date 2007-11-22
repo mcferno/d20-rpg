@@ -12,6 +12,7 @@ All classes related to any kind of visual graphics.
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "Config.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -33,6 +34,7 @@ const int GRAPHICS_INT_DEFAULT = -1;
  *     BMP, PNG, JPEG, GIF, TIF, PCX, and more..
  */
 SDL_Surface *loadImage( char *, int = -1, int = -1, int = -1);
+SDL_Surface *loadImage( const char *, int = -1, int = -1, int = -1);
 
 /* applySurface: applies an image onto a surface (which may also be an image or
  *   or a solid color). Can allow only a certain portion of an image to be 
@@ -121,6 +123,7 @@ private:
 	/* chopUp: Cuts the loaded image into its individual graphic tiles.
 	 */
 	void chopUp();
+	void init();
 
 public:
 	// the large image containing all the smaller images
@@ -141,7 +144,8 @@ public:
 	int totalTiles;
 
 	Graphics();
-	Graphics(char *, int = 0x0, int = 0xFF, int = 0xFF, int = 16);
+	Graphics(const char *, int = 0x0, int = 0xFF, int = 0xFF, int = TILE_SIZE);
+	Graphics(char *, int = 0x0, int = 0xFF, int = 0xFF, int = TILE_SIZE);
 	~Graphics();
 };
 
@@ -208,12 +212,14 @@ public:
 
 	// load the graphics from a file, instead of recieving a pointer
 	void loadGraphics(char *,int,int,int);
+	void loadGraphics(const char *,int,int,int);
 
 	// open a *.map file (indexFile), initializing the tileSet
 	virtual void loadGraphics(Graphics *);
 
 	// open a *.map file (indexFile), initializing the tileSet
 	void loadMap(Graphics *, char *);
+	void loadMap(Graphics *, const char *);
 
 	Map();
 
@@ -228,6 +234,7 @@ public:
 	 *     ex: ".\\storedMaps\\index.map" or "C:\\index.map"
 	 */
 	void parseIndex(char *);
+	void parseIndex(const char *);
 
 	/* scrollLeft, scrollRight, scrollUp, scrollDown: moves the tiles within the 
 	 *   bounding window. Allows maps larger than the bounding window to be displayed.

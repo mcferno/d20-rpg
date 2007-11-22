@@ -5,8 +5,6 @@
 #include "Dice.h"
 #include "Money.h"
 
-static char* ITEM_GRAPHICS = ".\\images\\items.png";
-
 class Item
 {
 public:

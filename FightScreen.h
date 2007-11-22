@@ -53,10 +53,7 @@ public:
 	void paint();
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
-	void userExited();
-	void setSignal(bool*);
-
-	
+	void userExited();	
 };
 
 #endif

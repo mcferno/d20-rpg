@@ -10,6 +10,15 @@ TTF_Font* Screen::fontCalibriBold = NULL;
 TTF_Font* Screen::fontCalibriTiny = NULL;
 SDL_Surface* Screen::highlightTile = NULL;
 
+Screen::Screen(int newX, int newY, int newW, int newH)
+{
+	x = newX;
+	y = newY;
+	w = newW;
+	h = newH;
+	signal = NULL;
+}
+
 void Screen::init(SDL_Surface *newScreen)
 {
 	Screen::screen = newScreen;
@@ -19,12 +28,16 @@ void Screen::init(SDL_Surface *newScreen)
 	Screen::fontCalibriBold = TTF_OpenFont ( ".\\fonts\\calibrib.ttf", 16 );
 }
 
-Screen::Screen(int newX, int newY, int newW, int newH)
+void Screen::setSignal(bool *newSignal)
 {
-	x = newX;
-	y = newY;
-	w = newW;
-	h = newH;
+	if(newSignal != NULL)
+		signal = newSignal;
+}
+
+void Screen::signalCompletion()
+{
+	if(signal != NULL)
+		*signal = true;
 }
 
 // #####################################################################################################

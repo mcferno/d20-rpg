@@ -13,8 +13,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	fightScreen = NULL;
 	subScreenSignal = false;
 	treasure = NULL;
-	//weapons = NULL;
-	 shopDoorX = shopDoorY = exitDoorX = exitDoorY = -1;
+	shopDoorX = shopDoorY = exitDoorX = exitDoorY = -1;
 }
 
 // begins the game by loading the level and all of its enemies
@@ -174,8 +173,8 @@ void MainGame::loadLevel()
 			std::cout << "\nNow Loading Level 1\n";
 
 			level = new Level();
-			level->graphics = ".\\levels\\level01\\graphicTiles.bmp";
-			level->index = ".\\levels\\level01\\index.map";
+			level->graphics = LEVEL_1_GRAPHICS;
+			level->index = LEVEL_1_MAP;
 			level->alphaR = 0xFF;
 			level->alphaG = 0xE2;
 			level->alphaB = 0xAA;

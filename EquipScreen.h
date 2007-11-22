@@ -6,7 +6,6 @@
 class EquipScreen : public Screen
 {
 private:
-	bool *notifyCompletion;
 	SDL_Surface *background;
 	SDL_Surface *buttons;
 	Button equipButton;
@@ -52,7 +51,6 @@ public:
 	EquipScreen(int, int, int, int);
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
-	void setSignal(bool*);
 	void paint();
 	void userExited();
 };

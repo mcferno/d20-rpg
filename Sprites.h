@@ -177,12 +177,15 @@ public:
 class Monster : public Character
 {
 private:
+	// why would we need these? we dont need to restrict ourselves to a finite set of opponents
+	/*
 	static const int MONSTER_SKELETON = 0;
 	static const int MONSTER_THUG = 1;
 	static const int MONSTER_PORCUPINE = 2;
 	static const int MONSTER_WORM = 3;
 	static const int MONSTER_TREE = 4;
 	static const int MONSTER_MEDUSA = 5;
+	*/
 public:
 	Monster();
 };

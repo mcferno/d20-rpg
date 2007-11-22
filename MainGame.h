@@ -19,13 +19,13 @@ class Level
 {
 public:
 	// relative path to the graphics file on disk
-	char *graphics;
+	const char *graphics;
 
 	// the transparent color to mask out of the graphics image (RGB, in hex)
 	int alphaR, alphaG, alphaB;
 
 	// relative path to the map index on disk
-	char *index;
+	const char *index;
 };
 
 // #####################################################################################################
