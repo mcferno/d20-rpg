@@ -12,6 +12,7 @@ All classes related to screens (ex: Character selection
 
 #include "Graphics.h"
 #include "SDL_ttf.h"
+#include "SDL_mixer.h"
 #include "Sprites.h"
 #include "Items.h"
 #include "Inventory.h"

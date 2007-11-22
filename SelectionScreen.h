@@ -56,12 +56,11 @@ private:
 
 	bool inBounds(GraphicsSelection &, int, int);
 
-	//enumerated types to show which race/class is selected
+
 
 	// whether or not the main character has been created
 	bool *signalCompletion;
 
-	void init();
 	void paintGraphicsSelection(GraphicsSelection &);
 
 	//what happens when you click the roll button
@@ -92,6 +91,8 @@ public:
 
 
 	SelectionScreen(int, int, int, int);
+
+	void init();
 	void paint();
 
 	// a 'semaphore' of sorts used to synchonize with the class which instanciated it

@@ -1,5 +1,6 @@
 #include "SDL.h"
 #include "Screens.h"
+#include "StartScreen.h"
 #include "SelectionScreen.h"
 #include "MainGame.h"
 #include <time.h>
@@ -20,15 +21,18 @@ Uint32 bgColor;
 // changed to pointers since the objects were being created statically
 // at run time, which lead to problems since these objects depend on
 // the screen having been created first
+StartScreen *startScreen;
 SelectionScreen *selectionScreen;
 MainGame *mainGame;
 
+
 // Game states
+const int STATE_START = 10;
 const int STATE_CHARACTER_SELECTION = 0;
 const int STATE_MAIN_GAME = 1;
 const int STATE_MONSTER_MOVE = 2;
 
-int state = STATE_CHARACTER_SELECTION;
+int state = STATE_START;
 
 void clearScreen()
 {
@@ -42,6 +46,9 @@ void paint()
 
 	switch(state)
 	{
+		case STATE_START:
+			startScreen->paint();
+			break;
 		case STATE_CHARACTER_SELECTION:
 			selectionScreen->paint();
 			break;
@@ -68,6 +75,11 @@ int main( int argc, char* args[] )
 	{
 		return 1;
 	}
+
+    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
+    {
+        return false;    
+    }
 	
 	// Initialize the main graphics screen 
 	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE ); 
@@ -82,7 +94,12 @@ int main( int argc, char* args[] )
 	// seed rand for later use in the game
 	srand ((unsigned int)time(NULL));
 
+	bool startDone = false;
 	bool isDone = false;
+
+	startScreen = new StartScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+	startScreen->setSignalS(&startDone);
+
 	selectionScreen = new SelectionScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 	selectionScreen->setSignal(&isDone);
 
@@ -147,14 +164,19 @@ int main( int argc, char* args[] )
 				dirty = true;
 				if( event.button.button == SDL_BUTTON_LEFT )
 				{
+					if (state == STATE_START)
+						startScreen->mouseLeft(event.button.x,event.button.y);
 					if (state == STATE_CHARACTER_SELECTION)
 						selectionScreen->mouseLeft(event.button.x,event.button.y);
 					if(state == STATE_MAIN_GAME)
 						mainGame->mouseLeft(event.button.x,event.button.y);
+				}
 
 				}
 				if( event.button.button == SDL_BUTTON_RIGHT )
 				{
+					if (state == STATE_START)
+						startScreen->mouseRight(event.button.x,event.button.y);
 					if (state == STATE_CHARACTER_SELECTION)
 						selectionScreen->mouseRight(event.button.x,event.button.y);
 					if(state == STATE_MAIN_GAME)
@@ -166,6 +188,14 @@ int main( int argc, char* args[] )
 			{ 
 				quit = true; 
 			} 
+
+			if(startDone)
+			{
+				state = STATE_CHARACTER_SELECTION;
+				clearScreen();
+				selectionScreen->init();
+				startDone = false;
+			}
 
 			// if the selection screen has signaled it is done, start the game
 			if(isDone)
@@ -192,7 +222,8 @@ int main( int argc, char* args[] )
 
 		// momentary sleep to avoid using too much CPU
 		SDL_Delay(FRAME_RATE_SLEEP);
-	}
+	
+
 	
 	return 0;
 }
