@@ -23,7 +23,7 @@ private:
 	static SDL_Surface *characterMessage;
 
 	//graphics to be loaded
-	Graphics *characterSprites;
+	SDL_Surface *characterSprites;
 	SDL_Surface *selectScreen;
 
 	//color of text
@@ -34,9 +34,9 @@ private:
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;
 	static const int NUM_CLASSES = 1;
-	GraphicsSelection availableSprites[NUM_CHARACTERS];
-	GraphicsSelection availableRaces[NUM_RACES];
-	GraphicsSelection availableClasses[NUM_CLASSES];
+	Button availableSprites[NUM_CHARACTERS];
+	Rect availableRaces[NUM_RACES];
+	Rect availableClasses[NUM_CLASSES];
 
 	//which is selected, -1 means nothing selected
 	int selectedSprite; 
@@ -54,10 +54,6 @@ private:
 	//if youve clicked the roll button or not
 	bool hasRolled;
 
-	bool inBounds(GraphicsSelection &, int, int);
-
-	void paintGraphicsSelection(GraphicsSelection &);
-
 	//what happens when you click the roll button
 	void rollButton();
 
@@ -73,9 +69,6 @@ private:
 
 	//prints out the ADJ for the selected RACE (int selectedRace) and CHARACTERISTC (int)
 	void printADJ(int, int, int, int);
-
-	//converts a given int to a string
-	string int2string(const int);
 
 	int abs(int);
 

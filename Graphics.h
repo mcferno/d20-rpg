@@ -92,18 +92,24 @@ public:
 	// the lengths defining the size of the rectangle
 	int w,h;
 
-	/* Rect: default construtor initializing all variables to GRAPHICS_INT_DEFAULT
-	 */
-	Rect();
+	Rect(int = 0, int = 0, int = 0, int = 0);
+	bool inBounds(int,int);
 };
 
 // #####################################################################################################
 
-// data storage to implement a simple GUI button
-struct Button 
+/*
+ * Class Button: A simple GUI implementation of a button. Allows the storage of a pointer
+ *   to the SDL_Surface where its graphical representation comes from. Multiple buttons
+ *   made from the same image will all store the same pointer but will have different clips
+ */ 
+class Button : public Rect
 {
-	int x, y;
+public:
+	Button(int = 0, int = 0, int = 0, int = 0, int = 0, int = 0, SDL_Surface* = NULL);
+	SDL_Surface* image;
 	SDL_Rect clip;
+	void paint(int = 0, int = 0);
 };
 
 // #####################################################################################################
@@ -147,20 +153,6 @@ public:
 	Graphics(const char *, int = 0x0, int = 0xFF, int = 0xFF, int = TILE_SIZE);
 	Graphics(char *, int = 0x0, int = 0xFF, int = 0xFF, int = TILE_SIZE);
 	~Graphics();
-};
-
-/*
- * Class GraphicsSelection: A simple data structure to track a certain sprite
- *   from a Graphics object, stored separately
- */ 
-class GraphicsSelection
-{
-public:
-	// on screen location
-	int x,y;
-
-	// clip relating to a sprite sheet
-	SDL_Rect clip;
 };
 
 // #####################################################################################################

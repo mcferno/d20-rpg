@@ -59,6 +59,11 @@ void StartScreen::mouseLeft(int clickX, int clickY)
 	else if(state == STATE_MAP_EDITOR)
 	{
 		mapEditor->mouseLeft(clickX, clickY);
+		if(isDone)
+		{
+			isDone = false;
+			state = STATE_SHOW_SCREEN;
+		}
 	}
 }
 
@@ -76,11 +81,6 @@ void StartScreen::mouseRight(int clickX, int clickY)
 	{
 		mapEditor->mouseRight(clickX, clickY);
 	}
-}
-
-bool StartScreen::inBounds(GraphicsSelection &gs, int x, int y)
-{
-	return (x >= gs.x && x <= (gs.x + gs.clip.w) && y >= gs.y && y <= (gs.y + gs.clip.h));
 }
 
 void StartScreen::showMapEditor(int level)

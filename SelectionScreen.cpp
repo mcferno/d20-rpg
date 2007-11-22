@@ -18,7 +18,7 @@ void SelectionScreen::init()
 	textColorWhite.r = textColorWhite.g = textColorWhite.b = 0xFF;
 	textColorBlack.r = textColorBlack.g = textColorBlack.b = 0x00;
 
-	characterSprites = new Graphics(".\\images\\characters.png");
+	characterSprites = loadImage(".\\images\\characters.png",0,0xFF,0xFF);
 	selectScreen = loadImage(".\\images\\selectScreen.png");
 
 	//initialize to non-selected
@@ -28,56 +28,18 @@ void SelectionScreen::init()
 	//initialize roll button to never pressed
 	hasRolled = false;
 
-	//location of available sprites on clip sheet
-	availableSprites[0].clip.x = 0;
-	availableSprites[0].clip.y = 0; 
-	
-	availableSprites[1].clip.x = 9*16; 
-	availableSprites[1].clip.y = 0; 
+	availableSprites[0] = Button(5*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,characterSprites);
+	availableSprites[1] = Button(9*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,9*TILE_SIZE,0,characterSprites);
+	availableSprites[2] = Button(13*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,4*TILE_SIZE,characterSprites);
+	availableSprites[3] = Button(17*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,5*TILE_SIZE,4*TILE_SIZE,characterSprites);
+	availableSprites[4] = Button(21*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,9*TILE_SIZE,4*TILE_SIZE,characterSprites);
 
-	availableSprites[2].clip.x = 0; 
-	availableSprites[2].clip.y = 4*16;
+	availableRaces[0] = Rect(3*TILE_SIZE,14*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
+	availableRaces[1] = Rect(17*TILE_SIZE,18*TILE_SIZE,5*TILE_SIZE,TILE_SIZE);
+	availableRaces[2] = Rect(24*TILE_SIZE,16*TILE_SIZE,3*TILE_SIZE,TILE_SIZE);
+	availableRaces[3] = Rect(10*TILE_SIZE,20*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 
-	availableSprites[3].clip.x = 5*16; 
-	availableSprites[3].clip.y = 4*16;
-
-	availableSprites[4].clip.x = 9*16; 
-	availableSprites[4].clip.y = 4*16;
-
-	//location to paint the sprites
-	for(int i=0;i<NUM_CHARACTERS;i++)
-	{
-		availableSprites[i].x = 80 + (i*64);
-		availableSprites[i].y = 80;
-		availableSprites[i].clip.w = availableSprites[i].clip.h = 16; 
-	}
-
-	//location to paint the highlight box for seleced races
-	availableRaces[0].x = 3*16;
-	availableRaces[0].y = 14*16;
-	availableRaces[0].clip.w = 6*16;
-	availableRaces[0].clip.h = 16;
-
-	availableRaces[1].x = 17*16;
-	availableRaces[1].y = 18*16;
-	availableRaces[1].clip.w = 5*16;
-	availableRaces[1].clip.h = 16;
-
-	availableRaces[2].x = 24*16;
-	availableRaces[2].y = 16*16;
-	availableRaces[2].clip.w = 3*16;
-	availableRaces[2].clip.h = 16;
-
-	availableRaces[3].x = 10*16;
-	availableRaces[3].y = 20*16;
-	availableRaces[3].clip.w = 6*16;
-	availableRaces[3].clip.h = 16;
-
-	//location to paint the highlight box for selected classes
-	availableClasses[0].x = 15*16;
-	availableClasses[0].y = 31*16;
-	availableClasses[0].clip.w = 6*16;
-	availableClasses[0].clip.h = 16;
+	availableClasses[0] = Rect(15*TILE_SIZE,31*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 }
 
 void SelectionScreen::paint()
@@ -87,7 +49,7 @@ void SelectionScreen::paint()
 
 	// paint each sprite
 	for(int i=0;i<NUM_CHARACTERS;i++)
-		paintGraphicsSelection(availableSprites[i]);
+		availableSprites[i].paint();
 
 	// highlight a selected sprite
 	if(selectedSprite != -1) 
@@ -107,12 +69,6 @@ void SelectionScreen::paint()
 	if(hasRolled) {
 		paintAttributes(36,8);
 	}
-}
-
-//paints the sprites
-void SelectionScreen::paintGraphicsSelection(GraphicsSelection &ss)
-{
-	applySurface(ss.x,ss.y,characterSprites->image,screen,&ss.clip);
 }
 
 void SelectionScreen::rollButton() 
@@ -303,13 +259,6 @@ void SelectionScreen::paintCharacterMessage(int race, int clas)
 	}
 }
 
-string SelectionScreen::int2string(const int i)
-{
-	std::ostringstream stream;
-	stream << i;
-	return stream.str();
-}
-
 race SelectionScreen::findRace(int selectedRace)
 {
 	std::cout << "You have selected a: ";
@@ -496,11 +445,6 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 
 }
 
-bool SelectionScreen::inBounds(GraphicsSelection &gs, int x, int y)
-{
-	return (x >= gs.x && x <= (gs.x + gs.clip.w) && y >= gs.y && y <= (gs.y + gs.clip.h));
-}
-
 //LEFT MOUSE EVENT POLLING
 void SelectionScreen::mouseLeft(int x, int y)
 {
@@ -513,7 +457,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 			myRace = HUMAN; //WHEN DISABLED INFINITE WALKING WOOT!
 			SDL_Rect *characterRect = new SDL_Rect();
 			mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
-			mainCharacter->graphics = characterSprites;
+			mainCharacter->graphics = new Graphics(".\\images\\characters.png");
 			characterRect->x = availableSprites[selectedSprite].clip.x;
 			characterRect->y = availableSprites[selectedSprite].clip.y;
 			characterRect->w = availableSprites[selectedSprite].clip.w;
@@ -554,7 +498,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 					mainCharacter->showCharacter();
 			}
 
-			mainCharacter->graphics = characterSprites;
+			mainCharacter->graphics = new Graphics(".\\images\\characters.png");
 			characterRect->x = availableSprites[selectedSprite].clip.x;
 			characterRect->y = availableSprites[selectedSprite].clip.y;
 			characterRect->w = availableSprites[selectedSprite].clip.w;
@@ -590,19 +534,19 @@ void SelectionScreen::mouseLeft(int x, int y)
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
-		if(inBounds(availableSprites[i],x,y))
+		if(availableSprites[i].inBounds(x,y))
 			selectedSprite = i;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_RACES;i++)
 	{
-		if(inBounds(availableRaces[i],x,y))
+		if(availableRaces[i].inBounds(x,y))
 			selectedRace = i;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_CLASSES;i++)
 	{
-		if(inBounds(availableClasses[i],x,y))
+		if(availableClasses[i].inBounds(x,y))
 			selectedClass = i;
 	}
 }
@@ -614,19 +558,19 @@ void SelectionScreen::mouseRight(int x, int y)
 	// check if any of the sprites were selected
 	for(int i=0;i<NUM_CHARACTERS;i++)
 	{
-		if(inBounds(availableSprites[i],x,y))
+		if(availableSprites[i].inBounds(x,y))
 			selectedSprite = -1;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_RACES;i++)
 	{
-		if(inBounds(availableRaces[i],x,y))
+		if(availableRaces[i].inBounds(x,y))
 			selectedRace = -1;
 	}
 	//check if any of the races were selected
 	for(int i=0;i<NUM_CLASSES;i++)
 	{
-		if(inBounds(availableClasses[i],x,y))
+		if(availableClasses[i].inBounds(x,y))
 			selectedClass = -1;
 	}
 }

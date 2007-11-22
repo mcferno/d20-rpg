@@ -58,20 +58,6 @@ public:
 	void loadGraphics(Graphics*);
 };
 
-// simple class representing a clickable button
-class MapEditorButton : public Rect
-{
-public:
-	// the image representing the button
-	SDL_Surface* image;
-
-	MapEditorButton(int = -1, int = -1, int = -1, int = -1);
-
-	void loadImg(char*, int = -1, int = -1, int = -1);
-	
-};
-
-
 
 /* Class MapEditor: Uses the Map class and its child classes to make a map editor.
  *   Allows maps to be loaded, edited and saved.
@@ -85,14 +71,17 @@ private:
 
 	SDL_Surface *background;
 	SDL_Surface *selectedTileMsg, *selectedCellMsg, *xCoordLabel, *yCoordLabel, *foregroundMsg, *backgroundMsg, *indexMsg, *walkableMsg;
+	SDL_Surface *arrows;
 
 	Graphics *graphics;
 
 	EditableMap *customMap;
-	MapEditorButton customMapBtns[4];
+	Button customMapBtns[4];
 
 	SelectableMap *tileSet;
-	MapEditorButton tileSetBtns[4];
+	Button tileSetBtns[4];
+
+	Rect closeBtn, saveBtn;
 
 	int tileSize;
 
@@ -109,17 +98,19 @@ private:
 	void toggleWalkable();
 
 	// checks if the scroll buttons were pressed, if so, it invokes the appropriate scrolling
-	void checkButtons(int, int, MapEditorButton*, Map*);
+	void checkButtons(int, int, Button*, Map*);
 
 	void paintInfoPanel();
 
 	void unload();
 
 	bool isLoaded;
+	char* currentMapFilename;
 
 	static const int DEFAULT_NEW_MAP_SIZE_W = 20;
 	static const int DEFAULT_NEW_MAP_SIZE_H = 20;
 	static const char* DEFAULT_TILES;
+	static const char* DEFAULT_MAP_LOCATION;
 	static const int DEFAULT_TILES_R = 0xFF;
 	static const int DEFAULT_TILES_G = 0xE2;
 	static const int DEFAULT_TILES_B = 0xAA;

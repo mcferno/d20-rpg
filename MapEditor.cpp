@@ -180,21 +180,6 @@ void SelectableMap::loadGraphics(Graphics *newGraphics)
 
 // ###########################################################################################
 
-// simple class representing a clickable button
-MapEditorButton::MapEditorButton(int newX, int newY, int newW, int newH)
-{
-	x = newX;
-	y = newY;
-	w = newW;
-	h = newH;
-}
-
-void MapEditorButton::loadImg(char *filename, int r, int g, int b)
-{
-	image = loadImage(filename,r,g,b);
-}
-
-
 /* Class MapEditor: Uses the Map class and its child classes to make a map editor.
  *   Allows maps to be loaded, edited and saved.
  */
@@ -236,11 +221,12 @@ void MapEditor::toggleWalkable()
 }
 
 // checks if the scroll buttons were pressed, if so, it invokes the appropriate scrolling
-void MapEditor::checkButtons(int x, int y, MapEditorButton *setOfButtons, Map *mapToAffect)
+void MapEditor::checkButtons(int x, int y, Button *setOfButtons, Map *mapToAffect)
 {
 	for(int i=0;i<4;i++)
 	{
-		if(inBounds(x,y,setOfButtons[i]))
+		//if(inBounds(x,y,setOfButtons[i]))
+		if(setOfButtons[i].inBounds(x,y))
 		{
 			switch(i)
 			{
@@ -263,6 +249,7 @@ void MapEditor::checkButtons(int x, int y, MapEditorButton *setOfButtons, Map *m
 }
 
 const char* MapEditor::DEFAULT_TILES = ".\\images\\defaultTiles.bmp";
+const char* MapEditor::DEFAULT_MAP_LOCATION = "index.map";
 
 MapEditor::MapEditor(int newX, int newY, int width, int height) : 
 	Screen(newX, newY, width, height)
@@ -270,25 +257,30 @@ MapEditor::MapEditor(int newX, int newY, int width, int height) :
 	selectedTileX = selectedTileY = selectedCellX = selectedCellY = selectedTileIndex = -1;
 	background = loadImage(".\\images\\mapEditorBg.png");
 
+	arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
+
 	// initialize the 4 directional scrolling arrows for the custom map
-	customMapBtns[0] = MapEditorButton(16,384,16,16);
-	customMapBtns[0].loadImg(".\\images\\leftArrow.png",0xFF,0x0,0xFF);
-	customMapBtns[1] = MapEditorButton(592,384,16,16);
-	customMapBtns[1].loadImg(".\\images\\rightArrow.png",0xFF,0x0,0xFF);
-	customMapBtns[2] = MapEditorButton(608,16,16,16); 
-	customMapBtns[2].loadImg(".\\images\\upArrow.png",0xFF,0x0,0xFF);
-	customMapBtns[3] = MapEditorButton(608,368,16,16);
-	customMapBtns[3].loadImg(".\\images\\downArrow.png",0xFF,0x0,0xFF);
+	//left
+	customMapBtns[0] = Button(TILE_SIZE,24*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
+	//right
+	customMapBtns[1] = Button(37*TILE_SIZE,24*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
+	//up
+	customMapBtns[2] = Button(38*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
+	//down
+	customMapBtns[3] = Button(38*TILE_SIZE,23*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
 
 	// initialize the 4 directional scrolling arrows for the graphic tiles
-	tileSetBtns[0] = MapEditorButton(16,576,16,16);
-	tileSetBtns[0].loadImg(".\\images\\leftArrow.png",0xFF,0x0,0xFF);
-	tileSetBtns[1] = MapEditorButton(768,576,16,16);
-	tileSetBtns[1].loadImg(".\\images\\rightArrow.png",0xFF,0x0,0xFF);
-	tileSetBtns[2] = MapEditorButton(784,416,16,16); 
-	tileSetBtns[2].loadImg(".\\images\\upArrow.png",0xFF,0x0,0xFF);
-	tileSetBtns[3] = MapEditorButton(784,560,16,16);
-	tileSetBtns[3].loadImg(".\\images\\downArrow.png",0xFF,0x0,0xFF);
+	//left
+	tileSetBtns[0] = Button(TILE_SIZE,36*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
+	//right
+	tileSetBtns[1] = Button(48*TILE_SIZE,36*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
+	//up
+	tileSetBtns[2] = Button(49*TILE_SIZE,26*TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
+	//down
+	tileSetBtns[3] = Button(49*TILE_SIZE,35*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
+
+	closeBtn = Rect(672,336,80,32);
+	saveBtn = Rect(672,288,80,32);
 
 	std::cout << "Rendering all text displays ... ";
 	selectedTileMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Tile:", textColor );
@@ -303,6 +295,8 @@ MapEditor::MapEditor(int newX, int newY, int width, int height) :
 
 	customMap = NULL;
 	tileSet = NULL;
+	graphics = NULL;
+	currentMapFilename = NULL;
 
 	isLoaded = false;
 }
@@ -322,6 +316,10 @@ MapEditor::~MapEditor()
 
 void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW, int newMapH)
 {
+	// clear an old map/tileset if it exists
+	if(customMap != NULL || tileSet != NULL || graphics != NULL)
+		unload();
+
 	customMap = new EditableMap(16,16,592,368);
 	tileSet = new SelectableMap(16,416,768,160);
 
@@ -331,6 +329,8 @@ void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW,
 		graphics = new Graphics(graphicsFile,DEFAULT_TILES_R,DEFAULT_TILES_G,DEFAULT_TILES_B);
 		tileSize = graphics->tileSize;
 
+		currentMapFilename = const_cast<char*>(mapFile);
+
 		customMap->loadMap(graphics,mapFile);
 	}
 	else // load an empty map with the default tiles
@@ -338,6 +338,8 @@ void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW,
 		// graphics to be used for the creation of a map
 		graphics = new Graphics(DEFAULT_TILES,DEFAULT_TILES_R,DEFAULT_TILES_G,DEFAULT_TILES_B);
 		tileSize = graphics->tileSize;
+
+		currentMapFilename = NULL;
 
 		// create a new empty map
 		customMap->loadGraphics(graphics);
@@ -350,7 +352,15 @@ void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW,
 
 void MapEditor::unload()
 {
+	tileSize = 0;
+	if(customMap != NULL)
+		customMap = NULL;
 
+	if(tileSet != NULL)
+		tileSet = NULL;
+
+	if(graphics != NULL)
+		graphics = NULL;
 }
 
 void MapEditor::paintInfoPanel()
@@ -423,8 +433,8 @@ void MapEditor::paint()
 		// paint the 4 directional buttons for each scrolling window
 		for(int i=0;i<4;i++)
 		{
-			applySurface(customMapBtns[i].x,customMapBtns[i].y,customMapBtns[i].image,screen);
-			applySurface(tileSetBtns[i].x,tileSetBtns[i].y,tileSetBtns[i].image,screen);
+			customMapBtns[i].paint();
+			tileSetBtns[i].paint();
 		}
 
 		paintInfoPanel();
@@ -466,6 +476,17 @@ void MapEditor::mouseLeft(int x, int y)
 		selectedTileX = x;
 		selectedTileY = y;
 		selectedTileIndex = getTileArrayIndex(x,y);
+	}
+	else if(saveBtn.inBounds(x,y))
+	{
+		if(currentMapFilename != NULL)
+		{
+			customMap->save(currentMapFilename);
+		}
+	}
+	else if(closeBtn.inBounds(x,y))
+	{
+		signalCompletion();
 	}
 	// check if the scrolling arrows were pressed
 	else
@@ -523,103 +544,3 @@ void MapEditor::showInstructions()
 			  << "Right-click a custom map cell to remove its fore/background layer\n"
 			  << "Press 's' to save the current map to a file\n";
 }
-/*
-// main function which controls most of the user interaction
-void MapEditor::run()
-{
-	showInstructions();
-
-	// paint for the first time
-	paint();
-
-	//Make sure the program waits for a quit, instead of a timed exit
-	bool quit = false;
-
-	//While the user hasn't quit 
-	while(quit != true) 
-	{
-		//While there's an event (keypress, mouse, etc) to handle 
-		while( SDL_PollEvent( &event ) ) 
-		{
-			// If a key was pressed 
-			if( event.type == SDL_KEYDOWN ) 
-			{
-				switch( event.key.keysym.sym ) 
-				{
-					// tile walkable toggling, triggered by the 'w' key.
-					case SDLK_w:
-						toggleWalkable();
-						break; 
-					// save functionality, triggered by the 's' key.
-					case SDLK_s:
-						customMap.save(MAP);
-						break; 
-				}
-				paint();
-			}
-			
-			// If a mouse button was pressed
-			if( event.type == SDL_MOUSEBUTTONDOWN )
-			{
-				if( event.button.button == SDL_BUTTON_LEFT )
-				{
-					mouseLeft(event.button.x,event.button.y);
-					paint();
-				}
-				if( event.button.button == SDL_BUTTON_RIGHT )
-				{
-					mouseRight(event.button.x,event.button.y);
-					paint();
-				}
-			}
-
-			// If the user has pressed the window's close button
-			if( event.type == SDL_QUIT ) 
-			{ 
-				quit = true; 
-			} 
-		}
-
-		// Update the screen to reflect any changes that may have occured
-		if( SDL_Flip( screen ) == -1 ) 
-		{ 
-			return; 
-		}
-
-		// Short sleep to avoid chewing too much CPU while waiting for user input
-		SDL_Delay(FRAME_RATE_SLEEP);
-	}
-}
-*/
-
-/*
-
-int main( int argc, char* args[] ) 
-{
-	// Initialize the SDL library 
-	if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 ) 
-	{ 
-		return 1; 
-	} 
-
-	//Initialize SDL_ttf, which handles font rendering
-	if( TTF_Init() == -1 ) 
-	{
-		return 1; 
-	}
-	
-	// Initialize the main graphics screen 
-	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE ); 
-
-	// set the window title for the main window
-	SDL_WM_SetCaption( WINDOW_TITLE, NULL );
-
-	font = TTF_OpenFont( ".\\fonts\\tahoma.ttf", 12 );
-
-	MapEditor mapEditor;
-
-	// the map editor will handle the rest of the user interaction
-	mapEditor.run();
-	return 0;
-}
-*/

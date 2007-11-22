@@ -73,9 +73,35 @@ Tile::Tile(int newB, int newF = GRAPHICS_INT_DEFAULT, bool newWalkable = true)
 
 // #####################################################################################################
 
-Rect::Rect() 
+Rect::Rect(int newX, int newY, int newW, int newH) 
 {
-	x = y = w = h = GRAPHICS_INT_DEFAULT;
+	x = newX;
+	y = newY;
+	w = newW;
+	h = newH;
+}
+
+bool Rect::inBounds(int clickX, int clickY)
+{
+	return (clickX >= x && clickX <= x+w && clickY >= y && clickY <= y+h);
+}
+
+// #####################################################################################################
+
+Button::Button(int newX, int newY, int newW, int newH, int newClipX, int newClipY, SDL_Surface* newImage) :
+	Rect(newX,newY,newW,newH)
+{
+	clip.x = newClipX;
+	clip.y = newClipY;
+	clip.w = w;
+	clip.h = h;
+	image = newImage;
+}
+
+void Button::paint(int paddingX, int paddingY)
+{
+	if(image != NULL)
+		applySurface(paddingX+x,paddingY+y,image,screen,&clip);
 }
 
 // #####################################################################################################

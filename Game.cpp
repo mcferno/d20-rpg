@@ -49,7 +49,6 @@ void paint()
 	switch(state)
 	{
 		case STATE_START_SCREEN:
-			std::cout << "painting start screen!\n";
 			startScreen->paint();
 			break;
 		case STATE_CHARACTER_SELECTION:

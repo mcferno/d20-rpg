@@ -22,7 +22,6 @@ private:
 
 	void init();
 
-	bool inBounds(GraphicsSelection &, int, int);
 	bool musicStarted;
 
 	int state;
