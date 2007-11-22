@@ -12,6 +12,8 @@ StartScreen::StartScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 void StartScreen::init()
 {
 
+//	frame = 0; 
+
 	startMusic = Mix_LoadMUS(".\\music\\start.mp3");
 	musicStarted = false;
 
