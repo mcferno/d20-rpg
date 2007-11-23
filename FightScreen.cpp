@@ -194,12 +194,12 @@ void FightScreen::paintDynamicMessage()
 
 	//DYNAMIC INITIATIVE PLAYER ROLL
 	_itoa_s(playerInitiative,buffer,10);
-	msgDynamic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (INFO_SECTION_X+x+8*16), (INFO_SECTION_Y+y+5*16), msgDynamic, screen );
 
 	//DYNAMIC INITIATIVE MONSTER ROLL
 	_itoa_s(monsterInitiative,buffer,10);
-	msgDynamic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (MONSTER_SECTION_X+x+8*16), (MONSTER_SECTION_Y+y+5*16), msgDynamic, screen );
 
 }
@@ -239,41 +239,41 @@ void FightScreen::paintStats()
 	yi = 1;
 
 	//DRAW HUMAN STATS
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Level ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Level ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(level,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 	
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "AC ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "AC ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(ac,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Atck Bonus ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Atck Bonus ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(ackbonus,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Weapon ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
-	msgStatic = TTF_RenderText_Solid(fontCalibri, weaponName, fontColorWhite );
-	applySurface( (infox+x+xi+4.5*16), (infoy+y+yi), msgStatic, screen );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, weaponName, fontColorWhite );
+	applySurface( (infox+x+xi+3.5*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon Dmg ::   1d", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Weapon Dmg ::           1d", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(weapondmg,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Initiative Roll ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Initiative Roll ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 
 	//DRAW MONSTER STATS
@@ -282,41 +282,41 @@ void FightScreen::paintStats()
 	yi = 1;
 	xi = 1;
 
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Level ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Level ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(mlevel,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 	
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "AC ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "AC ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(mac,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Atck Bonus ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Atck Bonus ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(mackbonus,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Weapon ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
-	msgStatic = TTF_RenderText_Solid(fontCalibri, mweaponName, fontColorWhite );
-	applySurface( (infox+x+xi+4.5*16), (infoy+y+yi), msgStatic, screen );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, mweaponName, fontColorWhite );
+	applySurface( (infox+x+xi+3.5*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon Dmg ::   1d", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Weapon Dmg ::           1d", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(mweapondmg,buffer,10);
-	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, buffer, fontColorWhite );
 	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Initiative Roll ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibriTiny, "Initiative Roll ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 
 }
