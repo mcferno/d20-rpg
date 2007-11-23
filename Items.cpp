@@ -116,9 +116,15 @@ Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, 
 	requiredConsumable = newRequiredConsumable;
 }
 
+
 int Weapon::getDamage()
 {
 	return DAMAGE_DICE_TYPE;
+}
+
+char* Weapon::getName()
+{
+	return name;
 }
 
 int Weapon::getRangeIncrement()

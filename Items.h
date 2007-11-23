@@ -114,7 +114,8 @@ public:
 
 	// name, damage dice type, critical multiplier, cost in gold, graphicOffset, range, requiredItem
 	Weapon(char*,int,int,int,int,int,UsableItem::UsableItemType);
-	
+
+	char* getName();
 	int getDamage();
 	int getRangeIncrement();
 	int getCriticalMultiplier();

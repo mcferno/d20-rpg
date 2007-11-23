@@ -33,7 +33,7 @@ private:
 	// variables needed to offer the user a set of choices for their character
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;
-	static const int NUM_CLASSES = 1;
+	static const int NUM_CLASSES = 2;
 	Button availableSprites[NUM_CHARACTERS];
 	Rect availableRaces[NUM_RACES];
 	Rect availableClasses[NUM_CLASSES];

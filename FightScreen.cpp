@@ -1,14 +1,29 @@
 #include "FightScreen.h"
-#include "SelectionScreen.h"
+
 
 
 
 FightScreen::FightScreen(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
 {
 
+	//temp for now
+	
+	Graphics* monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
+	thisMonster = new Monster(15,20,6,2,monsterGraphics,Monster::SKELETON,2);
+
+	playerHp = mainCharacter->getHp();
+	monsterHp = thisMonster->getHp();
+	
 	attackRoll = false;
-	initiativeRoll = false;
+	initiativeRoll = true;
 	attacked = false;
+	firstPaint = false;
+	hasRolledInitiative = false;
+
+	lastPlayerAttack = 0;
+	lastMonsterAttack = 0;
+	playerInitiative = 0;
+	monsterInitiative = 0;
 
 	background = loadImage(".\\images\\fightScreen.png");
 	buttons = loadImage(".\\images\\fightButtons.png");
@@ -48,22 +63,27 @@ FightScreen::FightScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 void FightScreen::paint()
 {
 	applySurface(x,y,background,screen);
-	initiativeRoll = false;
-	attacked = true;
 	//paint buttons
 	if(initiativeRoll)
 	{
-		msgStatic = TTF_RenderText_Solid(fontCalibriBold, "Roll Initiative!", fontColorRed );
-		applySurface( (x+BUTTON_SECTION_X+4)+3*16, (y+BUTTON_SECTION_Y)-2*16, msgStatic, screen );
+		msgDynamic = TTF_RenderText_Solid(fontCalibriBold, "Roll Initiative!", fontColorRed );
+		applySurface( (x+BUTTON_SECTION_X+4)+3*16, (y+BUTTON_SECTION_Y)-2*16, msgDynamic, screen );
 		applySurface(rollButton.x, rollButton.y, buttons, screen, &rollButton.clip);
 	}
 	else
 	{
 		if (attacked) {
-			msgStatic = TTF_RenderText_Solid(fontCalibriBold, "Your last hit inflicted:      Damage", fontColorRed );
-			applySurface( (x+BUTTON_SECTION_X+4), (y+BUTTON_SECTION_Y)-3*16, msgStatic, screen );
-			msgStatic = TTF_RenderText_Solid(fontCalibriBold, "His last hit inflicted:         Damage", fontColorRed );
-			applySurface( (x+BUTTON_SECTION_X+4), (y+BUTTON_SECTION_Y)-2*16, msgStatic, screen );
+			msgDynamic = TTF_RenderText_Solid(fontCalibriBold, "Your last hit inflicted:      Damage", fontColorRed );
+			applySurface( (x+BUTTON_SECTION_X+4), (y+BUTTON_SECTION_Y)-3*16, msgDynamic, screen );
+			msgDynamic = TTF_RenderText_Solid(fontCalibriBold, "His last hit inflicted:         Damage", fontColorRed );
+			applySurface( (x+BUTTON_SECTION_X+4), (y+BUTTON_SECTION_Y)-2*16, msgDynamic, screen );
+
+			_itoa_s(lastPlayerAttack,buffer,10);
+			msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
+			applySurface( (x+BUTTON_SECTION_X+4)+9.5*16, (y+BUTTON_SECTION_Y)-3*16, msgDynamic, screen );
+			_itoa_s(lastMonsterAttack,buffer,10);
+			msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
+			applySurface( (x+BUTTON_SECTION_X+4)+9.5*16, (y+BUTTON_SECTION_Y)-2*16, msgDynamic, screen );
 		}
 		applySurface(attackButton.x, attackButton.y, buttons, screen, &attackButton.clip);
 	}
@@ -81,7 +101,7 @@ void FightScreen::paintStaticMessage()
 	int xi = 3.5*16;
 	int yi = 1.5*16;
 
-	//END PLAYERS NAME
+	//ENTER PLAYERS NAME
 	switch (mainCharacter->getRace())
 	{
 		case 0:
@@ -103,33 +123,44 @@ void FightScreen::paintStaticMessage()
 	}
 	xi = xi+(4*16);
 
-	switch (mainCharacter->getClass())
+	switch ((mainCharacter->getClass()))
 	{
 	case 0:
 			msgStatic = TTF_RenderText_Solid(fontCalibriBold, "FIGHTER", fontColorWhite );
 			applySurface( (x+xi), (y+yi), msgStatic, screen );
 			break;
+	case 1:
+			msgStatic = TTF_RenderText_Solid(fontCalibriBold, "RANGER", fontColorWhite );
+			applySurface( (x+xi), (y+yi), msgStatic, screen );
+			break;
 	}
 	xi = xi-(4*16);
 
+	//ENTER PLAYER HP
 	yi = yi+(2*16);
 	msgStatic = TTF_RenderText_Solid(fontCalibriBold, "HP:", fontColorRed );
 	applySurface( (x+xi), (y+yi), msgStatic, screen );
+	
 	yi = yi-(2*16);
 
 	//ENTER BADGUY NAME
 	xi = xi+25*16;
-	char* temp = "MONSTER GETNAME";
+	char* temp = thisMonster->getName();
 	msgStatic = TTF_RenderText_Solid(fontCalibriBold, temp , fontColorWhite );
 	applySurface( (x+xi), (y+yi), msgStatic, screen );
 
+	//ENTER MONSTER HP
 	yi = yi+2*16;
 	msgStatic = TTF_RenderText_Solid(fontCalibriBold, "HP:", fontColorRed );
 	applySurface( (x+xi), (y+yi), msgStatic, screen );
 
 	//PAINT BOTH STATS
-	paintStats(1,1,true);
-	paintStats(1,1,false);
+	paintStats(0,0,true);
+	paintStats(0,0,false);
+
+
+	firstPaint = true;
+
 }
 
 void FightScreen::paintDynamicMessage()
@@ -155,10 +186,25 @@ void FightScreen::paintDynamicMessage()
 
 	xi = 5.5*16;
 	yi = 3.5*16;
-	hp = mainCharacter->getHp();
-	_itoa_s(hp,buffer,10);
+	
+	//DYNAMIC PLAYER HP
+	_itoa_s(playerHp,buffer,10);
 	msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
 	applySurface( (x+xi), (y+yi), msgDynamic, screen );
+	//DYNAMIC MONSTER HP
+	_itoa_s(monsterHp,buffer,10);
+	msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
+	applySurface( (x+xi)+25*16, (y+yi), msgDynamic, screen );
+
+	//DYNAMIC INITIATIVE PLAYER ROLL
+	_itoa_s(playerInitiative,buffer,10);
+	msgDynamic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (INFO_SECTION_X+x+8*16), (INFO_SECTION_Y+y+5*16), msgDynamic, screen );
+
+	//DYNAMIC INITIATIVE MONSTER ROLL
+	_itoa_s(monsterInitiative,buffer,10);
+	msgDynamic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (MONSTER_SECTION_X+x+8*16), (MONSTER_SECTION_Y+y+5*16), msgDynamic, screen );
 
 }
 
@@ -166,33 +212,75 @@ void FightScreen::paintDynamicMessage()
 void FightScreen::paintStats(int xi, int yi, bool isPlayer)
 {
 	int infox, infoy;
+
+	
 	if (isPlayer) {
+		std::cout << "\nPLAYER STATS GENERATION: \n";
 		infox = INFO_SECTION_X;
 		infoy = INFO_SECTION_Y;
+
+		
+		level = mainCharacter->getLevel();
+		ac = mainCharacter->getAC();
+		ackbonus = mainCharacter->getAttackBonus();
+		if (mainCharacter->equippedWeapon != NULL)
+			weaponName = mainCharacter->equippedWeapon->getName();
+		else
+			weaponName = "Hands";
+		if (mainCharacter->equippedWeapon != NULL)
+			weapondmg = mainCharacter->equippedWeapon->getDamage();
+		else
+			weapondmg = 3;
+	
+
 	}
 	else {
+		std::cout << "\nMONSTER STATS GENERATION: \n";
 		infox = MONSTER_SECTION_X;
 		infoy = MONSTER_SECTION_Y;
+
+
+		level = thisMonster->getLevel();
+		ac = thisMonster->getAC();
+		ackbonus = thisMonster->getAttackBonus();
+		weaponName = "Hands";
+		weapondmg = thisMonster->getDamageDiceType();
+		
 	}
+	
 
 	msgStatic = TTF_RenderText_Solid(fontCalibri, "Level ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
-
+	_itoa_s(level,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
+	
 	yi = yi+1*16;
 	msgStatic = TTF_RenderText_Solid(fontCalibri, "AC ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	_itoa_s(ac,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
 	msgStatic = TTF_RenderText_Solid(fontCalibri, "Atck Bonus ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	_itoa_s(ackbonus,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
 	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	msgStatic = TTF_RenderText_Solid(fontCalibri, weaponName, fontColorWhite );
+	applySurface( (infox+x+xi+4.5*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon Dmg ::", fontColorWhite );
+	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon Dmg ::   1d", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	_itoa_s(weapondmg,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
 
 	yi = yi+1*16;
 	msgStatic = TTF_RenderText_Solid(fontCalibri, "Initiative Roll ::", fontColorWhite );
@@ -201,7 +289,35 @@ void FightScreen::paintStats(int xi, int yi, bool isPlayer)
 
 void FightScreen::mouseLeft(int clickX, int clickY)
 {
+	if (!hasRolledInitiative)
+	{
+		if (clickedButton(clickX, clickY, rollButton))
+		{
+			playerInitiative = mainCharacter->getInitiativeRoll();
+			monsterInitiative = thisMonster->getInitiativeRoll();
+			hasRolledInitiative = true;
+			initiativeRoll = false;
+			attackRoll = true;
+		}
+	}
 
+	if (hasRolledInitiative) 
+	{
+		if (clickedButton(clickX, clickY, attackButton))
+		{
+			//ALGORITHMS AND STUFF FROM ATTACK :(
+		}
+	}
+
+	if (clickedButton(x+5+BUTTON_SECTION_X, y+BUTTON_SECTION_Y, inventoryButton))
+	{
+		//SHOW INVENTORY 
+	}
+
+	if (clickedButton(x+10+BUTTON_SECTION_X, y+BUTTON_SECTION_Y, runButton))
+	{
+		//EXIT O DEAR
+	}
 }
 
 

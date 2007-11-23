@@ -39,7 +39,8 @@ void SelectionScreen::init()
 	availableRaces[2] = Rect(24*TILE_SIZE,16*TILE_SIZE,3*TILE_SIZE,TILE_SIZE);
 	availableRaces[3] = Rect(10*TILE_SIZE,20*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 
-	availableClasses[0] = Rect(15*TILE_SIZE,31*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
+	availableClasses[0] = Rect(8*TILE_SIZE,31*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
+	availableClasses[1] = Rect(19*TILE_SIZE,31*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 }
 
 void SelectionScreen::paint()
@@ -256,6 +257,10 @@ void SelectionScreen::paintCharacterMessage(int race, int clas)
 			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "FIGHTER ", textColorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
+		case 1:
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "RANGER ", textColorBlack );
+			applySurface( x, y, characterMessage, screen );
+			break;
 	}
 }
 
@@ -286,6 +291,9 @@ playerClass SelectionScreen::findClass(int selectedClass)
 		case 0:
 			std::cout << "fighter.";
 			return FIGHTER;
+		case 1:
+			std::cout << "ranger.";
+			return RANGER;
 	}
 }
 
@@ -493,9 +501,19 @@ void SelectionScreen::mouseLeft(int x, int y)
 					mainCharacter = new Fighter(myRace);
 					mainCharacter->showCharacter();
 				}
-				else
+				else {
 					mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
 					mainCharacter->showCharacter();
+				}
+				case RANGER:
+				if (!hasRolled) {
+					mainCharacter = new Ranger(myRace);
+					mainCharacter->showCharacter();
+				}
+				else {
+					mainCharacter = new Ranger(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
+					mainCharacter->showCharacter();
+				}
 			}
 
 			mainCharacter->graphics = new Graphics(".\\images\\characters.png");

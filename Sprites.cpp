@@ -190,8 +190,9 @@ int Character::getChaMod() {
 // Armor Class (AC): How hard a character is to hit. 
 // 10 + armor bonus + shield bonus + size modifier + dexterity modifier
 int Character::getAC(){
-	std::cout << "Calculate Armour Class: 10 + Dex Modifier: " << getModifier(dex) << " = " << (10+getModifier(dex)) << "/n/n";
-	return 10 + getModifier(dex);
+	int ac = 10 + getModifier(dex);
+	std::cout << "Calculate Armour Class:\n10 + Dex Modifier: " << getModifier(dex) << " = " << (ac) << "\n";
+	return ac;
 }
 //END ACCESSORS
 
@@ -269,6 +270,7 @@ int ControllableCharacter::getAC()
 	std::cout << " + Dexterity Mod: " << getModifier(dex) << "+ 10 = " << AC << "\n\n";
 	return AC;
 }
+
 
 void ControllableCharacter::rollStartingMoney()
 {
@@ -488,8 +490,125 @@ Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int c
 }
 
 // #####################################################################################################
+Ranger::Ranger()
+{
 
-// to be implemented..
+}
+
+//Constructor class
+//Takes a type race to specify which race the character is
+//Each race may have specific additions to the modifiers
+//Hitpoints, Level, and AC begin at a predetermined base
+//Str, Dex, Con, Ite, Wis, Cha are all determined randomly by the character roll.
+Ranger::Ranger(race myrace) : ControllableCharacter() {
+
+	setHp(RANGER_HP);
+	setLevel(1);
+	setClass(Character::RANGER);
+
+	std::cout << "\nNow rolling your abilities using a " << ABILITY_ROLL_DICE_ROLLS << "d" << ABILITY_ROLL_DICE_TYPE << " ...\n";
+
+	switch (myrace)
+	{
+		case HUMAN:
+			setStr(getAbilityRoll() + HumanRace::STR_ADJ);
+			setDex(getAbilityRoll() + HumanRace::DEX_ADJ);
+			setCon(getAbilityRoll() + HumanRace::CON_ADJ);
+			setIte(getAbilityRoll() + HumanRace::ITE_ADJ);
+			setWis(getAbilityRoll() + HumanRace::WIS_ADJ);
+			setCha(getAbilityRoll() + HumanRace::CHA_ADJ);
+			setSpeed(HumanRace::SPEED);
+			setRace(Race::HUMAN);
+			break;
+		case DWARF:
+			setStr(getAbilityRoll() + DwarfRace::STR_ADJ);
+			setDex(getAbilityRoll() + DwarfRace::DEX_ADJ);
+			setCon(getAbilityRoll() + DwarfRace::CON_ADJ);
+			setIte(getAbilityRoll() + DwarfRace::ITE_ADJ);
+			setWis(getAbilityRoll() + DwarfRace::WIS_ADJ);
+			setCha(getAbilityRoll() + DwarfRace::CHA_ADJ);
+			setSpeed(DwarfRace::SPEED);
+			setRace(Race::DWARF);
+			break;
+		case ELF:
+			setStr(getAbilityRoll() + ElfRace::STR_ADJ);
+			setDex(getAbilityRoll() + ElfRace::DEX_ADJ);
+			setCon(getAbilityRoll() + ElfRace::CON_ADJ);
+			setIte(getAbilityRoll() + ElfRace::ITE_ADJ);
+			setWis(getAbilityRoll() + ElfRace::WIS_ADJ);
+			setCha(getAbilityRoll() + ElfRace::CHA_ADJ);
+			setSpeed(ElfRace::SPEED);
+			setRace(Race::ELF);
+			break;
+		case GNOME:
+			setStr(getAbilityRoll() + GnomeRace::STR_ADJ);
+			setDex(getAbilityRoll() + GnomeRace::DEX_ADJ);
+			setCon(getAbilityRoll() + GnomeRace::CON_ADJ);
+			setIte(getAbilityRoll() + GnomeRace::ITE_ADJ);
+			setWis(getAbilityRoll() + GnomeRace::WIS_ADJ);
+			setCha(getAbilityRoll() + GnomeRace::CHA_ADJ);
+			setSpeed(GnomeRace::SPEED);
+			setRace(Race::GNOME);
+			break;
+	}
+}
+
+Ranger::Ranger(race myrace, int str, int dex, int con, int ite, int wis, int cha) : ControllableCharacter() {
+
+	setHp(RANGER_HP);
+	setLevel(1);
+	setClass(Character::RANGER);
+
+
+	switch (myrace)
+	{
+		case HUMAN:
+			setStr(str + HumanRace::STR_ADJ);
+			setDex(dex + HumanRace::DEX_ADJ);
+			setCon(con + HumanRace::CON_ADJ);
+			setIte(ite + HumanRace::ITE_ADJ);
+			setWis(wis + HumanRace::WIS_ADJ);
+			setCha(cha + HumanRace::CHA_ADJ);
+			setSpeed(HumanRace::SPEED);
+			setRace(Race::HUMAN);
+			break;
+		case DWARF:
+			setStr(str + DwarfRace::STR_ADJ);
+			setDex(dex + DwarfRace::DEX_ADJ);
+			setCon(con + DwarfRace::CON_ADJ);
+			setIte(ite + DwarfRace::ITE_ADJ);
+			setWis(wis + DwarfRace::WIS_ADJ);
+			setCha(cha + DwarfRace::CHA_ADJ);
+			setSpeed(DwarfRace::SPEED);
+			setRace(Race::DWARF);
+			break;
+		case ELF:
+			setStr(str + ElfRace::STR_ADJ);
+			setDex(dex + ElfRace::DEX_ADJ);
+			setCon(con + ElfRace::CON_ADJ);
+			setIte(ite + ElfRace::ITE_ADJ);
+			setWis(wis + ElfRace::WIS_ADJ);
+			setCha(cha + ElfRace::CHA_ADJ);
+			setSpeed(ElfRace::SPEED);
+			setRace(Race::ELF);
+			break;
+		case GNOME:
+			setStr(str + GnomeRace::STR_ADJ);
+			setDex(dex + GnomeRace::DEX_ADJ);
+			setCon(con + GnomeRace::CON_ADJ);
+			setIte(ite + GnomeRace::ITE_ADJ);
+			setWis(wis + GnomeRace::WIS_ADJ);
+			setCha(cha + GnomeRace::CHA_ADJ);
+			setSpeed(GnomeRace::SPEED);
+			setRace(Race::GNOME);
+			break;
+	}
+}
+
+
+// #####################################################################################################
+
+
 Monster::Monster()
 {
 }

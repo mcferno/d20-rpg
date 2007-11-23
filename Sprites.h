@@ -23,7 +23,7 @@ automatically creates a player when it is called.
 //These are the types of races allowed in the game
 //As of October 10th only HUMAN and DWARF have been implemented
 enum race {HUMAN, DWARF, ELF, GNOME};
-enum playerClass {FIGHTER};
+enum playerClass {FIGHTER, RANGER};
 
 // conversion between feet and tile size (5ft per tile)
 const int FT_TO_TILES = 5;
@@ -74,6 +74,7 @@ protected:
 	int imyRace, imyClass;
 
 	static const int FIGHTER = 0;
+	static const int RANGER = 1;
 
 
 public:
@@ -177,6 +178,8 @@ public:
 	int getNumPotions();
 	int getAC();
 	int rollWeaponDamage();
+
+
 };
 
 // #####################################################################################################
@@ -224,6 +227,16 @@ public:
 	Fighter(race);
 	//takes the values to be added for the rolls.
 	Fighter(race, int, int, int, int, int, int);
+};
+
+class Ranger : public ControllableCharacter {
+public:
+	const static int RANGER_HP = 10;
+	Ranger();
+	//does the roll by default, with a given race
+	Ranger(race);
+	//takes the values to be added for the rolls.
+	Ranger(race, int, int, int, int, int, int);
 };
 
 // #####################################################################################################
