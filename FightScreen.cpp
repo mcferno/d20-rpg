@@ -17,7 +17,6 @@ FightScreen::FightScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 	attackRoll = false;
 	initiativeRoll = true;
 	attacked = false;
-	firstPaint = false;
 	hasRolledInitiative = false;
 
 	lastPlayerAttack = 0;
@@ -155,11 +154,8 @@ void FightScreen::paintStaticMessage()
 	applySurface( (x+xi), (y+yi), msgStatic, screen );
 
 	//PAINT BOTH STATS
-	paintStats(0,0,true);
-	paintStats(0,0,false);
+	paintStats();
 
-
-	firstPaint = true;
 
 }
 
@@ -172,7 +168,7 @@ void FightScreen::paintDynamicMessage()
 		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "Your Initiative Roll:", fontColorWhite );
 		applySurface( (INFO_SECTION_X+x+xi), (INFO_SECTION_Y+y+yi), msgDynamic, screen );
 
-		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "Your Initiative Roll:", fontColorWhite );
+		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "His Initiative Roll:", fontColorWhite );
 		applySurface( (MONSTER_SECTION_X+x+xi), (MONSTER_SECTION_Y+y+yi), msgDynamic, screen );
 	}
 	if (attackRoll)
@@ -180,7 +176,7 @@ void FightScreen::paintDynamicMessage()
 		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "Your Attack Roll:", fontColorWhite );
 		applySurface( (INFO_SECTION_X+x+xi), (INFO_SECTION_Y+y+yi), msgDynamic, screen );
 
-		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "Your Attack Roll:", fontColorWhite );
+		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "His Attack Roll:", fontColorWhite );
 		applySurface( (MONSTER_SECTION_X+x+xi), (MONSTER_SECTION_Y+y+yi), msgDynamic, screen );
 	}
 
@@ -209,46 +205,40 @@ void FightScreen::paintDynamicMessage()
 }
 
 
-void FightScreen::paintStats(int xi, int yi, bool isPlayer)
+void FightScreen::paintStats()
 {
 	int infox, infoy;
+	int xi, yi;
 
-	
-	if (isPlayer) {
-		std::cout << "\nPLAYER STATS GENERATION: \n";
-		infox = INFO_SECTION_X;
-		infoy = INFO_SECTION_Y;
-
-		
-		level = mainCharacter->getLevel();
-		ac = mainCharacter->getAC();
-		ackbonus = mainCharacter->getAttackBonus();
-		if (mainCharacter->equippedWeapon != NULL)
-			weaponName = mainCharacter->equippedWeapon->getName();
-		else
-			weaponName = "Hands";
-		if (mainCharacter->equippedWeapon != NULL)
-			weapondmg = mainCharacter->equippedWeapon->getDamage();
-		else
-			weapondmg = 3;
-	
-
-	}
-	else {
-		std::cout << "\nMONSTER STATS GENERATION: \n";
-		infox = MONSTER_SECTION_X;
-		infoy = MONSTER_SECTION_Y;
-
-
-		level = thisMonster->getLevel();
-		ac = thisMonster->getAC();
-		ackbonus = thisMonster->getAttackBonus();
+	if (!hasRolledInitiative)
+	{
+	std::cout << "\nPLAYER STATS GENERATION: \n";
+	level = mainCharacter->getLevel();
+	ac = mainCharacter->getAC();
+	ackbonus = mainCharacter->getAttackBonus();
+	if (mainCharacter->equippedWeapon != NULL)
+		weaponName = mainCharacter->equippedWeapon->getName();
+	else
 		weaponName = "Hands";
-		weapondmg = thisMonster->getDamageDiceType();
-		
-	}
-	
+	if (mainCharacter->equippedWeapon != NULL)
+		weapondmg = mainCharacter->equippedWeapon->getDamage();
+	else
+		weapondmg = 3;
 
+	std::cout << "\nMONSTER STATS GENERATION: \n";
+	mlevel = thisMonster->getLevel();
+	mac = thisMonster->getAC();
+	mackbonus = thisMonster->getAttackBonus();
+	mweaponName = "Hands";
+	mweapondmg = thisMonster->getDamageDiceType();
+	}
+
+	infox = INFO_SECTION_X;
+	infoy = INFO_SECTION_Y;
+	xi = 1;
+	yi = 1;
+
+	//DRAW HUMAN STATS
 	msgStatic = TTF_RenderText_Solid(fontCalibri, "Level ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
 	_itoa_s(level,buffer,10);
@@ -285,6 +275,50 @@ void FightScreen::paintStats(int xi, int yi, bool isPlayer)
 	yi = yi+1*16;
 	msgStatic = TTF_RenderText_Solid(fontCalibri, "Initiative Roll ::", fontColorWhite );
 	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+
+	//DRAW MONSTER STATS
+	infox = MONSTER_SECTION_X;
+	infoy = MONSTER_SECTION_Y;
+	yi = 1;
+	xi = 1;
+
+	msgStatic = TTF_RenderText_Solid(fontCalibri, "Level ::", fontColorWhite );
+	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	_itoa_s(mlevel,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
+	
+	yi = yi+1*16;
+	msgStatic = TTF_RenderText_Solid(fontCalibri, "AC ::", fontColorWhite );
+	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	_itoa_s(mac,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
+
+	yi = yi+1*16;
+	msgStatic = TTF_RenderText_Solid(fontCalibri, "Atck Bonus ::", fontColorWhite );
+	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	_itoa_s(mackbonus,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
+
+	yi = yi+1*16;
+	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon ::", fontColorWhite );
+	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	msgStatic = TTF_RenderText_Solid(fontCalibri, mweaponName, fontColorWhite );
+	applySurface( (infox+x+xi+4.5*16), (infoy+y+yi), msgStatic, screen );
+
+	yi = yi+1*16;
+	msgStatic = TTF_RenderText_Solid(fontCalibri, "Weapon Dmg ::   1d", fontColorWhite );
+	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+	_itoa_s(mweapondmg,buffer,10);
+	msgStatic = TTF_RenderText_Solid(fontCalibri, buffer, fontColorWhite );
+	applySurface( (infox+x+xi+8*16), (infoy+y+yi), msgStatic, screen );
+
+	yi = yi+1*16;
+	msgStatic = TTF_RenderText_Solid(fontCalibri, "Initiative Roll ::", fontColorWhite );
+	applySurface( (infox+x+xi), (infoy+y+yi), msgStatic, screen );
+
 }
 
 void FightScreen::mouseLeft(int clickX, int clickY)

@@ -42,19 +42,21 @@ private:
 	bool initiativeRoll;
 	bool attackRoll;
 	bool attacked;
-	bool firstPaint;
+
 
 	void paintItem(int, int, Item*);
 
 	//some temp holders
 	char buffer[4];
 	int level, ac, ackbonus, weapondmg;
-	char* weaponName;
+	int mlevel, mac, mackbonus, mweapondmg;
+	char* weaponName; 
+	char* mweaponName;
 
 
 	void paintStaticMessage();
 	void paintDynamicMessage();
-	void paintStats(int, int, bool);
+	void paintStats();
 
 	int playerHp, monsterHp, playerInitiative, monsterInitiative;
 	int lastPlayerAttack, lastMonsterAttack;
