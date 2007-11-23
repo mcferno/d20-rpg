@@ -66,6 +66,7 @@ class Character : public Object
 protected:
 	// abilities common to all characters: strength, dexterity, consitution, wisdom, charisma
 	int str, dex, con, ite, wis, cha;
+	char* name;
 	
 	// hit points, current level, speed (in tiles)
 	int hp, level, speed;
@@ -77,10 +78,15 @@ protected:
 
 public:
 
+	static const int HAND_COMBAT_DICE = Dice::D3;
+
 	void setRace(int);
 	void setClass(int);
 	int getRace();
 	int getClass();
+
+	char* getName();
+	void setName(char*);
 
 	static int getModifier(int);
 
@@ -113,7 +119,8 @@ public:
 	int getCha();
 	int getHp();
 	int getLevel();
-	int getAC();
+	virtual int getAC();
+	virtual int rollWeaponDamage(int);
 	int getSpeed();
 
 	// accessors for modifiers
@@ -168,6 +175,8 @@ public:
 	int getNumArrows();
 	int getNumBolts();
 	int getNumPotions();
+	int getAC();
+	int rollWeaponDamage();
 };
 
 // #####################################################################################################
@@ -177,17 +186,30 @@ public:
 class Monster : public Character
 {
 private:
-	// why would we need these? we dont need to restrict ourselves to a finite set of opponents
-	/*
-	static const int MONSTER_SKELETON = 0;
-	static const int MONSTER_THUG = 1;
-	static const int MONSTER_PORCUPINE = 2;
-	static const int MONSTER_WORM = 3;
-	static const int MONSTER_TREE = 4;
-	static const int MONSTER_MEDUSA = 5;
-	*/
+
+	int damageDiceType;
+
 public:
+
+	static const int SKELETON = 0;
+	static const int ELF = 1;
+	static const int GOBLIN = 2;
+	static const int LIZARD = 3;
+	static const int VINE = 4;
+	static const int MEDUSA = 5;
+
 	Monster();
+	Monster(int, int, int, int, Graphics*, int, int);
+
+	//monster HP depends on level of monster
+	int getMonsterHP(int);
+	//first int is for type, second int is for level
+	void createMonster(int, int);
+	//name, level, speed, str, dex, con, ite, wis, cha, damageDice
+	void setAllMonster(char*, int, int, int, int, int, int, int, int, int);
+
+	int getDamageDiceType();
+	void setDamageDiceType(int);
 };
 
 // #####################################################################################################

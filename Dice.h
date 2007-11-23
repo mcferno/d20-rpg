@@ -24,11 +24,13 @@ class Dice
 {
  public:
 	// all the different kinds of dice
+	static const int D3 = 3;
 	static const int D4 = 4;
 	static const int D6 = 6;
 	static const int D8 = 8;
 	static const int D10 = 10;
 	static const int D12 = 12;
+	static const int D16 = 16;
 	static const int D20 = 20;
 
 	// rolls a given given dice a certain number of times (default: once)

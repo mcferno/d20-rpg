@@ -184,36 +184,9 @@ void MainGame::loadLevel()
 
 			numEnemies = 3;
 			enemies = new Monster[numEnemies];
-
-			// skeleton
-			enemies[0].graphics = monsterGraphics;
-			enemies[0].clip->x = 6*16;
-			enemies[0].clip->y = 2*16;
-			enemies[0].clip->w = 16;
-			enemies[0].clip->h = 16;
-			enemies[0].x = 15;
-			enemies[0].y = 20;
-			enemies[0].setSpeed(30);
-
-			// thug
-			enemies[1].graphics = monsterGraphics;
-			enemies[1].clip->x = 0;
-			enemies[1].clip->y = 0;
-			enemies[1].clip->w = 16;
-			enemies[1].clip->h = 16;
-			enemies[1].x = 25;
-			enemies[1].y = 10;
-			enemies[1].setSpeed(25);
-
-			// porcupine
-			enemies[2].graphics = monsterGraphics;
-			enemies[2].clip->x = 14*16;
-			enemies[2].clip->y = 0;
-			enemies[2].clip->w = 16;
-			enemies[2].clip->h = 16;
-			enemies[2].x = 25;
-			enemies[2].y = 25;
-			enemies[2].setSpeed(20);
+			enemies[0] = Monster(15,20,6,2,monsterGraphics,Monster::SKELETON,1);
+			enemies[1] = Monster(25,10,0,0,monsterGraphics,Monster::ELF,1);
+			enemies[2] = Monster(25,15,14,0,monsterGraphics,Monster::GOBLIN,1);
 
 			numTreasure = 3;
 			treasure = new Treasure*[3];
@@ -250,38 +223,14 @@ void MainGame::loadLevel()
 			// initialize a small set of enemies
 			monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
 
-			numEnemies = 3;
+			numEnemies = 6;
 			enemies = new Monster[numEnemies];
-
-			// worm
-			enemies[0].graphics = monsterGraphics;
-			enemies[0].clip->x = 8*16;
-			enemies[0].clip->y = 1*16;
-			enemies[0].clip->w = 16;
-			enemies[0].clip->h = 16;
-			enemies[0].x = 15;
-			enemies[0].y = 20;
-			enemies[0].setSpeed(30);
-
-			// evil tree stump
-			enemies[1].graphics = monsterGraphics;
-			enemies[1].clip->x = 14*16;
-			enemies[1].clip->y = 1*16;
-			enemies[1].clip->w = 16;
-			enemies[1].clip->h = 16;
-			enemies[1].x = 25;
-			enemies[1].y = 10;
-			enemies[1].setSpeed(25);
-
-			// medusa
-			enemies[2].graphics = monsterGraphics;
-			enemies[2].clip->x = 1*16;
-			enemies[2].clip->y = 4*16;
-			enemies[2].clip->w = 16;
-			enemies[2].clip->h = 16;
-			enemies[2].x = 25;
-			enemies[2].y = 25;
-			enemies[2].setSpeed(20);
+			enemies[0] = Monster(15,20,6,2,monsterGraphics,Monster::SKELETON,2);
+			enemies[1] = Monster(25,10,0,0,monsterGraphics,Monster::ELF,1);
+			enemies[2] = Monster(25,25,14,0,monsterGraphics,Monster::GOBLIN,1);
+			enemies[3] = Monster(20,15,8,1,monsterGraphics,Monster::LIZARD,2);
+			enemies[4] = Monster(25,15,14,1,monsterGraphics,Monster::VINE,1);
+			enemies[5] = Monster(15,15,1,4,monsterGraphics,Monster::MEDUSA,5);
 
 			// initialize all treasure and its locations
 			numTreasure = 3;

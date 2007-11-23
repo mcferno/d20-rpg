@@ -15,6 +15,14 @@ Character::Character() : Object()
 {
 }
 
+void Character::setName(char* name) {
+	this->name = name;
+}
+
+char* Character::getName() {
+	return this->name;
+}
+
 int Character::getBaseAttackBonus(){
 	return getLevel()-1;
 }
@@ -27,7 +35,14 @@ int Character::getInitiativeRoll(){
 	return (Dice::roll(Dice::D20,1) + getDexMod());
 }
 
-
+int Character::rollWeaponDamage(int diceType)
+{
+	int damageRoll, damage;
+	damageRoll = Dice::roll(diceType);
+	damage = damageRoll + getStrMod();
+	std::cout << "Roll Damage: Combat d " << diceType << " roll: " << damageRoll << " + Strenght Mod: " << getStrMod() << " = " << damage << "\n\n";
+	return damage;
+}
 
 
 int Character::getRace()
@@ -175,6 +190,7 @@ int Character::getChaMod() {
 // Armor Class (AC): How hard a character is to hit. 
 // 10 + armor bonus + shield bonus + size modifier + dexterity modifier
 int Character::getAC(){
+	std::cout << "Calculate Armour Class: 10 + Dex Modifier: " << getModifier(dex) << " = " << (10+getModifier(dex)) << "/n/n";
 	return 10 + getModifier(dex);
 }
 //END ACCESSORS
@@ -194,6 +210,7 @@ void Character::showCharacter() {
 
 // #####################################################################################################
 
+
 ControllableCharacter::ControllableCharacter() : Character()
 {
 	rollStartingMoney();
@@ -209,6 +226,48 @@ ControllableCharacter::ControllableCharacter() : Character()
 	inventory.addItem(tempItems[0]);
 	inventory.addItem(tempItems[1]);
 	inventory.addItem(tempItems[2]);
+}
+
+int ControllableCharacter::rollWeaponDamage()
+{
+	int damageRoll, damage;
+	char* weaponName;
+
+	if (equippedWeapon != NULL)
+		damageRoll = Dice::roll(equippedWeapon->getDamage());
+	else {
+		damageRoll = HAND_COMBAT_DICE;
+		weaponName = "Hand Combat";
+	}
+	
+	damage = damageRoll + getStrMod();
+	std::cout << "Roll Damage: "<< weaponName << " d" << equippedWeapon->getDamage() << " roll:  " << damageRoll << " + Strenght Mod: " << getStrMod() << " = " << damage << "\n\n";
+	return damage;
+}
+
+// Armor Class (AC): How hard a character is to hit. 
+// 10 + armor bonus + shield bonus + size modifier + dexterity modifier
+int ControllableCharacter::getAC()
+{
+	int vestBonus = 0;
+	int helmetBonus = 0;
+	int shieldBonus = 0;
+	int AC;
+
+	if (equippedShield != NULL)
+		shieldBonus=equippedShield->getArmorBonus();
+
+	if (equippedHelmet != NULL)
+		helmetBonus = equippedHelmet->getArmorBonus();
+	
+	if (equippedVest != NULL)
+		vestBonus = equippedVest->getArmorBonus();
+
+	AC = 10 + getModifier(dex) + vestBonus + helmetBonus + shieldBonus;
+
+	std::cout << "Armor Class Calculation: \n" << "Shield Bonus: " << shieldBonus << "+ Helmet Bonus: " << helmetBonus << "  + Vest Bonus: " << vestBonus;
+	std::cout << " + Dexterity Mod: " << getModifier(dex) << "+ 10 = " << AC << "\n\n";
+	return AC;
 }
 
 void ControllableCharacter::rollStartingMoney()
@@ -431,9 +490,84 @@ Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int c
 // #####################################################################################################
 
 // to be implemented..
-Monster::Monster() : Character()
+Monster::Monster()
 {
 }
+Monster::Monster(int x, int y, int clipX, int clipY, Graphics* monsterGraphics, int monsterType, int level) : Character()
+{
+			graphics = monsterGraphics;
+			clip->x = (clipX)*16;
+			clip->y = (clipY)*16;
+			clip->w = 16;
+			clip->h = 16;
+
+			createMonster(monsterType, level);
+
+			this->x = x;
+			this->y = y;
+			
+}
+
+void Monster::createMonster(int monster, int level)
+{//name, level, speed, str, dex, con, ite, wis, cha, damageDice
+	switch (monster)
+	{
+		case SKELETON:
+			setAllMonster("Skeleton", level, 30, 13, 13, 0, 0, 10, 1, Dice::D12);
+			break;
+		case ELF:
+			setAllMonster("Elf", level, 30, 13, 13, 10, 10, 9, 8, Dice::D8);
+			break;
+		case GOBLIN:
+			setAllMonster("Goblin", level, 30, 11,13,12,10,9,6, Dice::D8);
+			break;
+		case LIZARD:
+			setAllMonster("Lizard", level, 20, 3,15,10,1,12,2, Dice::D8);
+			break;
+		case VINE:
+			setAllMonster("Assassin Vine", level, 5, 20,10,16,0,13,9, Dice::D16);
+			break;
+		case MEDUSA:
+			setAllMonster("Medusa", level, 30, 10,15,12,12,13,15, Dice::D20);
+			break;
+	}
+}
+
+int Monster::getMonsterHP(int level)
+{
+	if (level == 1)
+		return(10);
+	else
+		return(10+level*5);
+}
+
+void Monster::setAllMonster(char* name, int level, int speed, int str, int dex, int con, int ite, int wis, int cha, int diceType)
+{
+	setLevel(level);
+	setHp(getMonsterHP(level));
+	setSpeed(speed);
+
+	setName(name);
+
+	setStr(str);
+	setDex(dex);
+	setCon(con);
+	setIte(ite);
+	setWis(wis);
+	setCha(cha);
+
+	setDamageDiceType(diceType);
+
+}
+
+void Monster::setDamageDiceType(int diceType) {
+	this->damageDiceType = diceType;
+}
+
+int Monster::getDamageDiceType() {
+	return damageDiceType;
+}
+
 
 // #####################################################################################################
 
