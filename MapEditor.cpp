@@ -1,28 +1,6 @@
 
 #include "MapEditor.h"
 
-/*
-// Screen attributes 
-const int SCREEN_WIDTH = 896; 
-const int SCREEN_HEIGHT = 768; 
-const int SCREEN_BPP = 32;
-const char* WINDOW_TITLE = "COMP446 Assignment 1: Map Editor";
-const int FRAME_RATE_SLEEP = 40;
-
-// location to save the user's map
-char* MAP = ".\\index.map";
-
-// the event structure that will be used 
-SDL_Event event;
-
-SDL_Surface *screen = NULL;
-TTF_Font *font = NULL; 
-
-*/
-
-// location to save the user's map
-char* MAP = ".\\index.map";
-
 // the font color used for on screen text 
 SDL_Color textColor = { 255, 255, 255 };
 
@@ -184,6 +162,8 @@ void SelectableMap::loadGraphics(Graphics *newGraphics)
  *   Allows maps to be loaded, edited and saved.
  */
 
+const char* MapEditor::DEFAULT_TILES = ".\\images\\defaultTiles.bmp";
+const char* MapEditor::DEFAULT_MAP_LOCATION = "index.map";
 
 // checks if an x,y coordinate is within the bounds of a certain screen area
 bool MapEditor::inBounds(int x, int y, Rect limits)
@@ -247,9 +227,6 @@ void MapEditor::checkButtons(int x, int y, Button *setOfButtons, Map *mapToAffec
 		}
 	}
 }
-
-const char* MapEditor::DEFAULT_TILES = ".\\images\\defaultTiles.bmp";
-const char* MapEditor::DEFAULT_MAP_LOCATION = "index.map";
 
 MapEditor::MapEditor(int newX, int newY, int width, int height) : 
 	Screen(newX, newY, width, height)

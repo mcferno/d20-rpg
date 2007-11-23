@@ -3,7 +3,7 @@
 MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
 {
 	currentLevel = LEVEL_1;
-	gameMap = Map(16,16,672,512);
+	gameMap = Map(TILE_SIZE,TILE_SIZE,37*TILE_SIZE,28*TILE_SIZE);
 	numPlayers = -1;
 	numEnemies = -1;
 	currSpeed = -1;
@@ -14,6 +14,24 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	subScreenSignal = false;
 	treasure = NULL;
 	shopDoorX = shopDoorY = exitDoorX = exitDoorY = -1;
+
+	background = loadImage(".\\images\\mainScreen.png");
+
+	SDL_Surface *arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
+
+	// initialize the 4 directional scrolling arrows for the custom map
+	//left
+	mapBtns[0] = Button(TILE_SIZE,29*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
+	//right
+	mapBtns[1] = Button(37*TILE_SIZE,29*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
+	//up
+	mapBtns[2] = Button(38*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
+	//down
+	mapBtns[3] = Button(38*TILE_SIZE,28*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
+
+
+	walkableHighlight = loadImage(".\\images\\fullHighlight.png");
+	SDL_SetAlpha( walkableHighlight, SDL_SRCALPHA | SDL_RLEACCEL, 100 );
 }
 
 // begins the game by loading the level and all of its enemies
@@ -95,7 +113,7 @@ void MainGame::nextTurn()
 	{
 		state = STATE_HUMAN_TURN;
 		std::cout << "Your turn, make your move\n";
-		currSpeed = 20; // to remove
+		//currSpeed = 20; // to remove
 		paintNow();
 	}
 	else 
@@ -269,7 +287,42 @@ void MainGame::paintNow()
 
 void MainGame::paint()
 {
+	applySurface(x,y,background,screen);
+
+	// move the window if the current player isn't on screen
+	if(currentPlayer != NULL)
+	{
+		if(!gameMap.isOnScreen(currentPlayer->x,currentPlayer->y))
+		{
+			while(currentPlayer->x < gameMap.x)
+				gameMap.scrollLeft();
+			while(currentPlayer->x > gameMap.x+gameMap.limitWTiles-1)
+				gameMap.scrollRight();
+			while(currentPlayer->y < gameMap.y)
+				gameMap.scrollUp();
+			while(currentPlayer->y > gameMap.y+gameMap.limitHTiles-1)
+				gameMap.scrollDown();
+		}
+	}
+
 	gameMap.paint();
+
+	if(gameMap.limit.w < gameMap.w*TILE_SIZE)
+	{
+		mapBtns[0].paint();
+		mapBtns[1].paint();
+	}
+
+	if(gameMap.limit.h < gameMap.h*TILE_SIZE)
+	{
+		mapBtns[2].paint();
+		mapBtns[3].paint();
+	}
+
+	if(state == STATE_HUMAN_TURN)
+	{
+		paintWalkingRange();
+	}
 
 	paintObject(mainCharacter);
 
@@ -293,12 +346,88 @@ void MainGame::paint()
 	}
 }
 
+void MainGame::paintWalkingRange()
+{
+	int centerX = mainCharacter->x;
+	int centerY = mainCharacter->y;
+
+	int unwalkable = 9999;
+	int uninit = 99;
+
+	int center = currSpeed;
+
+	int i,j;
+
+	int width = center*2+1;
+	int **b;
+	b = new int*[width];
+
+	// first pass, initialization;
+	// goes row by row
+	for(i=0;i<width;i++)
+	{
+		b[i] = new int[width];
+		for(j=0;j<width;j++)
+		{
+			if(gameMap.isOnScreen(centerX+(center-i),centerY+(center-j)) 
+				&& !isTileOccupied(centerX+(center-i),centerY+(center-j)) 
+				&& isTileWalkable(centerX+(center-i),centerY+(center-j)))
+				b[i][j] = uninit;
+			else
+				b[i][j] = unwalkable;
+		}
+	}
+
+	// set the center to 0
+	b[center][center] = 0;
+
+	int min;
+
+	// first discovery path
+	for(int k=0;k<center;k++)
+	{
+		for(i=0;i<width;i++)
+		{
+			for(j=0;j<width;j++)
+			{
+				min = unwalkable;
+				
+				if(i>0)
+					min = (b[i-1][j] < min)? b[i-1][j] : min;
+				if(i<width-1)
+					min = (b[i+1][j] < min)? b[i+1][j] : min;
+				if(j>0)
+					min = (b[i][j-1] < min)? b[i][j-1] : min;
+				if(j<width-1)
+					min = (b[i][j+1] < min)? b[i][j+1] : min;
+
+				if(min < uninit && b[i][j] != unwalkable && b[i][j] > min)
+					b[i][j] = min+1;
+			}
+		}
+	}
+
+	// last step, highlight walkable tiles
+	for(i=0;i<width;i++)
+	{
+		for(j=0;j<width;j++)
+		{
+			// valid tile
+			if(b[i][j] <= center)
+			{
+				applySurface(tileToPixelsX(centerX+(center-i)),tileToPixelsY(centerY+(center-j)),walkableHighlight,screen);
+			}
+		}
+	}
+
+}
+
 void MainGame::paintObject(Object* obj)
 {
 	if(gameMap.isOnScreen(obj->x,obj->y))
 	{
-		int x = gameMap.limit.x + (obj->x - gameMap.x)*16;
-		int y = gameMap.limit.y + (obj->y - gameMap.y)*16;
+		int x = tileToPixelsX(obj->x);
+		int y = tileToPixelsY(obj->y);
 
 		if(currentPlayer == obj)
 		{
@@ -307,6 +436,16 @@ void MainGame::paintObject(Object* obj)
 
 		applySurface(x, y, obj->graphics->image, screen, obj->clip);
 	}
+}
+
+int MainGame::tileToPixelsX(int tx)
+{
+	return gameMap.limit.x + (tx - gameMap.x)*16;
+}
+
+int MainGame::tileToPixelsY(int ty)
+{
+	return gameMap.limit.y + (ty - gameMap.y)*16;
 }
 
 void MainGame::keyUp()
@@ -412,6 +551,32 @@ void MainGame::mouseLeft(int clickX, int clickY)
 		{
 			subScreenSignal = false;
 			showFightScreen();
+		}
+	}
+	else
+	{
+		// checks if any of the map scrolling buttons were pressed
+		for(int i=0;i<4;i++)
+		{
+			if(mapBtns[i].inBounds(clickX,clickY))
+			{
+				switch(i)
+				{
+					case 0: //left button
+						gameMap.scrollLeft();
+						break;
+					case 1: //right button
+						gameMap.scrollRight();
+						break;
+					case 2: //up button
+						gameMap.scrollUp();
+						break;
+					case 3: //down button
+						gameMap.scrollDown();
+						break;							
+				}
+				
+			}
 		}
 	}
 

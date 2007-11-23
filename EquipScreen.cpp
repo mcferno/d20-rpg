@@ -22,19 +22,8 @@ EquipScreen::EquipScreen(int newX, int newY, int newW, int newH) :
 	msgItemCustom[1] = NULL;
 	msgItemCustom[2] = NULL;
 
-	equipButton.x = x+5*16;
-	equipButton.y = y+12*16;
-	equipButton.clip.x = equipButton.clip.y = 0;
-	equipButton.clip.w = 3*16;
-	equipButton.clip.h = 16;
-
-	unEquipButton.clip.x = equipButton.clip.x + equipButton.clip.w;
-	unEquipButton.clip.y = 0;
-	unEquipButton.clip.w = 5*16;
-	unEquipButton.clip.h = 16;
-	unEquipButton.x = x+4*16;
-	unEquipButton.y = y+12*16;
-
+	equipButton = Button(x+5*TILE_SIZE,y+12*TILE_SIZE,3*TILE_SIZE,TILE_SIZE,0,0,buttons);
+	unEquipButton = Button(x+4*TILE_SIZE,y+12*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,buttons);
 }
 
 void EquipScreen::paint()
@@ -58,26 +47,26 @@ void EquipScreen::paint()
 		applySurface(x+msgWorth[0]->w+msgItemCost->w+INFO_SECTION_X*16,y+(INFO_SECTION_Y+1)*16,msgWorth[1],screen);
 	}
 
+	for(int i=0;i<NUM_CUSTOM;i++)
+	{
+		if(msgCustom[i] != NULL && msgItemCustom[i] != NULL)
+		{
+			applySurface(x+(INFO_SECTION_X)*16,y+(INFO_SECTION_Y+2+i)*16,msgCustom[i],screen);
+			applySurface(x+msgCustom[i]->w+(INFO_SECTION_X)*16,y+(INFO_SECTION_Y+2+i)*16,msgItemCustom[i],screen);
+		}
+	}
+
 	if(selectedEquipableItem != NULL)
 	{
 		if(mainCharacter->isEquipped(selectedEquipableItem))
 		{
 			applySurface(x+TITLE_X*16,y+TITLE_Y*16,msgTitleEquipped, screen);
-			applySurface(unEquipButton.x,unEquipButton.y,buttons,screen,&unEquipButton.clip);
+			unEquipButton.paint();
 		}
 		else
 		{
 			applySurface(x+TITLE_X*16,y+TITLE_Y*16,msgTitleSelected, screen);
-			applySurface(equipButton.x,equipButton.y,buttons,screen,&equipButton.clip);
-		}
-
-		for(int i=0;i<NUM_CUSTOM;i++)
-		{
-			if(msgCustom[i] != NULL && msgItemCustom[i] != NULL)
-			{
-				applySurface(x+(INFO_SECTION_X)*16,y+(INFO_SECTION_Y+2+i)*16,msgCustom[i],screen);
-				applySurface(x+msgCustom[i]->w+(INFO_SECTION_X)*16,y+(INFO_SECTION_Y+2+i)*16,msgItemCustom[i],screen);
-			}
+			equipButton.paint();
 		}
 	}
 
@@ -165,13 +154,13 @@ void EquipScreen::mouseLeft(int clickX, int clickY)
 		signalCompletion();
 	}
 	else if(selectedEquipableItem != NULL 
-		&& clickedButton(clickX, clickY, unEquipButton) 
+		&& unEquipButton.inBounds(clickX, clickY)
 		&& mainCharacter->isEquipped(selectedEquipableItem))
 	{
 		mainCharacter->unEquip(selectedEquipableItem);
 		deselectItems();
 	}
-	else if(selectedEquipableItem != NULL && clickedButton(clickX, clickY, equipButton) )
+	else if(selectedEquipableItem != NULL && equipButton.inBounds(clickX, clickY) )
 	{
 		equipItem();
 	}
@@ -249,12 +238,17 @@ void EquipScreen::selectedItem(Item* item)
 	_itoa_s(item->cost.getGold(),tempBuffer,10);
 	msgItemCost = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
 
-	if(!item->isItemOfQuantity())
+	if(item->isItemOfQuantity())
+	{
+		msgCustom[0] = TTF_RenderText_Solid(fontCalibri,"Quantity: ",fontColorWhite);
+		_itoa_s(((UsableItem*)item)->numLeft(),tempBuffer,10);
+		msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+	}
+	else
 		selectedEquipableItem = (EquipableItem*)item;
 
 	if(selectedEquipableItem != NULL)
 	{
-
 		if(selectedEquipableItem->equipType == EquipableItem::WEAPON)
 		{
 			Weapon* tempWeapon = (Weapon*)selectedEquipableItem;

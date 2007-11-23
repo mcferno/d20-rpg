@@ -68,17 +68,6 @@ void paint()
 void stateTransition()
 {
 	clearScreen();
-/*
-	startScreen = new StartScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-	startScreen->setSignal(&isDone);
-
-	selectionScreen = new SelectionScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-	selectionScreen->setSignal(&isDone);
-
-	mainGame = new MainGame(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-
-	mapEditor = new MapEditor(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-*/
 	switch(state)
 	{
 		case STATE_INIT:
@@ -131,7 +120,7 @@ int main( int argc, char* args[] )
     }
 	
 	// Initialize the main graphics screen 
-	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE ); 
+	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE); 
 
 	Screen::init(screen);
 

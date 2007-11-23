@@ -185,17 +185,17 @@ public:
 class Map : public Rect
 {
 protected:
-	// how many tiles will be shown at one time, the smaller of the map size 
-	//   vs. the bounding window size
-	int limitWTiles;
-	int limitHTiles;
-
 	// Pointer to the game map graphics
 	Graphics *g;
 
 	int tileSize; //, wTiles, hTiles;
 
 public:
+	// how many tiles will be shown at one time, the smaller of the map size 
+	//   vs. the bounding window size
+	int limitWTiles;
+	int limitHTiles;
+
 	// 2-dimensional TileSet representing the game map (once loaded).
 	Tile **ts;
 

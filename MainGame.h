@@ -45,6 +45,12 @@ private:
 	EquipScreen *equipScreen;
 	FightScreen *fightScreen;
 
+	SDL_Surface *background;
+
+	SDL_Surface *walkableHighlight;
+
+	Button mapBtns[4];
+
 	Character *currentPlayer;
 	int currSpeed;
 	int numPlayers;
@@ -84,6 +90,8 @@ private:
 	void nextTurn();
 	bool isTileOccupied(int,int);
 	bool isTileWalkable(int,int);
+	int tileToPixelsX(int);
+	int tileToPixelsY(int);
 
 	Uint32 startAITurn;
 	// time in milliseconds to wait between AI actions, obeyed when possible
@@ -98,6 +106,8 @@ private:
 
 	// exits the level if you are in the exit door of the level
 	void exitLevel();
+
+	void paintWalkingRange();
 
 public:
 	MainGame(int, int, int, int);
