@@ -18,12 +18,14 @@ private:
 
 	Button rollButton;
 	Button attackButton;
+	Button inventoryButton;
+	Button runButton;
 
 	SDL_Color fontColorWhite;
 	SDL_Color fontColorRed;
 	
 
-	static const int BUTTON_SECTION_X = 5*16;
+	static const int BUTTON_SECTION_X = 12*16;
 	static const int BUTTON_SECTION_Y = 24*16;
 	static const int INFO_SECTION_X = 11*16;
 	static const int INFO_SECTION_Y = 6*16;
@@ -35,6 +37,7 @@ private:
 	//bool clickedExit(int,int);
 	bool initiativeRoll;
 	bool attackRoll;
+	bool attacked;
 
 	void paintItem(int, int, Item*);
 

@@ -8,6 +8,7 @@ FightScreen::FightScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 
 	attackRoll = false;
 	initiativeRoll = false;
+	attacked = false;
 
 	background = loadImage(".\\images\\fightScreen.png");
 	buttons = loadImage(".\\images\\fightButtons.png");
@@ -16,14 +17,22 @@ FightScreen::FightScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 
 	// initialize the buttons used to buy and sell
 	rollButton.clip.x = 0;
-	rollButton.clip.y = 0;
+	rollButton.clip.y = attackButton.clip.y = inventoryButton.clip.y = runButton.clip.y = 0;
 	attackButton.clip.x = 5*16;
-	attackButton.clip.y = 0;
-	rollButton.clip.w = attackButton.clip.w = 5*16;
-	rollButton.clip.h = attackButton.clip.h = 2*16;
+	inventoryButton.clip.x=10*16;
+	runButton.clip.x=15*16;
+	rollButton.clip.w = attackButton.clip.w = inventoryButton.clip.w = runButton.clip.w = 5*16;
+	rollButton.clip.h = attackButton.clip.h = inventoryButton.clip.h = runButton.clip.h = 2*16;
 
-	rollButton.x = attackButton.x = x+(BUTTON_SECTION_X)*16;
-	rollButton.y = attackButton.y = y+(BUTTON_SECTION_Y)*16;
+
+	rollButton.x = attackButton.x = x+(BUTTON_SECTION_X);
+	rollButton.y = attackButton.y = y+(BUTTON_SECTION_Y);
+
+	inventoryButton.x = x+(5*16)+(BUTTON_SECTION_X);
+	inventoryButton.y = y+(BUTTON_SECTION_Y);
+
+	runButton.x = x+(10*16)+(BUTTON_SECTION_X);
+	runButton.y = y+(BUTTON_SECTION_Y);
 
 	fontColorWhite.r = fontColorWhite.g = fontColorWhite.b = 0xFF;
 	fontColorRed.r = 0xFF;
@@ -39,16 +48,28 @@ FightScreen::FightScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 void FightScreen::paint()
 {
 	applySurface(x,y,background,screen);
-	initiativeRoll = true;
-
+	initiativeRoll = false;
+	attacked = true;
+	//paint buttons
 	if(initiativeRoll)
 	{
+		msgStatic = TTF_RenderText_Solid(fontCalibriBold, "Roll Initiative!", fontColorRed );
+		applySurface( (x+BUTTON_SECTION_X+4)+3*16, (y+BUTTON_SECTION_Y)-2*16, msgStatic, screen );
 		applySurface(rollButton.x, rollButton.y, buttons, screen, &rollButton.clip);
 	}
 	else
 	{
+		if (attacked) {
+			msgStatic = TTF_RenderText_Solid(fontCalibriBold, "Your last hit inflicted:      Damage", fontColorRed );
+			applySurface( (x+BUTTON_SECTION_X+4), (y+BUTTON_SECTION_Y)-3*16, msgStatic, screen );
+			msgStatic = TTF_RenderText_Solid(fontCalibriBold, "His last hit inflicted:         Damage", fontColorRed );
+			applySurface( (x+BUTTON_SECTION_X+4), (y+BUTTON_SECTION_Y)-2*16, msgStatic, screen );
+		}
 		applySurface(attackButton.x, attackButton.y, buttons, screen, &attackButton.clip);
 	}
+	applySurface(inventoryButton.x, inventoryButton.y, buttons, screen, &inventoryButton.clip);
+	applySurface(runButton.x, runButton.y, buttons, screen, &runButton.clip);	
+
 
 	paintStaticMessage();
 	paintDynamicMessage();
@@ -98,7 +119,8 @@ void FightScreen::paintStaticMessage()
 
 	//ENTER BADGUY NAME
 	xi = xi+25*16;
-	msgStatic = TTF_RenderText_Solid(fontCalibriBold, "MONSTER GUY", fontColorWhite );
+	char* temp = "MONSTER GETNAME";
+	msgStatic = TTF_RenderText_Solid(fontCalibriBold, temp , fontColorWhite );
 	applySurface( (x+xi), (y+yi), msgStatic, screen );
 
 	yi = yi+2*16;
