@@ -13,14 +13,17 @@ FightScreen::FightScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 
 	playerHp = mainCharacter->getHp();
 	monsterHp = thisMonster->getHp();
+
+	lastPlayerRoll = 0;
+	lastMonsterRoll = 0;
 	
 	attackRoll = false;
 	initiativeRoll = true;
 	attacked = false;
 	hasRolledInitiative = false;
+	hasGeneratedStats = false;
+	finished = false;
 
-	lastPlayerAttack = 0;
-	lastMonsterAttack = 0;
 	playerInitiative = 0;
 	monsterInitiative = 0;
 
@@ -77,10 +80,10 @@ void FightScreen::paint()
 			msgDynamic = TTF_RenderText_Solid(fontCalibriBold, "His last hit inflicted:         Damage", fontColorRed );
 			applySurface( (x+BUTTON_SECTION_X+4), (y+BUTTON_SECTION_Y)-2*16, msgDynamic, screen );
 
-			_itoa_s(lastPlayerAttack,buffer,10);
+			_itoa_s(lastPlayerRoll,buffer,10);
 			msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
 			applySurface( (x+BUTTON_SECTION_X+4)+9.5*16, (y+BUTTON_SECTION_Y)-3*16, msgDynamic, screen );
-			_itoa_s(lastMonsterAttack,buffer,10);
+			_itoa_s(lastMonsterRoll,buffer,10);
 			msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
 			applySurface( (x+BUTTON_SECTION_X+4)+9.5*16, (y+BUTTON_SECTION_Y)-2*16, msgDynamic, screen );
 		}
@@ -163,34 +166,29 @@ void FightScreen::paintDynamicMessage()
 {
 	int xi = 0.5*16;
 	int yi = 10.5*16;
-	if (initiativeRoll) 
-	{
-		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "Your Initiative Roll:", fontColorWhite );
-		applySurface( (INFO_SECTION_X+x+xi), (INFO_SECTION_Y+y+yi), msgDynamic, screen );
-
-		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "His Initiative Roll:", fontColorWhite );
-		applySurface( (MONSTER_SECTION_X+x+xi), (MONSTER_SECTION_Y+y+yi), msgDynamic, screen );
-	}
-	if (attackRoll)
-	{
-		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "Your Attack Roll:", fontColorWhite );
-		applySurface( (INFO_SECTION_X+x+xi), (INFO_SECTION_Y+y+yi), msgDynamic, screen );
-
-		msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "His Attack Roll:", fontColorWhite );
-		applySurface( (MONSTER_SECTION_X+x+xi), (MONSTER_SECTION_Y+y+yi), msgDynamic, screen );
-	}
+	
+	msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "YOUR ROLL:", fontColorWhite );
+	applySurface( (INFO_SECTION_X+x+xi), (INFO_SECTION_Y+y+yi), msgDynamic, screen );
+	_itoa_s(lastPlayerRoll,buffer,10);
+	msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
+	applySurface( (INFO_SECTION_X+x+xi+16*4), (INFO_SECTION_Y+y+yi+16.5), msgDynamic, screen );
 
 	xi = 5.5*16;
-	yi = 3.5*16;
+
+	msgDynamic = TTF_RenderText_Solid(fontCalibriTiny, "HIS ROLL:", fontColorWhite );
+	applySurface( (MONSTER_SECTION_X+x+xi), (MONSTER_SECTION_Y+y+yi), msgDynamic, screen );
+	_itoa_s(lastMonsterRoll,buffer,10);
+	msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
+	applySurface( (MONSTER_SECTION_X+x+xi), (MONSTER_SECTION_Y+y+yi+16.5), msgDynamic, screen );
 	
 	//DYNAMIC PLAYER HP
 	_itoa_s(playerHp,buffer,10);
 	msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
-	applySurface( (x+xi), (y+yi), msgDynamic, screen );
+	applySurface( (x+xi), (y+yi-16*7), msgDynamic, screen );
 	//DYNAMIC MONSTER HP
 	_itoa_s(monsterHp,buffer,10);
 	msgDynamic = TTF_RenderText_Solid(fontCalibriBold, buffer, fontColorRed );
-	applySurface( (x+xi)+25*16, (y+yi), msgDynamic, screen );
+	applySurface( (x+xi)+25*16, (y+yi-16*7), msgDynamic, screen );
 
 	//DYNAMIC INITIATIVE PLAYER ROLL
 	_itoa_s(playerInitiative,buffer,10);
@@ -210,27 +208,29 @@ void FightScreen::paintStats()
 	int infox, infoy;
 	int xi, yi;
 
-	if (!hasRolledInitiative)
+	if (!hasGeneratedStats)
 	{
-	std::cout << "\nPLAYER STATS GENERATION: \n";
-	level = mainCharacter->getLevel();
-	ac = mainCharacter->getAC();
-	ackbonus = mainCharacter->getAttackBonus();
-	if (mainCharacter->equippedWeapon != NULL)
-		weaponName = mainCharacter->equippedWeapon->getName();
-	else
-		weaponName = "Hands";
-	if (mainCharacter->equippedWeapon != NULL)
-		weapondmg = mainCharacter->equippedWeapon->getDamage();
-	else
-		weapondmg = 3;
+		std::cout << "\nPLAYER STATS GENERATION: \n";
+		level = mainCharacter->getLevel();
+		ac = mainCharacter->getAC();
+		ackbonus = mainCharacter->getAttackBonus();
+		if (mainCharacter->equippedWeapon != NULL)
+			weaponName = mainCharacter->equippedWeapon->getName();
+		else
+			weaponName = "Hands";
+		if (mainCharacter->equippedWeapon != NULL)
+			weapondmg = mainCharacter->equippedWeapon->getDamage();
+		else
+			weapondmg = 3;
 
-	std::cout << "\nMONSTER STATS GENERATION: \n";
-	mlevel = thisMonster->getLevel();
-	mac = thisMonster->getAC();
-	mackbonus = thisMonster->getAttackBonus();
-	mweaponName = "Hands";
-	mweapondmg = thisMonster->getDamageDiceType();
+		std::cout << "\nMONSTER STATS GENERATION: \n";
+		mlevel = thisMonster->getLevel();
+		mac = thisMonster->getAC();
+		mackbonus = thisMonster->getAttackBonus();
+		mweaponName = "Hands";
+		mweapondmg = thisMonster->getDamageDiceType();
+
+		hasGeneratedStats = true;
 	}
 
 	infox = INFO_SECTION_X;
@@ -323,23 +323,43 @@ void FightScreen::paintStats()
 
 void FightScreen::mouseLeft(int clickX, int clickY)
 {
-	if (!hasRolledInitiative)
-	{
-		if (clickedButton(clickX, clickY, rollButton))
-		{
-			playerInitiative = mainCharacter->getInitiativeRoll();
-			monsterInitiative = thisMonster->getInitiativeRoll();
-			hasRolledInitiative = true;
-			initiativeRoll = false;
-			attackRoll = true;
-		}
-	}
-
 	if (hasRolledInitiative) 
 	{
 		if (clickedButton(clickX, clickY, attackButton))
 		{
-			//ALGORITHMS AND STUFF FROM ATTACK :(
+			if (!finished)
+			{
+				playerFight();
+				monsterFight();
+				if (playerHp <= 0) {
+					std::cout << "Your dead\n\n";
+					finished = true;
+				}
+				if (monsterHp <= 0) {
+					std::cout << "You Killed Him\n\n";
+					finished = true;
+				}
+			}
+		}
+	}
+	else
+	{
+		if (clickedButton(clickX, clickY, rollButton))
+		{
+			lastPlayerRoll = playerInitiative = mainCharacter->getInitiativeRoll();
+			lastMonsterRoll = monsterInitiative = thisMonster->getInitiativeRoll();
+			hasRolledInitiative = true;
+			initiativeRoll = false;
+			attackRoll = true;
+
+			if (monsterInitiative > playerInitiative)
+			{
+				std::cout << "MONSTER ATTACKS FIRST\n\n";
+				monsterFight();
+				paint();
+			}
+			else
+				std::cout << "PLAYER ATTACKS FIRST\n\n";
 		}
 	}
 
@@ -376,7 +396,103 @@ void FightScreen::userExited(void)
 	//do something on exit
 }
 
+void FightScreen::playerFight() 
+{
+	bool damageRoll = false;
+	int attackRoll = Dice::roll(Dice::D20) + mainCharacter->getAttackBonus();
+	std::cout << "Your Attack Roll: " << attackRoll << "\n";
+	if (attackRoll >= (thisMonster->getAC())) {
+		damageRoll = true;
+		std::cout << "YOU HIT HIM" << "\n";
+	}
 
+	//critical hit possible implementation
+	if (attackRoll == 20) {
+		damageRoll = true;
+		std::cout << "AUTOMATIC HIT!" << "\n";
+	}
 
+	//auto miss
+	if (attackRoll == 1) {
+		std::cout << "AUTOMATIC MISS\n" << "\n";
+		damageRoll = false;
+	}
 
+	//if ((mainCharacter->equippedWeapon->getName = ("Small Short Sword")) || (mainCharacter->equippedWeapon->getName = "Medium Short Sword"))
+//	{
+		if (damageRoll) 
+		{
+			if (mainCharacter->equippedWeapon != NULL)
+			{
+				lastPlayerRoll = Dice::roll(mainCharacter->equippedWeapon->getDamage()) + (mainCharacter->getStrMod());
+			}
+			else
+			{
+				lastPlayerRoll = Dice::roll(Dice::D3) + (mainCharacter->getStrMod());
+			}
+			if (lastPlayerRoll <= 1) 
+			{
+				std::cout << "You deal automatic 1 damage" << "\n";
+				thisMonster->setHp( (thisMonster->getHp() - 1) );
+			}
+			else
+			{
+				std::cout << "You deal " << lastPlayerRoll << " damage" << "\n";
+				monsterHp = (monsterHp - lastPlayerRoll);
+			}
+		
+		}
+//	}
+	//else
+	//{
+	//	//MINUS CONSUMABLE
+	//	if (damageRoll) 
+	//	{
+	//	lastPlayerRoll = Dice::roll(mainCharacter->equippedWeapon->getDamage()) + (mainCharacter->getDexMod());
+	//	if (lastPlayerRoll <= 1) {
+	//		std::cout << "You deal automatic 1 damage" << "\n";
+	//		thisMonster->setHp( (thisMonster->getHp() - 1) );
+	//	}
+	//	else {
+	//		std::cout << "You deal " << lastPlayerRoll << " damage" << "\n";
+	//		thisMonster->setHp( (thisMonster->getHp() - lastPlayerRoll) );
+	//	}
+	
 
+}
+
+void FightScreen::monsterFight()
+{
+	bool damageRoll = false;
+	int attackRoll = Dice::roll(Dice::D20) + thisMonster->getAttackBonus();
+	std::cout << "His Attack Roll: " << attackRoll << "\n";
+	if (attackRoll >= thisMonster->getAC()) {
+		damageRoll = true;
+		std::cout << "HE HIT YOU" << "\n";
+	}
+
+	//critical hit possible implementation
+	if (attackRoll == 20) {
+		damageRoll = true;
+		std::cout << "AUTOMATIC HIT!" << "\n";
+	}
+
+	//auto miss
+	if (attackRoll == 1) {
+		std::cout << "AUTOMATIC MISS\n" << "\n";
+		damageRoll = false;
+	}
+
+	if (damageRoll) 
+	{
+		lastMonsterRoll = Dice::roll(thisMonster->getDamageDiceType()) + (thisMonster->getStrMod());
+		if (lastMonsterRoll <= 1) {
+			std::cout << "He deals automatic 1 damage" << "\n";
+			mainCharacter->setHp( (mainCharacter->getHp() - 1) );
+		}
+		else {
+			std::cout << "He deals " << lastMonsterRoll << " damage" << "\n";
+			playerHp = ( (playerHp - lastMonsterRoll) );
+	}
+}
+}

@@ -42,6 +42,8 @@ private:
 	bool initiativeRoll;
 	bool attackRoll;
 	bool attacked;
+	bool hasGeneratedStats;
+	bool finished;
 
 
 	void paintItem(int, int, Item*);
@@ -59,7 +61,7 @@ private:
 	void paintStats();
 
 	int playerHp, monsterHp, playerInitiative, monsterInitiative;
-	int lastPlayerAttack, lastMonsterAttack;
+	int lastPlayerRoll, lastMonsterRoll;
 
 public:
 	FightScreen(int, int, int, int);
@@ -68,6 +70,9 @@ public:
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
 	void userExited();
+
+	void playerFight();
+	void monsterFight();
 };
 
 #endif
