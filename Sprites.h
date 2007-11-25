@@ -308,6 +308,7 @@ protected:
 	void treasureOpened();
 public:
 	Treasure();
+	bool isOpen();
 	virtual void obtainTreasure(ControllableCharacter*) = 0;
 };
 

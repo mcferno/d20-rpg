@@ -732,6 +732,11 @@ void Treasure::treasureOpened()
 	clip->x = 16;
 }
 
+bool Treasure::isOpen()
+{
+	return opened;
+}
+
 // #####################################################################################################
 
 MoneyTreasure::MoneyTreasure(int awardInGold) : Treasure()

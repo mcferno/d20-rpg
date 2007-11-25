@@ -11,19 +11,15 @@ StartScreen::StartScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 
 void StartScreen::init()
 {
-
-//	frame = 0; 
-
 	startMusic = Mix_LoadMUS(".\\music\\start.mp3");
 	musicStarted = false;
 
-	startScreen0 = loadImage(".\\images\\anim\\Image0.png");
-	startScreen1 = loadImage(".\\images\\anim\\Image1.png");
-	startScreen2 = loadImage(".\\images\\anim\\Image2.png");
-	startScreen3 = loadImage(".\\images\\anim\\Image3.png");
-	startScreen4 = loadImage(".\\images\\anim\\Image4.png");
-	startScreen5 = loadImage(".\\images\\anim\\Image5.png");
-	startScreen6 = loadImage(".\\images\\anim\\Image6.png");
+	background = loadImage(".\\images\\startScreen.png");
+
+	btnStartGame = Rect(14*TILE_SIZE,18*TILE_SIZE,22*TILE_SIZE,3*TILE_SIZE);
+	btnCreateNewLevel = Rect(14*TILE_SIZE,22*TILE_SIZE,22*TILE_SIZE,3*TILE_SIZE);
+	btnEditLevel1 = Rect(17*TILE_SIZE,26*TILE_SIZE,16*TILE_SIZE,3*TILE_SIZE);
+	btnEditLevel2 = Rect(17*TILE_SIZE,30*TILE_SIZE,16*TILE_SIZE,3*TILE_SIZE);
 }
 
 void StartScreen::paint()
@@ -38,7 +34,7 @@ void StartScreen::paint()
 		}
 
 		// apply background image
-		applySurface(0,0,startScreen6,screen);
+		applySurface(0,0,background,screen);
 	}
 	else if(state == STATE_MAP_EDITOR)
 	{
@@ -50,10 +46,23 @@ void StartScreen::mouseLeft(int clickX, int clickY)
 {
 	if(state == STATE_SHOW_SCREEN)
 	{
-		if (clickX >= x && clickX <= x+w && clickY >= y && clickY <= y+h)
+		if(btnStartGame.inBounds(clickX, clickY))
 		{
 			Mix_HaltMusic();
+			cleanup();
 			signalCompletion();
+		}
+		else if(btnCreateNewLevel.inBounds(clickX, clickY))
+		{
+			showMapEditor(0);
+		}
+		else if(btnEditLevel1.inBounds(clickX, clickY))
+		{
+			showMapEditor(1);
+		}
+		else if(btnEditLevel2.inBounds(clickX, clickY))
+		{
+			showMapEditor(2);
 		}
 	}
 	else if(state == STATE_MAP_EDITOR)
@@ -67,27 +76,27 @@ void StartScreen::mouseLeft(int clickX, int clickY)
 	}
 }
 
+// causes problems for now
 void StartScreen::cleanup()
 {
+	/*
 	Mix_FreeMusic(startMusic);
 	Mix_CloseAudio();
+	*/
 }
 
 void StartScreen::mouseRight(int clickX, int clickY)
 {
-	if(state == STATE_SHOW_SCREEN)
-	{
-		if (clickX >= x && clickX <= x+w && clickY >= y && clickY <= y+h)
-		{
-			Mix_HaltMusic();
-			signalCompletion();
-			cleanup();
-		}
-	}
-	else if(state == STATE_MAP_EDITOR)
+	if(state == STATE_MAP_EDITOR)
 	{
 		mapEditor->mouseRight(clickX, clickY);
 	}
+}
+
+void StartScreen::keyW()
+{
+	if(state == STATE_MAP_EDITOR)
+		mapEditor->toggleWalkable();
 }
 
 void StartScreen::showMapEditor(int level)

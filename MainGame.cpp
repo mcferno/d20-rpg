@@ -33,9 +33,11 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	// attack button
 	controlBtns[0] = Button(INFO_PANEL_X+TILE_SIZE,INFO_PANEL_Y+TILE_SIZE*4,5*TILE_SIZE,2*TILE_SIZE,0,0,buttons);
 	// equip screen button
-	controlBtns[1] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*21,7*TILE_SIZE,2*TILE_SIZE,controlBtns[0].w,0,buttons);
+	controlBtns[1] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*18,7*TILE_SIZE,2*TILE_SIZE,controlBtns[0].w,0,buttons);
 	// open chest button
-	controlBtns[2] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*18,7*TILE_SIZE,2*TILE_SIZE,12*TILE_SIZE,0,buttons);
+	controlBtns[2] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*15,7*TILE_SIZE,2*TILE_SIZE,12*TILE_SIZE,0,buttons);
+	// end turn button
+	controlBtns[3] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*21,7*TILE_SIZE,2*TILE_SIZE,19*TILE_SIZE,0,buttons);
 
 	exitBtn.x = INFO_PANEL_X+TILE_SIZE;
 	exitBtn.y = INFO_PANEL_Y+TILE_SIZE*24;
@@ -130,7 +132,6 @@ void MainGame::nextTurn()
 	{
 		state = STATE_HUMAN_TURN;
 		std::cout << "Your turn, make your move\n";
-		//currSpeed = 20; // to remove
 		paintNow();
 	}
 	else 
@@ -366,6 +367,9 @@ void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkabl
 {
 	int center = dist;
 
+	if(center < 1)
+		return;
+
 	int centerX = mainCharacter->x;
 	int centerY = mainCharacter->y;
 
@@ -468,10 +472,11 @@ void MainGame::paintInfoPanel()
 			controlBtns[0].paint();
 	}
 	controlBtns[1].paint();
+	controlBtns[3].paint();
 
 	for(int i=0;i<numTreasure;i++)
 	{
-		if(inRange(treasure[i],1))
+		if(inRange(treasure[i],1) && !treasure[i]->isOpen())
 			controlBtns[2].paint();
 	}
 }
@@ -542,68 +547,58 @@ int MainGame::tileToPixelsY(int ty)
 	return gameMap.limit.y + (ty - gameMap.y)*16;
 }
 
+void MainGame::characterMoved()
+{
+	if(state == STATE_HUMAN_TURN)
+	{
+		currSpeed -= 1;
+		enterShop();
+		exitLevel();
+	}
+}
+
 void MainGame::keyUp()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(isTileWalkable(mainCharacter->x,mainCharacter->y-1) && !isTileOccupied(mainCharacter->x,mainCharacter->y-1))
+		if(isTileWalkable(mainCharacter->x,mainCharacter->y-1) && !isTileOccupied(mainCharacter->x,mainCharacter->y-1) && currSpeed > 0)
 		{
 			mainCharacter->y -= 1;
-			currSpeed -= 1;
-
-			enterShop();
-			exitLevel();
+			characterMoved();
 		}
-		if(currSpeed == 0)
-			nextTurn();
 	}
 }
 void MainGame::keyDown()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(isTileWalkable(mainCharacter->x,mainCharacter->y+1) && !isTileOccupied(mainCharacter->x,mainCharacter->y+1))
+		if(isTileWalkable(mainCharacter->x,mainCharacter->y+1) && !isTileOccupied(mainCharacter->x,mainCharacter->y+1) && currSpeed > 0)
 		{
 			mainCharacter->y += 1;
-			currSpeed -= 1;
-			
-			enterShop();
-			exitLevel();
+			characterMoved();
 		}
-		if(currSpeed == 0)
-			nextTurn();
 	}
 }
 void MainGame::keyLeft()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(isTileWalkable(mainCharacter->x-1,mainCharacter->y) && !isTileOccupied(mainCharacter->x-1,mainCharacter->y))
+		if(isTileWalkable(mainCharacter->x-1,mainCharacter->y) && !isTileOccupied(mainCharacter->x-1,mainCharacter->y) && currSpeed > 0)
 		{
 			mainCharacter->x -= 1;
-			currSpeed -= 1;
-			
-			enterShop();
-			exitLevel();
+			characterMoved();
 		}
-		if(currSpeed == 0)
-			nextTurn();
 	}
 }
 void MainGame::keyRight()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		if(isTileWalkable(mainCharacter->x+1,mainCharacter->y) && !isTileOccupied(mainCharacter->x+1,mainCharacter->y))
+		if(isTileWalkable(mainCharacter->x+1,mainCharacter->y) && !isTileOccupied(mainCharacter->x+1,mainCharacter->y) && currSpeed > 0)
 		{
 			mainCharacter->x += 1;
-			currSpeed -= 1;
-			
-			enterShop();
-			exitLevel();
+			characterMoved();
 		}
-		if(currSpeed == 0)
-			nextTurn();
 	}
 }
 
@@ -644,7 +639,7 @@ void MainGame::mouseLeft(int clickX, int clickY)
 		{ // user clicked the "attack" button
 			if(inRange(selectedEnemy,mainCharacter->getWeaponRange()))
 			{
-				// CALL FIGHT FUNCTION
+				fight(selectedEnemy);
 			}
 		}
 		else if(controlBtns[1].inBounds(clickX, clickY))
@@ -654,6 +649,10 @@ void MainGame::mouseLeft(int clickX, int clickY)
 		else if(controlBtns[2].inBounds(clickX, clickY))
 		{
 			openTreasure();
+		}
+		else if(controlBtns[3].inBounds(clickX, clickY))
+		{
+			nextTurn();
 		}
 	}
 	else

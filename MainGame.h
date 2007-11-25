@@ -51,7 +51,7 @@ private:
 	SDL_Surface *msgInfo[2];
 	SDL_Surface *msgCustomInfo[2];
 
-	Button controlBtns[3];
+	Button controlBtns[4];
 	Button mapBtns[4];
 	Rect exitBtn;
 
@@ -102,6 +102,7 @@ private:
 	int tileToPixelsX(int);
 	int tileToPixelsY(int);
 
+	void characterMoved();
 	bool inRange(Object*,int);
 	bool clickedEnemy(int,int);
 	void selectEnemy(Monster*);
@@ -136,6 +137,13 @@ private:
 	int playerAttackRoll, monsterAttackRoll;
 	int playerDamageRoll, monsterDamageRoll;
 
+	int rollDamageMelee();
+	int rollDamageRanged();
+	int rollDamageMelee(Monster *thisMonster);
+	bool fPlayerAttackRoll(Monster *thisMonster);
+	bool fMonsterAttackRoll(Monster *thisMonster);
+	void fight(Monster *thisMonster);
+
 public:
 	MainGame(int, int, int, int);
 	void init();
@@ -155,15 +163,6 @@ public:
 
 	// used to move game logic independently of key/mouse events
 	void tick();
-
-	//fight logic
-	int rollDamageMelee();
-	int rollDamageRanged();
-	int rollDamageMelee(Monster *thisMonster);
-	bool fPlayerAttackRoll(Monster *thisMonster);
-	bool fMonsterAttackRoll(Monster *thisMonster);
-
-	void fight(Monster *thisMonster);
 };
 
 #endif

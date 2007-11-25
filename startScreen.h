@@ -10,13 +10,8 @@ private:
 
 	Mix_Music *startMusic;
 
-	SDL_Surface *startScreen0;
-	SDL_Surface *startScreen1;
-	SDL_Surface *startScreen2;
-	SDL_Surface *startScreen3;
-	SDL_Surface *startScreen4;
-	SDL_Surface *startScreen5;
-	SDL_Surface *startScreen6;
+	SDL_Surface *background;
+	Rect btnStartGame, btnEditLevel1, btnEditLevel2, btnCreateNewLevel;
 
 	MapEditor *mapEditor;
 
@@ -40,6 +35,8 @@ public:
 	// handles mouse interactions
 	void mouseLeft(int,int);
 	void mouseRight(int,int);
+
+	void keyW();
 };
 
 #endif

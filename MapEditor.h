@@ -94,9 +94,6 @@ private:
 	// converts an x,y coordinate (in tiles) into a 1-d array index
 	int getTileArrayIndex(int, int);
 
-	// if a custom map cell is selected, switch between walkable and non-walkable
-	void toggleWalkable();
-
 	// checks if the scroll buttons were pressed, if so, it invokes the appropriate scrolling
 	void checkButtons(int, int, Button*, Map*);
 
@@ -128,6 +125,9 @@ public:
 	void mouseRight(int, int);
 
 	void showInstructions();
+
+	// if a custom map cell is selected, switch between walkable and non-walkable
+	void toggleWalkable();
 };
 
 #endif

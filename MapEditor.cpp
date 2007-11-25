@@ -324,6 +324,8 @@ void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW,
 	}
 
 	tileSet->loadGraphics(graphics);
+
+	selectedTileX = selectedTileY = selectedCellX = selectedCellY = selectedTileIndex = -1;
 	isLoaded = true;
 }
 

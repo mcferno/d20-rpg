@@ -157,22 +157,13 @@ int main( int argc, char* args[] )
 				dirty = true;
 				switch( event.key.keysym.sym ) 
 				{
-					case SDLK_1:
-						if(state == STATE_START_SCREEN)
-							startScreen->showMapEditor(1);
-						break;
-					case SDLK_2:
-						if(state == STATE_START_SCREEN)
-							startScreen->showMapEditor(2);
-						break;
-					case SDLK_3:
-						if(state == STATE_START_SCREEN)
-							startScreen->showMapEditor();
-						break;
 					case SDLK_s:
 						if(state == STATE_MAIN_GAME)
 							mainGame->showShop();
 						break;
+					case SDLK_w:
+						if(state == STATE_START_SCREEN)
+							startScreen->keyW();
 					case SDLK_UP:
 						if(state == STATE_MAIN_GAME)
 							mainGame->keyUp();
