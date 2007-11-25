@@ -30,6 +30,7 @@ const int STATE_INIT = 0;
 const int STATE_START_SCREEN = 1;
 const int STATE_CHARACTER_SELECTION = 2;
 const int STATE_MAIN_GAME = 3;
+const int STATE_GAME_EXIT = 4;
 const int STATE_GAME_OVER = 99;
 
 int state = STATE_INIT;
@@ -79,6 +80,7 @@ void stateTransition()
 			state = STATE_START_SCREEN;
 			break;
 		case STATE_START_SCREEN:
+			startScreen = NULL;
 			if(selectionScreen == NULL)
 			{
 				selectionScreen = new SelectionScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -91,12 +93,13 @@ void stateTransition()
 			if(mainGame == NULL)
 			{
 				mainGame = new MainGame(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-				selectionScreen->setSignal(&isDone);
+				mainGame->setSignal(&isDone);
 				mainGame->init();
 			}
 			state = STATE_MAIN_GAME;
 			break;
 		case STATE_MAIN_GAME:
+			state = STATE_GAME_EXIT;
 			break;
 	}
 }
@@ -170,14 +173,6 @@ int main( int argc, char* args[] )
 						if(state == STATE_MAIN_GAME)
 							mainGame->showShop();
 						break;
-					case SDLK_e:
-						if(state == STATE_MAIN_GAME)
-							mainGame->showEquipScreen();
-						break;
-					case SDLK_o:
-						if(state == STATE_MAIN_GAME)
-							mainGame->openTreasure();
-						break;
 					case SDLK_f:
 						if(state == STATE_MAIN_GAME)
 							mainGame->showFightScreen();
@@ -233,6 +228,11 @@ int main( int argc, char* args[] )
 			{
 				isDone = false;
 				stateTransition();
+			}
+
+			if(state == STATE_GAME_EXIT)
+			{
+				quit = true;
 			}
 
 			// paint only if an event occured

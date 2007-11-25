@@ -372,6 +372,16 @@ int ControllableCharacter::getNumPotions()
 	return numPotions;
 }
 
+int ControllableCharacter::getWeaponRange()
+{
+	int weaponReach = 0;
+	if(equippedWeapon != NULL)
+		weaponReach = equippedWeapon->getRangeIncrement();
+	if(weaponReach < 1)
+		weaponReach = 1;
+	return weaponReach;
+}
+
 // #####################################################################################################
 
 Fighter::Fighter()

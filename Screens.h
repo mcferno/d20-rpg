@@ -26,6 +26,7 @@ protected:
 	static TTF_Font *fontCalibriBold;
 	static TTF_Font *fontCalibriTiny;
 	static SDL_Surface *highlightTile;
+	static SDL_Color colorWhite;
 
 	// the chosen character, shared among the selection screen and main game
 	static ControllableCharacter *mainCharacter;

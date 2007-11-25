@@ -47,9 +47,14 @@ private:
 
 	SDL_Surface *background;
 
-	SDL_Surface *walkableHighlight;
+	SDL_Surface *walkableHighlight, *targetableHighlight;
 
+	SDL_Surface *msgInfo[2];
+	SDL_Surface *msgCustomInfo[2];
+
+	Button controlBtns[3];
 	Button mapBtns[4];
+	Rect exitBtn;
 
 	Character *currentPlayer;
 	int currSpeed;
@@ -61,7 +66,7 @@ private:
 	queue<Character*> playOrder;
 
 	// an array of Monsters for the current level
-	Monster *enemies;
+	Monster *enemies, *selectedEnemy;
 	int numEnemies;
 
 	// an array of treasure found scattered on the map
@@ -83,15 +88,25 @@ private:
 	static const int STATE_SHOP = 3;
 	static const int STATE_EQUIP = 4;
 	static const int STATE_FIGHT = 5;
+
+	static const int CHARACTER_PANEL_X = 2*TILE_SIZE;
+	static const int CHARACTER_PANEL_Y = 32*TILE_SIZE;
+
+	static const int INFO_PANEL_X = 41*TILE_SIZE;
+	static const int INFO_PANEL_Y = 2*TILE_SIZE;
+
 	void loadLevel();
-	void paintNow();
-	void paintObject(Object*);
 	void doInitiativeRoll();
 	void nextTurn();
 	bool isTileOccupied(int,int);
 	bool isTileWalkable(int,int);
 	int tileToPixelsX(int);
 	int tileToPixelsY(int);
+
+	bool inRange(Object*,int);
+	bool clickedEnemy(int,int);
+	void selectEnemy(Monster*);
+	void unselectEnemy();
 
 	Uint32 startAITurn;
 	// time in milliseconds to wait between AI actions, obeyed when possible
@@ -107,7 +122,14 @@ private:
 	// exits the level if you are in the exit door of the level
 	void exitLevel();
 
-	void paintWalkingRange();
+	void showEquipScreen();
+	void openTreasure();
+
+	void paintNow();
+	void paintObject(Object*);
+	void paintRange(int,SDL_Surface*,bool=false);
+	void paintInfoPanel();
+	void paintCharacterPanel();
 
 public:
 	MainGame(int, int, int, int);
@@ -125,9 +147,7 @@ public:
 	void mouseRight(int,int);
 
 	void showShop();
-	void showEquipScreen();
 	void showFightScreen();
-	void openTreasure();
 
 	// used to move game logic independently of key/mouse events
 	void tick();

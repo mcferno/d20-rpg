@@ -241,7 +241,19 @@ void EquipScreen::selectedItem(Item* item)
 	if(item->isItemOfQuantity())
 	{
 		msgCustom[0] = TTF_RenderText_Solid(fontCalibri,"Quantity: ",fontColorWhite);
-		_itoa_s(((UsableItem*)item)->numLeft(),tempBuffer,10);
+		switch(((UsableItem*)item)->usableType)
+		{
+			case UsableItem::ARROW:
+				_itoa_s(mainCharacter->getNumArrows(),tempBuffer,10);
+				break;
+			case UsableItem::BOLT:
+				_itoa_s(mainCharacter->getNumBolts(),tempBuffer,10);
+				break;
+			default:
+				_itoa_s(mainCharacter->getNumPotions(),tempBuffer,10);
+				break;
+
+		}
 		msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
 	}
 	else

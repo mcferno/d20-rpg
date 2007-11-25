@@ -21,6 +21,7 @@ private:
 	MapEditor *mapEditor;
 
 	void init();
+	void cleanup();
 
 	bool musicStarted;
 

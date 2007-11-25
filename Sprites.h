@@ -25,9 +25,6 @@ automatically creates a player when it is called.
 enum race {HUMAN, DWARF, ELF, GNOME};
 enum playerClass {FIGHTER, RANGER};
 
-// conversion between feet and tile size (5ft per tile)
-const int FT_TO_TILES = 5;
-
 // #####################################################################################################
 
 //Class Object will store information about any object drawn on the map
@@ -173,6 +170,7 @@ public:
 	bool isEquipped(Item*);
 	void unEquip(Item*);
 	static int getAbilityRoll();
+	int getWeaponRange();
 	int getNumArrows();
 	int getNumBolts();
 	int getNumPotions();

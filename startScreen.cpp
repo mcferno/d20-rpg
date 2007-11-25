@@ -67,6 +67,12 @@ void StartScreen::mouseLeft(int clickX, int clickY)
 	}
 }
 
+void StartScreen::cleanup()
+{
+	Mix_FreeMusic(startMusic);
+	Mix_CloseAudio();
+}
+
 void StartScreen::mouseRight(int clickX, int clickY)
 {
 	if(state == STATE_SHOW_SCREEN)
@@ -75,6 +81,7 @@ void StartScreen::mouseRight(int clickX, int clickY)
 		{
 			Mix_HaltMusic();
 			signalCompletion();
+			cleanup();
 		}
 	}
 	else if(state == STATE_MAP_EDITOR)

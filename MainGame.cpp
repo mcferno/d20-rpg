@@ -13,6 +13,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	fightScreen = NULL;
 	subScreenSignal = false;
 	treasure = NULL;
+	selectedEnemy = NULL;
 	shopDoorX = shopDoorY = exitDoorX = exitDoorY = -1;
 
 	background = loadImage(".\\images\\mainScreen.png");
@@ -29,9 +30,26 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	//down
 	mapBtns[3] = Button(38*TILE_SIZE,28*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
 
+	SDL_Surface *buttons = loadImage(".\\images\\mainGameButtons.png");
+	// attack button
+	controlBtns[0] = Button(INFO_PANEL_X+TILE_SIZE,INFO_PANEL_Y+TILE_SIZE*4,5*TILE_SIZE,2*TILE_SIZE,0,0,buttons);
+	// equip screen button
+	controlBtns[1] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*21,7*TILE_SIZE,2*TILE_SIZE,controlBtns[0].w,0,buttons);
+	// open chest button
+	controlBtns[2] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*18,7*TILE_SIZE,2*TILE_SIZE,12*TILE_SIZE,0,buttons);
+
+	exitBtn.x = INFO_PANEL_X+TILE_SIZE;
+	exitBtn.y = INFO_PANEL_Y+TILE_SIZE*24;
+	exitBtn.w = TILE_SIZE*5;
+	exitBtn.h = TILE_SIZE*2;
+
+	msgInfo[0] = TTF_RenderText_Solid(fontCalibri, "Monster ", colorWhite );
+	msgInfo[1] = TTF_RenderText_Solid(fontCalibri, "HP: ", colorWhite );
 
 	walkableHighlight = loadImage(".\\images\\fullHighlight.png");
-	SDL_SetAlpha( walkableHighlight, SDL_SRCALPHA | SDL_RLEACCEL, 100 );
+	targetableHighlight = loadImage(".\\images\\fullHighlightWeapon.png");
+	SDL_SetAlpha( walkableHighlight, SDL_SRCALPHA | SDL_RLEACCEL, 75 );
+	SDL_SetAlpha( targetableHighlight, SDL_SRCALPHA | SDL_RLEACCEL, 75 );
 }
 
 // begins the game by loading the level and all of its enemies
@@ -321,7 +339,10 @@ void MainGame::paint()
 
 	if(state == STATE_HUMAN_TURN)
 	{
-		paintWalkingRange();
+		paintRange(currSpeed,walkableHighlight);
+		paintRange(mainCharacter->getWeaponRange(),targetableHighlight,true);
+		
+		paintInfoPanel();
 	}
 
 	paintObject(mainCharacter);
@@ -346,32 +367,32 @@ void MainGame::paint()
 	}
 }
 
-void MainGame::paintWalkingRange()
+void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkable)
 {
+	int center = dist;
+
 	int centerX = mainCharacter->x;
 	int centerY = mainCharacter->y;
 
-	int unwalkable = 9999;
-	int uninit = 99;
-
-	int center = currSpeed;
+	unsigned short unwalkable = 65535;
+	unsigned short uninit = 9999;
 
 	int i,j;
 
 	int width = center*2+1;
-	int **b;
-	b = new int*[width];
+	unsigned short **b;
+	b = new unsigned short*[width];
 
 	// first pass, initialization;
 	// goes row by row
 	for(i=0;i<width;i++)
 	{
-		b[i] = new int[width];
+		b[i] = new unsigned short[width];
 		for(j=0;j<width;j++)
 		{
 			if(gameMap.isOnScreen(centerX+(center-i),centerY+(center-j)) 
-				&& !isTileOccupied(centerX+(center-i),centerY+(center-j)) 
-				&& isTileWalkable(centerX+(center-i),centerY+(center-j)))
+				&& (!isTileOccupied(centerX+(center-i),centerY+(center-j)) || ignoreUnWalkable)
+				&& (isTileWalkable(centerX+(center-i),centerY+(center-j)) || ignoreUnWalkable))
 				b[i][j] = uninit;
 			else
 				b[i][j] = unwalkable;
@@ -381,7 +402,7 @@ void MainGame::paintWalkingRange()
 	// set the center to 0
 	b[center][center] = 0;
 
-	int min;
+	unsigned short min;
 
 	// first discovery path
 	for(int k=0;k<center;k++)
@@ -415,7 +436,7 @@ void MainGame::paintWalkingRange()
 			// valid tile
 			if(b[i][j] <= center)
 			{
-				applySurface(tileToPixelsX(centerX+(center-i)),tileToPixelsY(centerY+(center-j)),walkableHighlight,screen);
+				applySurface(tileToPixelsX(centerX+(center-i)),tileToPixelsY(centerY+(center-j)),highlight,screen);
 			}
 		}
 	}
@@ -438,6 +459,84 @@ void MainGame::paintObject(Object* obj)
 	}
 }
 
+void MainGame::paintInfoPanel()
+{
+	if(selectedEnemy != NULL)
+	{
+		applySurface(x+INFO_PANEL_X,y+INFO_PANEL_Y,msgInfo[0],screen);
+		applySurface(x+INFO_PANEL_X+msgInfo[0]->w,y+INFO_PANEL_Y,selectedEnemy->graphics->image,screen,selectedEnemy->clip);
+		applySurface(x+INFO_PANEL_X,y+INFO_PANEL_Y+TILE_SIZE,msgCustomInfo[0],screen);
+		applySurface(x+INFO_PANEL_X,y+INFO_PANEL_Y+TILE_SIZE*2,msgInfo[1],screen);
+		applySurface(x+INFO_PANEL_X+msgInfo[1]->w,y+INFO_PANEL_Y+TILE_SIZE*2,msgCustomInfo[1],screen);
+
+		if(inRange(selectedEnemy,mainCharacter->getWeaponRange()))
+			controlBtns[0].paint();
+	}
+	controlBtns[1].paint();
+
+	for(int i=0;i<numTreasure;i++)
+	{
+		if(inRange(treasure[i],1))
+			controlBtns[2].paint();
+	}
+}
+
+bool MainGame::inRange(Object* target, int range)
+{
+	return (range >= abs(mainCharacter->x-target->x) + abs(mainCharacter->y-target->y));
+}
+
+bool MainGame::clickedEnemy(int clickX, int clickY)
+{
+	int xCoord, yCoord;
+	for(int i=0;i<numEnemies;i++)
+	{
+		xCoord = tileToPixelsX(enemies[i].x);
+		yCoord = tileToPixelsY(enemies[i].y);
+
+		if(clickX >= xCoord && clickX <= xCoord + TILE_SIZE && clickY >= yCoord && clickY <= yCoord + TILE_SIZE)
+		{
+			selectEnemy(&enemies[i]);
+			return true;
+		}
+
+	}
+	return false;
+}
+
+void MainGame::selectEnemy(Monster* toSelect)
+{
+	if(selectedEnemy != toSelect)
+	{
+		if(selectedEnemy != NULL)
+			unselectEnemy();
+
+		selectedEnemy = toSelect;
+
+		msgCustomInfo[0] = TTF_RenderText_Solid(fontCalibri, selectedEnemy->getName(), colorWhite );
+
+		char tempBuffer[5];
+		_itoa_s(selectedEnemy->getHp(),tempBuffer,10);
+		msgCustomInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+	}
+}
+
+void MainGame::unselectEnemy()
+{
+	selectedEnemy = NULL;
+
+	if(msgCustomInfo[0] != NULL)
+	{
+		SDL_FreeSurface(msgCustomInfo[0]);
+		msgCustomInfo[0] = NULL;
+	}
+	if(msgCustomInfo[1] != NULL)
+	{
+		SDL_FreeSurface(msgCustomInfo[1]);
+		msgCustomInfo[1] = NULL;
+	}
+}
+
 int MainGame::tileToPixelsX(int tx)
 {
 	return gameMap.limit.x + (tx - gameMap.x)*16;
@@ -457,7 +556,6 @@ void MainGame::keyUp()
 			mainCharacter->y -= 1;
 			currSpeed -= 1;
 
-			// temporary
 			enterShop();
 			exitLevel();
 		}
@@ -474,7 +572,6 @@ void MainGame::keyDown()
 			mainCharacter->y += 1;
 			currSpeed -= 1;
 			
-			// temporary
 			enterShop();
 			exitLevel();
 		}
@@ -491,7 +588,6 @@ void MainGame::keyLeft()
 			mainCharacter->x -= 1;
 			currSpeed -= 1;
 			
-			// temporary
 			enterShop();
 			exitLevel();
 		}
@@ -508,7 +604,6 @@ void MainGame::keyRight()
 			mainCharacter->x += 1;
 			currSpeed -= 1;
 			
-			// temporary
 			enterShop();
 			exitLevel();
 		}
@@ -520,7 +615,11 @@ void MainGame::keyRight()
 // handles mouse interactions
 void MainGame::mouseLeft(int clickX, int clickY)
 {
-	if(state == STATE_SHOP)
+	if(exitBtn.inBounds(clickX, clickY))
+	{
+		signalCompletion();
+	}
+	else if(state == STATE_SHOP)
 	{
 		shopScreen->mouseLeft(clickX,clickY);
 
@@ -553,6 +652,26 @@ void MainGame::mouseLeft(int clickX, int clickY)
 			showFightScreen();
 		}
 	}
+	else if(state == STATE_HUMAN_TURN)
+	{
+		if(clickedEnemy(clickX, clickY))
+		{}
+		else if(selectedEnemy != NULL && controlBtns[0].inBounds(clickX, clickY))
+		{ // user clicked the "attack" button
+			if(inRange(selectedEnemy,mainCharacter->getWeaponRange()))
+			{
+				// CALL FIGHT FUNCTION
+			}
+		}
+		else if(controlBtns[1].inBounds(clickX, clickY))
+		{ // user clicked the "Equip Screen" button
+			showEquipScreen();
+		}
+		else if(controlBtns[2].inBounds(clickX, clickY))
+		{
+			openTreasure();
+		}
+	}
 	else
 	{
 		// checks if any of the map scrolling buttons were pressed
@@ -579,8 +698,8 @@ void MainGame::mouseLeft(int clickX, int clickY)
 			}
 		}
 	}
-
 }
+
 void MainGame::mouseRight(int clickX, int clickY)
 {
 	if(state == STATE_SHOP)
@@ -589,7 +708,11 @@ void MainGame::mouseRight(int clickX, int clickY)
 		equipScreen->mouseRight(clickX,clickY);
 	else if(state == STATE_FIGHT)
 		fightScreen->mouseRight(clickX,clickY);
-	else
+	else if(state == STATE_HUMAN_TURN)
+	{
+		if(selectedEnemy != NULL)
+			unselectEnemy();
+	}
 	{}
 }
 
@@ -655,23 +778,12 @@ void MainGame::showFightScreen()
 
 void MainGame::openTreasure()
 {
-	if(numTreasure > 0)
+	for(int i=0;i<numTreasure;i++)
 	{
-		for(int i=0;i<numTreasure;i++)
+		if(inRange(treasure[i],1))
 		{
-			// top, bottom
-			if(treasure[i]->x == mainCharacter->x && (treasure[i]->y == mainCharacter->y - 1 || treasure[i]->y == mainCharacter->y + 1))
-			{
-				treasure[i]->obtainTreasure(mainCharacter);
-				break;
-			}
-
-			//left right
-			if(treasure[i]->y == mainCharacter->y && (treasure[i]->x == mainCharacter->x - 1 || treasure[i]->x == mainCharacter->x + 1))
-			{
-				treasure[i]->obtainTreasure(mainCharacter);
-				break;
-			}
+			treasure[i]->obtainTreasure(mainCharacter);
+			break;
 		}
 	}
 }

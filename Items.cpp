@@ -110,7 +110,7 @@ Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, 
 Weapon::Weapon(char* newName, int newDamage,int newCritical, int newCostInGold, int graphicOffset, int newRange, UsableItem::UsableItemType newRequiredConsumable) : 
 	DAMAGE_DICE_TYPE(newDamage), 
 	CRITICAL_MULTIPLIER(newCritical),
-	RANGE_INCREMENT(newRange),
+	RANGE_INCREMENT(newRange/FT_TO_TILES),
 	EquipableItem(newName,newCostInGold,graphicOffset,EquipableItem::WEAPON)
 {
 	requiredConsumable = newRequiredConsumable;

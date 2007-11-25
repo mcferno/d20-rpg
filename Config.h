@@ -2,6 +2,9 @@
 	#define CONFIG_H
 
 static const int TILE_SIZE = 16;
+
+// conversion between feet and tile size (5ft per tile)
+static const int FT_TO_TILES = 5;
 static const char* ITEM_GRAPHICS = ".\\images\\items.png";
 
 static const char* LEVEL_1_MAP = ".\\levels\\level01\\index.map";
