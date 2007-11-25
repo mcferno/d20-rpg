@@ -131,6 +131,7 @@ void MainGame::nextTurn()
 	if(currentPlayer == mainCharacter)
 	{
 		state = STATE_HUMAN_TURN;
+		attackedThisRound = false;
 		std::cout << "Your turn, make your move\n";
 		paintNow();
 	}
@@ -468,7 +469,7 @@ void MainGame::paintInfoPanel()
 		applySurface(x+INFO_PANEL_X,y+INFO_PANEL_Y+TILE_SIZE*2,msgInfo[1],screen);
 		applySurface(x+INFO_PANEL_X+msgInfo[1]->w,y+INFO_PANEL_Y+TILE_SIZE*2,msgCustomInfo[1],screen);
 
-		if(inRange(selectedEnemy,mainCharacter->getWeaponRange()))
+		if(inRange(selectedEnemy,mainCharacter->getWeaponRange()) && !attackedThisRound)
 			controlBtns[0].paint();
 	}
 	controlBtns[1].paint();
@@ -637,9 +638,10 @@ void MainGame::mouseLeft(int clickX, int clickY)
 		{}
 		else if(selectedEnemy != NULL && controlBtns[0].inBounds(clickX, clickY))
 		{ // user clicked the "attack" button
-			if(inRange(selectedEnemy,mainCharacter->getWeaponRange()))
+			if(inRange(selectedEnemy,mainCharacter->getWeaponRange()) && !attackedThisRound)
 			{
 				fight(selectedEnemy);
+				paintNow();
 			}
 		}
 		else if(controlBtns[1].inBounds(clickX, clickY))
@@ -800,7 +802,7 @@ void MainGame::fight(Monster *thisMonster)
 {
 
 	//MELEE ATTACK
-	if ((mainCharacter->equippedWeapon == NULL) || (mainCharacter->equippedWeapon->getRangeIncrement() == 1))
+	if (mainCharacter->getWeaponRange() == 1)
 	{
 		playerInitiativeRoll = mainCharacter->getInitiativeRoll();
 		std::cout << "\n Your Initiative Roll: " << playerInitiativeRoll << "\n";

@@ -57,6 +57,7 @@ private:
 
 	Character *currentPlayer;
 	int currSpeed;
+	bool attackedThisRound;
 	int numPlayers;
 
 	bool subScreenSignal;
