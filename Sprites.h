@@ -170,6 +170,9 @@ public:
 	bool isEquipped(Item*);
 	void unEquip(Item*);
 	static int getAbilityRoll();
+	void setNumArrows(int);
+	void setNumBolts(int);
+	void setNumPotions(int);
 	int getWeaponRange();
 	int getNumArrows();
 	int getNumBolts();

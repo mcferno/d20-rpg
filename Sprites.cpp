@@ -372,6 +372,19 @@ int ControllableCharacter::getNumPotions()
 	return numPotions;
 }
 
+void ControllableCharacter::setNumArrows(int numArrows)
+{
+	this->numArrows = numArrows;
+}
+void ControllableCharacter::setNumBolts(int numBolts)
+{
+	this->numBolts = numBolts;
+}
+void ControllableCharacter::setNumPotions(int NumPotions)
+{
+	this->numPotions = numPotions;
+}
+
 int ControllableCharacter::getWeaponRange()
 {
 	int weaponReach = 0;

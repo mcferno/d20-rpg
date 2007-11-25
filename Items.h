@@ -107,8 +107,9 @@ private:
 	const int RANGE_INCREMENT;
 	const int CRITICAL_MULTIPLIER;
 
-	UsableItem::UsableItemType requiredConsumable;
+
 public:
+	UsableItem::UsableItemType requiredConsumable;
 	// name, damage dice type, critical multiplier, cost in gold, graphicOffset
 	Weapon(char*,int,int,int,int);
 

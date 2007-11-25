@@ -7,7 +7,7 @@ class FightScreen : public Screen
 {
 private:
 
-	Monster *thisMonster;
+	
 
 	SDL_Surface *background;
 	SDL_Surface *buttons;
@@ -34,6 +34,7 @@ private:
 	static const int INFO_SECTION_Y = 6*16;
 	static const int MONSTER_SECTION_X = 21*16;
 	static const int MONSTER_SECTION_Y = 6*16;
+
 
 
 	bool clickedButton(int,int,Button);
@@ -76,7 +77,18 @@ public:
 	void mouseRight(int,int);
 	void userExited();
 
-	void fight();
+	
+
+	int rollDamageMelee();
+	int rollDamageRanged();
+
+	int rollDamageMelee(Monster *thisMonster);
+
+	bool fPlayerAttackRoll(Monster *thisMonster);
+	bool fMonsterAttackRoll(Monster *thisMonster);
+
+	void fight(Monster *thisMonster);
+
 };
 
 #endif
