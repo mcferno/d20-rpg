@@ -316,7 +316,7 @@ void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW,
 		graphics = new Graphics(DEFAULT_TILES,DEFAULT_TILES_R,DEFAULT_TILES_G,DEFAULT_TILES_B);
 		tileSize = graphics->tileSize;
 
-		currentMapFilename = NULL;
+		currentMapFilename = const_cast<char*>(DEFAULT_MAP_LOCATION);
 
 		// create a new empty map
 		customMap->loadGraphics(graphics);
@@ -504,11 +504,6 @@ void MapEditor::mouseRight(int x, int y)
 				tempCell->b = -1;
 		}
 	}
-	else
-	{
-		// no default action needed
-	}
-
 }
 
 void MapEditor::showInstructions()

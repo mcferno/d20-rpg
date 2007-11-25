@@ -656,30 +656,30 @@ void MainGame::mouseLeft(int clickX, int clickY)
 		{
 			nextTurn();
 		}
-	}
-	else
-	{
-		// checks if any of the map scrolling buttons were pressed
-		for(int i=0;i<4;i++)
+		else
 		{
-			if(mapBtns[i].inBounds(clickX,clickY))
+			// checks if any of the map scrolling buttons were pressed
+			for(int i=0;i<4;i++)
 			{
-				switch(i)
+				if(mapBtns[i].inBounds(clickX,clickY))
 				{
-					case 0: //left button
-						gameMap.scrollLeft();
-						break;
-					case 1: //right button
-						gameMap.scrollRight();
-						break;
-					case 2: //up button
-						gameMap.scrollUp();
-						break;
-					case 3: //down button
-						gameMap.scrollDown();
-						break;							
+					switch(i)
+					{
+						case 0: //left button
+							gameMap.scrollLeft();
+							break;
+						case 1: //right button
+							gameMap.scrollRight();
+							break;
+						case 2: //up button
+							gameMap.scrollUp();
+							break;
+						case 3: //down button
+							gameMap.scrollDown();
+							break;							
+					}
+					
 				}
-				
 			}
 		}
 	}
