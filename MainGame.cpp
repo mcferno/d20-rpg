@@ -10,7 +10,6 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	currentPlayer = NULL;
 	shopScreen = NULL;
 	equipScreen = NULL;
-	fightScreen = NULL;
 	subScreenSignal = false;
 	treasure = NULL;
 	selectedEnemy = NULL;
@@ -361,10 +360,6 @@ void MainGame::paint()
 	{
 		equipScreen->paint();
 	}
-	else if(state == STATE_FIGHT)
-	{
-		fightScreen->paint();
-	}
 }
 
 void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkable)
@@ -641,17 +636,6 @@ void MainGame::mouseLeft(int clickX, int clickY)
 			showEquipScreen();
 		}
 	}
-	else if(state == STATE_FIGHT)
-	{
-		fightScreen->mouseLeft(clickX,clickY);
-
-		// if the user closed the shop screen, toggle it to off
-		if(subScreenSignal)
-		{
-			subScreenSignal = false;
-			showFightScreen();
-		}
-	}
 	else if(state == STATE_HUMAN_TURN)
 	{
 		if(clickedEnemy(clickX, clickY))
@@ -706,8 +690,6 @@ void MainGame::mouseRight(int clickX, int clickY)
 		shopScreen->mouseRight(clickX,clickY);
 	else if(state == STATE_EQUIP)
 		equipScreen->mouseRight(clickX,clickY);
-	else if(state == STATE_FIGHT)
-		fightScreen->mouseRight(clickX,clickY);
 	else if(state == STATE_HUMAN_TURN)
 	{
 		if(selectedEnemy != NULL)
@@ -753,26 +735,6 @@ void MainGame::showEquipScreen()
 
 		// you can only enter the equip screen during the human turn, so restore the human turn
 		state = STATE_HUMAN_TURN;
-	}
-}
-
-void MainGame::showFightScreen()
-{
-	if(state != STATE_FIGHT)
-	{
-		if(fightScreen == NULL)
-		{
-			fightScreen = new FightScreen(16*2,16*3,640,440);
-			fightScreen->setSignal(&subScreenSignal);
-		}
-		state = STATE_FIGHT;
-	}
-	else
-	{
-		fightScreen->userExited();
-
-		// you can only enter the FIGHT screen during the human turn, so restore the human turn
-		state = STATE_HUMAN_TURN; //but human turn could be over? last step.
 	}
 }
 
@@ -831,3 +793,206 @@ void MainGame::tick()
 		}
 	}
 }
+
+//#######################################################################
+//FIGHTING LOGIC
+//#######################################################################
+void MainGame::fight(Monster *thisMonster) 
+{
+
+	//MELEE ATTACK
+	if ((mainCharacter->equippedWeapon == NULL) || (mainCharacter->equippedWeapon->getRangeIncrement() == 1))
+	{
+		playerInitiativeRoll = mainCharacter->getInitiativeRoll();
+		std::cout << "\n Your Initiative Roll: " << playerInitiativeRoll << "\n";
+		monsterInitiativeRoll = thisMonster->getInitiativeRoll();
+		std::cout << "Monsters Initiative Roll: " << monsterInitiativeRoll << "\n";
+
+		if (playerInitiativeRoll >= monsterInitiativeRoll)
+		{
+			std::cout << "\n YOU ATTACK FIRST! \n";
+
+			if (fPlayerAttackRoll(thisMonster))
+				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+
+			if (fMonsterAttackRoll(thisMonster))
+				mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
+		}
+
+		else
+		{
+			std::cout << "\n MONSTER ATTACKS FIRST! \n";
+
+			if (fMonsterAttackRoll(thisMonster))
+				mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
+
+			if (fPlayerAttackRoll(thisMonster))
+				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+		}
+	}
+	
+	//RANGED ATTACK
+	else
+	{
+	
+		//check if you have enough of the consumable
+		//and if you do, decrease it.
+
+
+		switch (mainCharacter->equippedWeapon->requiredConsumable)
+		{
+		case UsableItem::ARROW:
+			if (mainCharacter->getNumArrows() == 0)
+			{
+				std::cout << "You do not have enough arrows\n";
+				damageRoll = false;
+			}
+			else
+			{
+				mainCharacter->setNumArrows( mainCharacter->getNumArrows() - 1 );
+				damageRoll = true;
+			}
+			break;
+		case UsableItem::BOLT:
+			if (mainCharacter->getNumBolts() == 0)
+			{
+				std::cout << "You do not have enough bolts\n";
+				damageRoll = false;
+			}
+			else
+			{
+				mainCharacter->setNumBolts( mainCharacter->getNumBolts() - 1 );
+				damageRoll = true;
+			}
+			break;
+		}
+
+		if (damageRoll)
+		std::cout << "\n YOU ATTACK WITH RANGED WEAPON! \n";
+
+		if (fPlayerAttackRoll(thisMonster))
+			thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+	}
+}
+
+bool MainGame::fMonsterAttackRoll(Monster *thisMonster)
+{
+	monsterAttackRoll = Dice::roll(Dice::D20) + thisMonster->getAttackBonus();
+
+	std::cout << "\nMonster Attack Roll: " << monsterAttackRoll << "\n";
+
+	//critical hit implimentation
+	if (monsterAttackRoll == 20) 
+	{
+		std::cout << "MONSTER AUTOMATICALY HITS YOU" << "\n\n";
+		return true;
+	}
+
+	//normal hit
+	if (monsterAttackRoll >= (thisMonster->getAC())) {
+		std::cout << "MONSTER HITS YOU!" << "\n\n";
+		return true;
+	}
+
+	//automatic miss
+	if (monsterAttackRoll == 1) {
+		std::cout << "MONSTER AUTOMATICALLY HITS YOU!" << "\n\n";
+		return false;
+	}
+	return false;
+}
+
+bool MainGame::fPlayerAttackRoll(Monster *thisMonster)
+{
+
+	playerAttackRoll = Dice::roll(Dice::D20) + mainCharacter->getAttackBonus();
+
+	std::cout << "\nYour Attack Roll: " << playerAttackRoll << "\n";
+
+	//critical hit implimentation
+	if (playerAttackRoll == 20) 
+	{ 
+		std::cout << "YOU AUTOMATICALY HIT HIM" << "\n\n";
+		return true;
+	}
+
+	//Normal Hit
+	if (playerAttackRoll >= (thisMonster->getAC())) 
+	{
+		std::cout << "YOU HIT HIM!" << "\n\n";
+		return true;
+	}
+
+	//automatic miss
+	if (playerAttackRoll == 1) 
+	{
+		std::cout << "YOU AUTOMATICALLY MISS HIM!" << "\n\n";
+		return false;
+	}
+
+	return false;
+}
+
+int MainGame::rollDamageRanged()
+{
+	playerDamageRoll = Dice::roll(mainCharacter->equippedWeapon->getDamage()) + (mainCharacter->getDexMod());
+
+	std::cout <<"\nYour Damage Roll: " << playerDamageRoll << "\n";
+
+	if (playerDamageRoll <= 1) 
+	{
+		std::cout << "You deal an automatic 1 damage \n";
+		return 1;
+	}
+	else
+	{
+		std::cout << "You deal " << playerDamageRoll << " damage points\n\n";
+		return 0;
+	}
+	
+	return -1;
+}
+
+
+int MainGame::rollDamageMelee()
+{
+	if (mainCharacter->equippedWeapon != NULL)
+		playerDamageRoll = Dice::roll(mainCharacter->equippedWeapon->getDamage()) + (mainCharacter->getStrMod());
+	else
+		playerDamageRoll = Dice::roll(mainCharacter->HAND_COMBAT_DICE) + (mainCharacter->getStrMod());
+
+	std::cout <<"\nYour Damage Roll: " << playerDamageRoll << "\n";
+
+	if (playerDamageRoll <= 1) 
+	{
+		std::cout << "You deal an automatic 1 damage \n";
+		return 1;
+	}
+	else
+	{
+		std::cout << "You deal " << playerDamageRoll << " damage points\n\n";
+		return playerDamageRoll;
+	}
+
+	return -1;
+}
+
+int MainGame::rollDamageMelee(Monster *thisMonster) 
+{
+	monsterDamageRoll = Dice::roll(thisMonster->getDamageDiceType()) + (thisMonster->getStrMod());
+	std::cout <<"\nMonster Damage Roll: " << monsterDamageRoll << "\n";
+
+	if (monsterDamageRoll <= 1) 
+	{
+		std::cout << "Monster deals an automatic 1 damage \n";
+		return 1;
+	}
+	else
+	{
+		std::cout << "Monster deals " << monsterDamageRoll << " damage points\n\n";
+		return monsterDamageRoll;
+	}
+
+	return -1;
+}
+

@@ -4,7 +4,6 @@
 #include "Screens.h"
 #include "ShopScreen.h"
 #include "EquipScreen.h"
-#include "FightScreen.h"
 #include <queue>
 using std::queue;
 
@@ -43,7 +42,7 @@ private:
 	Level *level;
 	ShopScreen *shopScreen;
 	EquipScreen *equipScreen;
-	FightScreen *fightScreen;
+
 
 	SDL_Surface *background;
 
@@ -87,7 +86,7 @@ private:
 	static const int STATE_AI_TURN = 2;
 	static const int STATE_SHOP = 3;
 	static const int STATE_EQUIP = 4;
-	static const int STATE_FIGHT = 5;
+
 
 	static const int CHARACTER_PANEL_X = 2*TILE_SIZE;
 	static const int CHARACTER_PANEL_Y = 32*TILE_SIZE;
@@ -131,6 +130,12 @@ private:
 	void paintInfoPanel();
 	void paintCharacterPanel();
 
+	//fight logic
+	bool damageRoll;
+	int playerInitiativeRoll, monsterInitiativeRoll;
+	int playerAttackRoll, monsterAttackRoll;
+	int playerDamageRoll, monsterDamageRoll;
+
 public:
 	MainGame(int, int, int, int);
 	void init();
@@ -147,10 +152,18 @@ public:
 	void mouseRight(int,int);
 
 	void showShop();
-	void showFightScreen();
 
 	// used to move game logic independently of key/mouse events
 	void tick();
+
+	//fight logic
+	int rollDamageMelee();
+	int rollDamageRanged();
+	int rollDamageMelee(Monster *thisMonster);
+	bool fPlayerAttackRoll(Monster *thisMonster);
+	bool fMonsterAttackRoll(Monster *thisMonster);
+
+	void fight(Monster *thisMonster);
 };
 
 #endif

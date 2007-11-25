@@ -173,10 +173,6 @@ int main( int argc, char* args[] )
 						if(state == STATE_MAIN_GAME)
 							mainGame->showShop();
 						break;
-					case SDLK_f:
-						if(state == STATE_MAIN_GAME)
-							mainGame->showFightScreen();
-						break;
 					case SDLK_UP:
 						if(state == STATE_MAIN_GAME)
 							mainGame->keyUp();
