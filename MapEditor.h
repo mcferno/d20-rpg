@@ -18,6 +18,7 @@ private:
 
 public:
 	EditableMap();
+	~EditableMap();
 
 	// map is created, passing the specs of its bounding window
 	EditableMap(int, int, int, int);
@@ -48,6 +49,7 @@ private:
 	SDL_Surface *highlightTile;
 public:
 	SelectableMap();
+	~SelectableMap();
 
 	// map is created, passing the specs of its bounding window
 	SelectableMap(int, int, int, int);
@@ -69,9 +71,8 @@ private:
 	int selectedTileX, selectedTileY, selectedTileIndex, selectedCellX, selectedCellY;
 	Tile *selectedCell;
 
-	SDL_Surface *background;
+	SDL_Surface *background, *arrows;
 	SDL_Surface *selectedTileMsg, *selectedCellMsg, *xCoordLabel, *yCoordLabel, *foregroundMsg, *backgroundMsg, *indexMsg, *walkableMsg;
-	SDL_Surface *arrows;
 
 	Graphics *graphics;
 

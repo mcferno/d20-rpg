@@ -51,6 +51,9 @@ private:
 	SDL_Surface *msgInfo[2];
 	SDL_Surface *msgCustomInfo[2];
 
+	SDL_Surface *msgFixedInfo[7];
+	SDL_Surface *msgVariableInfo[10];
+
 	Button controlBtns[4];
 	Button mapBtns[4];
 	Rect exitBtn;
@@ -131,6 +134,8 @@ private:
 	void paintRange(int,SDL_Surface*,bool=false);
 	void paintInfoPanel();
 	void paintCharacterPanel();
+	void refreshVariableInfo();
+	void setFixedInfo();
 
 	//fight logic
 	bool damageRoll;

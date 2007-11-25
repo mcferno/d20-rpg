@@ -197,13 +197,16 @@ int WeaponFactory::getNumWeapons()
 // statically create the set of all available weapons in the game
 // (char* newName, int newBonus,int newMaxDex, int newCheckPenalty, int newCostInGold, int graphicOffset, itemType
 Armor* ArmorFactory::availableArmor[] = { 
-	new Armor("Padded Light Armor",1,8,0,5,33,EquipableItem::CHEST),
+	new Armor("Padded Light Armor",1,8,0,5,0,EquipableItem::CHEST),
+	new Armor("Scale mail",4,3,-4,50,33,EquipableItem::CHEST),
+	new Armor("Splint Mail",6,0,-7,200,22,EquipableItem::CHEST),
 	new Armor("Basic Helm",1,0,0,10,3,EquipableItem::HEAD),
-	new Armor("Buckler",1,0,-1,15,1,EquipableItem::SHIELD)
+	new Armor("Buckler",1,0,-1,15,1,EquipableItem::SHIELD),
+	new Armor("Heavy Steel Shield",2,0,-2,20,23,EquipableItem::SHIELD)
 };
 
 // must match the number of elements created above
-int ArmorFactory::numAvailableArmor = 3;
+int ArmorFactory::numAvailableArmor = 6;
 
 void ArmorFactory::loadGraphics()
 {

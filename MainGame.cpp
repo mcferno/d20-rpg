@@ -15,6 +15,14 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	selectedEnemy = NULL;
 	shopDoorX = shopDoorY = exitDoorX = exitDoorY = -1;
 
+	msgCustomInfo[0] = NULL;
+	msgCustomInfo[1] = NULL;
+
+	for(int i=0;i<7;i++)
+		msgFixedInfo[i] = NULL;
+	for(int i=0;i<10;i++)
+		msgVariableInfo[i] = NULL;
+
 	background = loadImage(".\\images\\mainScreen.png");
 
 	SDL_Surface *arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
@@ -63,6 +71,8 @@ void MainGame::init()
 	gameMap.loadGraphics(level->graphics, level->alphaR, level->alphaG, level->alphaB);
 	gameMap.parseIndex(level->index);
 	state = STATE_LEVEL_START;
+
+	setFixedInfo();
 
 	std::cout << "There are " << numEnemies << " monsters on this level\n";
 
@@ -362,6 +372,8 @@ void MainGame::paint()
 	{
 		equipScreen->paint();
 	}
+
+	paintCharacterPanel();
 }
 
 void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkable)
@@ -463,6 +475,9 @@ void MainGame::paintInfoPanel()
 {
 	if(selectedEnemy != NULL)
 	{
+		// refresh the information in case anything has changed
+		selectEnemy(selectedEnemy);
+
 		applySurface(x+INFO_PANEL_X,y+INFO_PANEL_Y,msgInfo[0],screen);
 		applySurface(x+INFO_PANEL_X+msgInfo[0]->w,y+INFO_PANEL_Y,selectedEnemy->graphics->image,screen,selectedEnemy->clip);
 		applySurface(x+INFO_PANEL_X,y+INFO_PANEL_Y+TILE_SIZE,msgCustomInfo[0],screen);
@@ -479,6 +494,140 @@ void MainGame::paintInfoPanel()
 	{
 		if(inRange(treasure[i],1) && !treasure[i]->isOpen())
 			controlBtns[2].paint();
+	}
+}
+
+void MainGame::paintCharacterPanel()
+{
+	if(mainCharacter != NULL)
+	{
+		refreshVariableInfo();
+
+		// paint the player's sprite
+		applySurface(CHARACTER_PANEL_X+3*TILE_SIZE,CHARACTER_PANEL_Y+2*TILE_SIZE,mainCharacter->graphics->image,screen,mainCharacter->clip);
+
+		int colX = CHARACTER_PANEL_X+11*TILE_SIZE;
+		int colY = CHARACTER_PANEL_Y;
+
+		applySurface(colX,colY,msgVariableInfo[0],screen);
+		applySurface(colX,colY+1*TILE_SIZE,msgVariableInfo[1],screen);
+		applySurface(colX,colY+2*TILE_SIZE,msgFixedInfo[0],screen);
+		applySurface(colX,colY+3*TILE_SIZE,msgVariableInfo[2],screen);
+
+		colX += 5*TILE_SIZE;
+
+		applySurface(colX,colY,msgFixedInfo[1],screen);
+		applySurface(colX,colY+1*TILE_SIZE,msgFixedInfo[2],screen);
+		applySurface(colX,colY+2*TILE_SIZE,msgFixedInfo[3],screen);
+
+		colX += 5*TILE_SIZE;
+
+		applySurface(colX,colY,msgFixedInfo[4],screen);
+		applySurface(colX,colY+1*TILE_SIZE,msgFixedInfo[5],screen);
+		applySurface(colX,colY+2*TILE_SIZE,msgFixedInfo[6],screen);
+
+		colX += 6*TILE_SIZE;
+
+		applySurface(colX,colY,msgVariableInfo[3],screen);
+		applySurface(colX,colY+1*TILE_SIZE,msgVariableInfo[4],screen);
+		applySurface(colX,colY+2*TILE_SIZE,msgVariableInfo[5],screen);
+
+		colX += 7*TILE_SIZE;
+
+		applySurface(colX,colY,msgVariableInfo[6],screen);
+		applySurface(colX,colY+1*TILE_SIZE,msgVariableInfo[7],screen);
+		applySurface(colX,colY+2*TILE_SIZE,msgVariableInfo[8],screen);
+		applySurface(colX,colY+3*TILE_SIZE,msgVariableInfo[9],screen);
+	}
+}
+
+void MainGame::refreshVariableInfo()
+{
+	if(mainCharacter != NULL)
+	{
+		// release old information
+		for(int i=0;i<10;i++)
+		{
+			if(msgVariableInfo[i] != NULL)
+			{
+				SDL_FreeSurface(msgVariableInfo[i]);
+				msgVariableInfo[i] = NULL;
+			}
+		}
+
+		char tempBuffer[5];
+
+		_itoa_s(mainCharacter->getHp(),tempBuffer,10);
+		msgVariableInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->money.getGold(),tempBuffer,10);
+		msgVariableInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		if(currentPlayer == mainCharacter)
+		{
+			_itoa_s(currSpeed,tempBuffer,10);
+			msgVariableInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		}
+		else
+			msgVariableInfo[2] = TTF_RenderText_Solid(fontCalibri, "0", colorWhite );
+
+		_itoa_s(mainCharacter->getNumBolts(),tempBuffer,10);
+		msgVariableInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getNumArrows(),tempBuffer,10);
+		msgVariableInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getNumPotions(),tempBuffer,10);
+		msgVariableInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		if(mainCharacter->equippedWeapon == NULL)
+			msgVariableInfo[6] = TTF_RenderText_Solid(fontCalibri, "none", colorWhite);
+		else
+			msgVariableInfo[6] = TTF_RenderText_Solid(fontCalibri, mainCharacter->equippedWeapon->name, colorWhite);
+
+
+		if(mainCharacter->equippedShield == NULL)
+			msgVariableInfo[7] = TTF_RenderText_Solid(fontCalibri, "none", colorWhite);
+		else
+			msgVariableInfo[7] = TTF_RenderText_Solid(fontCalibri, mainCharacter->equippedShield->name, colorWhite);
+
+
+		if(mainCharacter->equippedHelmet == NULL)
+			msgVariableInfo[8] = TTF_RenderText_Solid(fontCalibri, "none", colorWhite);
+		else
+			msgVariableInfo[8] = TTF_RenderText_Solid(fontCalibri, mainCharacter->equippedHelmet->name, colorWhite);
+
+		if(mainCharacter->equippedVest == NULL)
+			msgVariableInfo[9] = TTF_RenderText_Solid(fontCalibri, "none", colorWhite);
+		else
+			msgVariableInfo[9] = TTF_RenderText_Solid(fontCalibri, mainCharacter->equippedVest->name, colorWhite);
+	}
+}
+void MainGame::setFixedInfo()
+{
+	if(mainCharacter != NULL)
+	{
+		char tempBuffer[5];
+		_itoa_s(mainCharacter->getLevel(),tempBuffer,10);
+		msgFixedInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getStr(),tempBuffer,10);
+		msgFixedInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getDex(),tempBuffer,10);
+		msgFixedInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getCon(),tempBuffer,10);
+		msgFixedInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getIte(),tempBuffer,10);
+		msgFixedInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getWis(),tempBuffer,10);
+		msgFixedInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+
+		_itoa_s(mainCharacter->getCha(),tempBuffer,10);
+		msgFixedInfo[6] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
 	}
 }
 
@@ -507,15 +656,25 @@ bool MainGame::clickedEnemy(int clickX, int clickY)
 
 void MainGame::selectEnemy(Monster* toSelect)
 {
-	if(selectedEnemy != toSelect)
+	if(toSelect != NULL)
 	{
-		if(selectedEnemy != NULL)
+		if(selectedEnemy == toSelect)
+		{	
+			// erase the monster's hp, to refresh it
+			if(msgCustomInfo[1] != NULL)
+			{
+				SDL_FreeSurface(msgCustomInfo[1]);
+				msgCustomInfo[1] = NULL;
+			}
+		}
+		else
+		{
 			unselectEnemy();
 
-		selectedEnemy = toSelect;
+			selectedEnemy = toSelect;
 
-		msgCustomInfo[0] = TTF_RenderText_Solid(fontCalibri, selectedEnemy->getName(), colorWhite );
-
+			msgCustomInfo[0] = TTF_RenderText_Solid(fontCalibri, selectedEnemy->getName(), colorWhite );
+		}
 		char tempBuffer[5];
 		_itoa_s(selectedEnemy->getHp(),tempBuffer,10);
 		msgCustomInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );

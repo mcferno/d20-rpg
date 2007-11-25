@@ -80,7 +80,9 @@ void stateTransition()
 			state = STATE_START_SCREEN;
 			break;
 		case STATE_START_SCREEN:
+			startScreen->~StartScreen();
 			startScreen = NULL;
+			//Mix_CloseAudio();		// hangs for no apparent reason
 			if(selectionScreen == NULL)
 			{
 				selectionScreen = new SelectionScreen(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -90,6 +92,8 @@ void stateTransition()
 			state = STATE_CHARACTER_SELECTION;
 			break;
 		case STATE_CHARACTER_SELECTION:
+			selectionScreen->~SelectionScreen();
+			selectionScreen = NULL;
 			if(mainGame == NULL)
 			{
 				mainGame = new MainGame(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -238,8 +242,9 @@ int main( int argc, char* args[] )
 
 		// momentary sleep to avoid using too much CPU
 		SDL_Delay(FRAME_RATE_SLEEP);
-	
 	}
+
+	SDL_Quit();
 	
 	return 0;
 }

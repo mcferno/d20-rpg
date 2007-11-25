@@ -37,12 +37,4 @@ class Dice
 	static int roll(int, int = 1);
 };
 
-/* // eventual improvement
-struct DiceRoll
-{
-	int diceType;
-	int diceRolls;
-};
-*/
-
 #endif

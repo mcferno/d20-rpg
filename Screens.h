@@ -27,6 +27,7 @@ protected:
 	static TTF_Font *fontCalibriTiny;
 	static SDL_Surface *highlightTile;
 	static SDL_Color colorWhite;
+	static SDL_Color colorBlack;
 
 	// the chosen character, shared among the selection screen and main game
 	static ControllableCharacter *mainCharacter;
@@ -36,6 +37,7 @@ protected:
 	void signalCompletion();
 public:
 	Screen(int,int,int,int);
+	virtual ~Screen();
 	virtual void paint() = 0;
 	static void init(SDL_Surface *);
 	void setSignal(bool *);

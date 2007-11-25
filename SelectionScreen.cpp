@@ -12,12 +12,15 @@ SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH) : Scree
 	init();
 }
 
+SelectionScreen::~SelectionScreen()
+{
+	std::cout << "Destroying SelectionScreen\n";
+	SDL_FreeSurface(characterSprites);
+	SDL_FreeSurface(selectScreen);
+}
+
 void SelectionScreen::init()
 {
-	//font colors
-	textColorWhite.r = textColorWhite.g = textColorWhite.b = 0xFF;
-	textColorBlack.r = textColorBlack.g = textColorBlack.b = 0x00;
-
 	characterSprites = loadImage(".\\images\\characters.png",0,0xFF,0xFF);
 	selectScreen = loadImage(".\\images\\selectScreen.png");
 
@@ -105,50 +108,50 @@ void SelectionScreen::rollButton()
 
 void SelectionScreen::paintAttributes(int x, int y)
 {
-	attributes = TTF_RenderText_Solid(fontCalibri, sStr, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, sStr, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x+6;
-	attributes = TTF_RenderText_Solid(fontCalibri, smStr, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, smStr, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x-6;
 
 	y=y+2;
-	attributes = TTF_RenderText_Solid(fontCalibri, sDex, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, sDex, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x+6;
-	attributes = TTF_RenderText_Solid(fontCalibri, smDex, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, smDex, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x-6;
 
 	y=y+2;
-	attributes = TTF_RenderText_Solid(fontCalibri, sCon, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, sCon, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x+6;
-	attributes = TTF_RenderText_Solid(fontCalibri, smCon, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, smCon, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x-6;
 
 	y=y+2;
-	attributes = TTF_RenderText_Solid(fontCalibri, sIte, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, sIte, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x+6;
-	attributes = TTF_RenderText_Solid(fontCalibri, smIte, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, smIte, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x-6;
 
 	y=y+2;
-	attributes = TTF_RenderText_Solid(fontCalibri, sWis, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, sWis, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x+6;
-	attributes = TTF_RenderText_Solid(fontCalibri, smWis, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, smWis, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x-6;
 
 	y=y+2;
-	attributes = TTF_RenderText_Solid(fontCalibri, sCha, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, sCha, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x+6;
-	attributes = TTF_RenderText_Solid(fontCalibri, smCha, textColorWhite );
+	attributes = TTF_RenderText_Solid(fontCalibri, smCha, colorWhite );
 	applySurface( (x)*16, (y)*16, attributes, screen );
 	x=x-6;
 }
@@ -156,66 +159,66 @@ void SelectionScreen::paintAttributes(int x, int y)
 void SelectionScreen::paintMessage(int x, int y)
 {
 	int xAdj = 5;
-	message = TTF_RenderText_Solid(fontCalibri, "STR:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "STR:", colorWhite );
 	applySurface( (x)*16, (y)*16, message, screen );
 	if (selectedRace == 3)
-		message = TTF_RenderText_Solid(fontCalibri, "-", textColorWhite );
+		message = TTF_RenderText_Solid(fontCalibri, "-", colorWhite );
 	else
-		message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+		message = TTF_RenderText_Solid(fontCalibri, "+", colorWhite );
 	applySurface( (x+4)*16, (y)*16, message, screen );
 	printADJ(selectedRace, 1, x+xAdj, y);
-	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", colorWhite );
 	applySurface( (x+6)*16, (y)*16, message, screen );
 
 	y = y+2;
-	message = TTF_RenderText_Solid(fontCalibri, "DEX:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "DEX:", colorWhite );
 	applySurface( x*16, (y)*16, message, screen );
 	if (selectedRace == 1)
-		message = TTF_RenderText_Solid(fontCalibri, "-", textColorWhite );
+		message = TTF_RenderText_Solid(fontCalibri, "-", colorWhite );
 	else
-		message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+		message = TTF_RenderText_Solid(fontCalibri, "+", colorWhite );
 	applySurface( (x+4)*16, (y)*16, message, screen );
 	printADJ(selectedRace, 2, x+xAdj, y);
-	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", colorWhite );
 	applySurface( (x+6)*16, (y)*16, message, screen );
 
 	y = y+2;
-	message = TTF_RenderText_Solid(fontCalibri, "CON:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "CON:", colorWhite );
 	applySurface( x*16, (y)*16, message, screen );
 	if (selectedRace == 2)
-		message = TTF_RenderText_Solid(fontCalibri, "-", textColorWhite );
+		message = TTF_RenderText_Solid(fontCalibri, "-", colorWhite );
 	else
-		message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+		message = TTF_RenderText_Solid(fontCalibri, "+", colorWhite );
 	applySurface( (x+4)*16, (y)*16, message, screen );
 	printADJ(selectedRace, 3, x+xAdj, y);
-	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", colorWhite );
 	applySurface( (x+6)*16, (y)*16, message, screen );
 
 	y = y+2;
-	message = TTF_RenderText_Solid(fontCalibri, "ITE:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "ITE:", colorWhite );
 	applySurface( x*16, (y)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "+", colorWhite );
 	applySurface( (x+4)*16, (y)*16, message, screen );
 	printADJ(selectedRace, 4, x+xAdj, y);
-	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", colorWhite );
 	applySurface( (x+6)*16, (y)*16, message, screen );
 
 	y = y+2;
-	message = TTF_RenderText_Solid(fontCalibri, "WIS:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "WIS:", colorWhite );
 	applySurface( x*16, (y)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "+", colorWhite );
 	applySurface( (x+4)*16, (y)*16, message, screen );
 	printADJ(selectedRace, 5, x+xAdj, y);
-	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", colorWhite );
 	applySurface( (x+6)*16, (y)*16, message, screen );
 
 	y = y+2;
-	message = TTF_RenderText_Solid(fontCalibri, "CHA:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "CHA:", colorWhite );
 	applySurface( x*16, (y)*16, message, screen );
-	message = TTF_RenderText_Solid(fontCalibri, "+", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "+", colorWhite );
 	applySurface( (x+4)*16, (y)*16, message, screen );
 	printADJ(selectedRace, 6, x+xAdj, y);
-	message = TTF_RenderText_Solid(fontCalibri, "MOD:", textColorWhite );
+	message = TTF_RenderText_Solid(fontCalibri, "MOD:", colorWhite );
 	applySurface( (x+6)*16, (y)*16, message, screen );
 }
 
@@ -226,23 +229,23 @@ void SelectionScreen::paintCharacterMessage(int race, int clas)
 	switch (race)
 	{
 		case -1:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 		case 0:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "HUMAN ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "HUMAN ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 		case 1:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "DWARF ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "DWARF ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 		case 2:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "ELF ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "ELF ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 		case 3:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "GNOME ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "GNOME ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 	}
@@ -250,15 +253,15 @@ void SelectionScreen::paintCharacterMessage(int race, int clas)
 	switch (clas)
 	{
 		case -1:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, " ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 		case 0:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "FIGHTER ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "FIGHTER ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 		case 1:
-			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "RANGER ", textColorBlack );
+			characterMessage = TTF_RenderText_Solid(fontCalibriBold, "RANGER ", colorBlack );
 			applySurface( x, y, characterMessage, screen );
 			break;
 	}
@@ -305,7 +308,7 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 	switch (selectedRace) 
 	{
 		case -1:
-			message = TTF_RenderText_Solid(fontCalibri, " ", textColorWhite );
+			message = TTF_RenderText_Solid(fontCalibri, " ", colorWhite );
 			applySurface( (x+1), y, message, screen );
 			break;
 
@@ -319,27 +322,27 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			switch (characteristic)
 			{
 				case 1:
-					message = TTF_RenderText_Solid(fontCalibri, sadjStr, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjStr, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 2:
-					message = TTF_RenderText_Solid(fontCalibri, sadjDex, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjDex, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 3:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCon, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCon, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 4:
-					message = TTF_RenderText_Solid(fontCalibri, sadjIte, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjIte, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 5:
-					message = TTF_RenderText_Solid(fontCalibri, sadjWis, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjWis, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 6:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCha, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCha, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 			}
@@ -354,27 +357,27 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			switch (characteristic)
 			{
 				case 1:
-					message = TTF_RenderText_Solid(fontCalibri, sadjStr, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjStr, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 2:
-					message = TTF_RenderText_Solid(fontCalibri, sadjDex, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjDex, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 3:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCon, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCon, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 4:
-					message = TTF_RenderText_Solid(fontCalibri, sadjIte, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjIte, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 5:
-					message = TTF_RenderText_Solid(fontCalibri, sadjWis, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjWis, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 6:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCha, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCha, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 			}
@@ -389,27 +392,27 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			switch (characteristic)
 			{
 				case 1:
-					message = TTF_RenderText_Solid(fontCalibri, sadjStr, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjStr, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 2:
-					message = TTF_RenderText_Solid(fontCalibri, sadjDex, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjDex, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 3:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCon, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCon, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 4:
-					message = TTF_RenderText_Solid(fontCalibri, sadjIte, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjIte, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 5:
-					message = TTF_RenderText_Solid(fontCalibri, sadjWis, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjWis, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 6:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCha, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCha, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 			}
@@ -424,27 +427,27 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			switch (characteristic)
 			{
 				case 1:
-					message = TTF_RenderText_Solid(fontCalibri, sadjStr, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjStr, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 2:
-					message = TTF_RenderText_Solid(fontCalibri, sadjDex, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjDex, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 3:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCon, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCon, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 4:
-					message = TTF_RenderText_Solid(fontCalibri, sadjIte, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjIte, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 5:
-					message = TTF_RenderText_Solid(fontCalibri, sadjWis, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjWis, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 				case 6:
-					message = TTF_RenderText_Solid(fontCalibri, sadjCha, textColorWhite );
+					message = TTF_RenderText_Solid(fontCalibri, sadjCha, colorWhite );
 					applySurface( (x+1), y, message, screen );
 					break;
 			}

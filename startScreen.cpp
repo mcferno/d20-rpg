@@ -4,9 +4,24 @@
 StartScreen::StartScreen(int newX, int newY, int newW, int newH) : Screen(newX,newY,newW,newH)
 {
 	mapEditor = NULL;
+	startMusic = NULL;
+	background = NULL;
 	state = STATE_SHOW_SCREEN;
 	isDone = false;
 	init();
+}
+
+StartScreen::~StartScreen()
+{
+	std::cout << "Destroying StartScreen\n";
+	if(background != NULL)
+		SDL_FreeSurface(background);
+	if(mapEditor != NULL)
+		mapEditor->~MapEditor();
+	if(musicStarted)
+		Mix_HaltMusic();
+	if(startMusic != NULL)
+		Mix_FreeMusic(startMusic);
 }
 
 void StartScreen::init()
@@ -49,7 +64,7 @@ void StartScreen::mouseLeft(int clickX, int clickY)
 		if(btnStartGame.inBounds(clickX, clickY))
 		{
 			Mix_HaltMusic();
-			cleanup();
+			musicStarted = false;
 			signalCompletion();
 		}
 		else if(btnCreateNewLevel.inBounds(clickX, clickY))
@@ -74,15 +89,6 @@ void StartScreen::mouseLeft(int clickX, int clickY)
 			state = STATE_SHOW_SCREEN;
 		}
 	}
-}
-
-// causes problems for now
-void StartScreen::cleanup()
-{
-	/*
-	Mix_FreeMusic(startMusic);
-	Mix_CloseAudio();
-	*/
 }
 
 void StartScreen::mouseRight(int clickX, int clickY)

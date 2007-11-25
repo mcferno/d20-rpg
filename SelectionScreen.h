@@ -26,10 +26,6 @@ private:
 	SDL_Surface *characterSprites;
 	SDL_Surface *selectScreen;
 
-	//color of text
-	SDL_Color textColorWhite;
-	SDL_Color textColorBlack;
-
 	// variables needed to offer the user a set of choices for their character
 	static const int NUM_CHARACTERS = 5;
 	static const int NUM_RACES = 4;
@@ -79,6 +75,7 @@ public:
 
 
 	SelectionScreen(int, int, int, int);
+	~SelectionScreen();
 
 	void init();
 	void paint();

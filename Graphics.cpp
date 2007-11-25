@@ -183,11 +183,41 @@ void Graphics::init()
 
 Graphics::~Graphics()
 {
+	std::cout << "Destroying Graphics\n";
 	SDL_FreeSurface(image);
+	delete[] clip;
 }
 
 
 // #####################################################################################################
+
+Map::Map()
+{
+	ts = NULL;
+}
+
+Map::Map(int newX, int newY, int newW, int newH)
+{
+	x = 0;
+	y = 0;
+	limit.x = newX;
+	limit.y = newY;
+	limit.w = newW;
+	limit.h = newH;
+
+	ts = NULL;
+}
+
+Map::~Map()
+{
+	std::cout << "Destroying Map\n";
+	if(ts != NULL)
+	{
+		for (int k = 0; k < w; k++)
+			delete[] ts[k];
+		delete[] ts;
+	}
+}
 
 void Map::parseIndex(char *filename)
 {
@@ -277,20 +307,6 @@ void Map::loadMap(Graphics *newGraphics, char *indexFilename)
 void Map::loadMap(Graphics *newGraphics, const char *indexFilename)
 {
 	loadMap(newGraphics,const_cast<char*>(indexFilename));
-}
-
-Map::Map()
-{
-}
-
-Map::Map(int newX, int newY, int newW, int newH)
-{
-	x = 0;
-	y = 0;
-	limit.x = newX;
-	limit.y = newY;
-	limit.w = newW;
-	limit.h = newH;
 }
 
 void Map::scrollLeft()

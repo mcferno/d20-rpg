@@ -16,8 +16,6 @@ private:
 	MapEditor *mapEditor;
 
 	void init();
-	void cleanup();
-
 	bool musicStarted;
 
 	int state;
@@ -29,6 +27,7 @@ private:
 public:
 
 	StartScreen(int, int, int, int);
+	~StartScreen();
 	void paint();
 	void showMapEditor(int = 0);
 

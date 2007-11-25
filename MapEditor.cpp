@@ -23,6 +23,13 @@ EditableMap::EditableMap(int newX, int newY, int newW, int newH): Map(newX,newY,
 	init();
 }
 
+EditableMap::~EditableMap()
+{
+	std::cout << "Destroying EditableMap\n";
+	if(emptyTile != NULL)
+		SDL_FreeSurface(emptyTile);
+}
+
 // creates an empty map with the sizes provided
 void EditableMap::loadEmptyMap(int newW, int newH)
 {
@@ -131,6 +138,13 @@ SelectableMap::SelectableMap(int newX, int newY, int newW, int newH): Map(newX,n
 		std::cout << "Highlight Tile Error'ed\n";
 }
 
+SelectableMap::~SelectableMap()
+{
+	std::cout << "Destroying SelectableMap\n";
+	SDL_FreeSurface(highlightTile);
+}
+
+
 // paints all the graphic tiles, including the highlighting of the selected tile
 void SelectableMap::paint(int highlightTileX, int highlightTileY)
 {
@@ -162,8 +176,80 @@ void SelectableMap::loadGraphics(Graphics *newGraphics)
  *   Allows maps to be loaded, edited and saved.
  */
 
-const char* MapEditor::DEFAULT_TILES = ".\\images\\defaultTiles.bmp";
+const char* MapEditor::DEFAULT_TILES = ".\\images\\defaultTiles.png";
 const char* MapEditor::DEFAULT_MAP_LOCATION = "index.map";
+
+MapEditor::MapEditor(int newX, int newY, int width, int height) : 
+	Screen(newX, newY, width, height)
+{
+	selectedTileX = selectedTileY = selectedCellX = selectedCellY = selectedTileIndex = -1;
+	background = loadImage(".\\images\\mapEditorBg.png");
+
+	arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
+
+	// initialize the 4 directional scrolling arrows for the custom map
+	//left
+	customMapBtns[0] = Button(TILE_SIZE,24*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
+	//right
+	customMapBtns[1] = Button(37*TILE_SIZE,24*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
+	//up
+	customMapBtns[2] = Button(38*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
+	//down
+	customMapBtns[3] = Button(38*TILE_SIZE,23*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
+
+	// initialize the 4 directional scrolling arrows for the graphic tiles
+	//left
+	tileSetBtns[0] = Button(TILE_SIZE,36*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
+	//right
+	tileSetBtns[1] = Button(48*TILE_SIZE,36*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
+	//up
+	tileSetBtns[2] = Button(49*TILE_SIZE,26*TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
+	//down
+	tileSetBtns[3] = Button(49*TILE_SIZE,35*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
+
+	closeBtn = Rect(672,336,80,32);
+	saveBtn = Rect(672,288,80,32);
+
+	std::cout << "Rendering all text displays ... ";
+	selectedTileMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Tile:", textColor );
+	selectedCellMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Map Cell:", textColor );
+	xCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "x:", textColor );
+	yCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "y:", textColor );
+	foregroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Foreground:", textColor );
+	backgroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Background:", textColor );
+	indexMsg = TTF_RenderText_Solid( fontCalibriTiny, "Index:", textColor );
+	walkableMsg = TTF_RenderText_Solid( fontCalibriTiny, "Walkable:", textColor );
+	std::cout << "Successful!\n";
+
+	customMap = NULL;
+	tileSet = NULL;
+	graphics = NULL;
+	currentMapFilename = NULL;
+	selectedCell = NULL;
+
+	isLoaded = false;
+}
+
+MapEditor::~MapEditor()
+{
+	std::cout << "Destroying MapEditor\n";
+	SDL_FreeSurface(background);
+	SDL_FreeSurface(selectedTileMsg);
+	SDL_FreeSurface(selectedCellMsg);
+	SDL_FreeSurface(xCoordLabel);
+	SDL_FreeSurface(yCoordLabel);
+	SDL_FreeSurface(foregroundMsg);
+	SDL_FreeSurface(backgroundMsg);
+	SDL_FreeSurface(indexMsg);
+	SDL_FreeSurface(walkableMsg);
+	SDL_FreeSurface(arrows);
+	if(customMap != NULL)
+		customMap->~EditableMap();
+	if(tileSet != NULL)
+		tileSet->~SelectableMap();
+	if(graphics != NULL)
+		graphics->~Graphics();
+}
 
 // checks if an x,y coordinate is within the bounds of a certain screen area
 bool MapEditor::inBounds(int x, int y, Rect limits)
@@ -226,69 +312,6 @@ void MapEditor::checkButtons(int x, int y, Button *setOfButtons, Map *mapToAffec
 			
 		}
 	}
-}
-
-MapEditor::MapEditor(int newX, int newY, int width, int height) : 
-	Screen(newX, newY, width, height)
-{
-	selectedTileX = selectedTileY = selectedCellX = selectedCellY = selectedTileIndex = -1;
-	background = loadImage(".\\images\\mapEditorBg.png");
-
-	arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
-
-	// initialize the 4 directional scrolling arrows for the custom map
-	//left
-	customMapBtns[0] = Button(TILE_SIZE,24*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
-	//right
-	customMapBtns[1] = Button(37*TILE_SIZE,24*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
-	//up
-	customMapBtns[2] = Button(38*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
-	//down
-	customMapBtns[3] = Button(38*TILE_SIZE,23*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
-
-	// initialize the 4 directional scrolling arrows for the graphic tiles
-	//left
-	tileSetBtns[0] = Button(TILE_SIZE,36*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
-	//right
-	tileSetBtns[1] = Button(48*TILE_SIZE,36*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
-	//up
-	tileSetBtns[2] = Button(49*TILE_SIZE,26*TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
-	//down
-	tileSetBtns[3] = Button(49*TILE_SIZE,35*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
-
-	closeBtn = Rect(672,336,80,32);
-	saveBtn = Rect(672,288,80,32);
-
-	std::cout << "Rendering all text displays ... ";
-	selectedTileMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Tile:", textColor );
-	selectedCellMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Map Cell:", textColor );
-	xCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "x:", textColor );
-	yCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "y:", textColor );
-	foregroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Foreground:", textColor );
-	backgroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Background:", textColor );
-	indexMsg = TTF_RenderText_Solid( fontCalibriTiny, "Index:", textColor );
-	walkableMsg = TTF_RenderText_Solid( fontCalibriTiny, "Walkable:", textColor );
-	std::cout << "Successful!\n";
-
-	customMap = NULL;
-	tileSet = NULL;
-	graphics = NULL;
-	currentMapFilename = NULL;
-
-	isLoaded = false;
-}
-
-MapEditor::~MapEditor()
-{
-	SDL_FreeSurface(background);
-	SDL_FreeSurface(selectedTileMsg);
-	SDL_FreeSurface(selectedCellMsg);
-	SDL_FreeSurface(xCoordLabel);
-	SDL_FreeSurface(yCoordLabel);
-	SDL_FreeSurface(foregroundMsg);
-	SDL_FreeSurface(backgroundMsg);
-	SDL_FreeSurface(indexMsg);
-	SDL_FreeSurface(walkableMsg);
 }
 
 void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW, int newMapH)

@@ -191,6 +191,13 @@ protected:
 	int tileSize; //, wTiles, hTiles;
 
 public:
+	Map();
+
+	// map is created, passing the specs of its bounding window
+	Map(int, int, int, int);
+
+	virtual ~Map();
+
 	// how many tiles will be shown at one time, the smaller of the map size 
 	//   vs. the bounding window size
 	int limitWTiles;
@@ -212,11 +219,6 @@ public:
 	// open a *.map file (indexFile), initializing the tileSet
 	void loadMap(Graphics *, char *);
 	void loadMap(Graphics *, const char *);
-
-	Map();
-
-	// map is created, passing the specs of its bounding window
-	Map(int, int, int, int);
 
 	/* parseIndex: opens a file containing the specifics about how a level is 
 	 *   layed out according to a fixed format and initializes the set of
