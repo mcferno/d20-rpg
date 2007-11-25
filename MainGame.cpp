@@ -813,6 +813,8 @@ void MainGame::fight(Monster *thisMonster)
 		{
 			std::cout << "\n YOU ATTACK FIRST! \n";
 
+			attackedThisRound = true;
+
 			if (fPlayerAttackRoll(thisMonster))
 				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 
@@ -823,6 +825,8 @@ void MainGame::fight(Monster *thisMonster)
 		else
 		{
 			std::cout << "\n MONSTER ATTACKS FIRST! \n";
+
+			attackedThisRound = true;
 
 			if (fMonsterAttackRoll(thisMonster))
 				mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
@@ -869,10 +873,12 @@ void MainGame::fight(Monster *thisMonster)
 		}
 
 		if (damageRoll)
-		std::cout << "\n YOU ATTACK WITH RANGED WEAPON! \n";
-
-		if (fPlayerAttackRoll(thisMonster))
-			thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+		{
+			std::cout << "\n YOU ATTACK WITH RANGED WEAPON! \n";
+			attackedThisRound = true;
+			if (fPlayerAttackRoll(thisMonster))
+				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+		}
 	}
 }
 
