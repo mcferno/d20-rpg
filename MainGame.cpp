@@ -10,6 +10,8 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	currentPlayer = NULL;
 	shopScreen = NULL;
 	equipScreen = NULL;
+	winScreen = NULL;
+	loseScreen = NULL;
 	subScreenSignal = false;
 	treasure = NULL;
 	selectedEnemy = NULL;
@@ -24,6 +26,8 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 		msgVariableInfo[i] = NULL;
 
 	background = loadImage(".\\images\\mainScreen.png");
+	winScreen = loadImage(".\\images\\winScreen.png");
+	loseScreen = loadImage(".\\images\\loseScreen.png");
 
 	SDL_Surface *arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
 
@@ -284,7 +288,7 @@ void MainGame::loadLevel()
 			numEnemies = 9;
 			enemies = new Monster[numEnemies];
 			enemies[0] = Monster(15,9,6,2,monsterGraphics,Monster::LIZARD,1);
-			enemies[1] = Monster(13,6,0,0,monsterGraphics,Monster::ELF,1);
+			enemies[1] = Monster(13,15,0,0,monsterGraphics,Monster::ELF,1);
 			enemies[2] = Monster(34,27,14,0,monsterGraphics,Monster::GOBLIN,1);
 			enemies[3] = Monster(34,28,8,1,monsterGraphics,Monster::LIZARD,2);
 			enemies[4] = Monster(32,20,14,1,monsterGraphics,Monster::VINE,3);
@@ -806,6 +810,7 @@ void MainGame::mouseLeft(int clickX, int clickY)
 	{
 		signalCompletion();
 	}
+
 	else if(state == STATE_SHOP)
 	{
 		shopScreen->mouseLeft(clickX,clickY);
@@ -1099,9 +1104,10 @@ bool MainGame::fMonsterAttackRoll(Monster *thisMonster)
 
 	//automatic miss
 	if (monsterAttackRoll == 1) {
-		std::cout << "MONSTER AUTOMATICALLY HITS YOU!" << "\n\n";
+		std::cout << "MONSTER AUTOMATICALLY MISSES YOU!" << "\n\n";
 		return false;
 	}
+	std::cout << "MONSTER MISSES YOU!\n\n";
 	return false;
 }
 
@@ -1133,6 +1139,7 @@ bool MainGame::fPlayerAttackRoll(Monster *thisMonster)
 		return false;
 	}
 
+	std::cout << "YOU MISS HIM!\n\n";
 	return false;
 }
 

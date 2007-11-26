@@ -45,6 +45,8 @@ private:
 
 
 	SDL_Surface *background;
+	SDL_Surface *winScreen;
+	SDL_Surface *loseScreen;
 
 	SDL_Surface *walkableHighlight, *targetableHighlight;
 

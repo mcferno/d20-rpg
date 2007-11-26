@@ -20,8 +20,8 @@ StartScreen::~StartScreen()
 		mapEditor->~MapEditor();
 	if(musicStarted)
 		Mix_HaltMusic();
-	if(startMusic != NULL)
-		Mix_FreeMusic(startMusic);
+	//if(startMusic != NULL)
+	//	Mix_FreeMusic(startMusic);
 }
 
 void StartScreen::init()
