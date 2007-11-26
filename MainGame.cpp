@@ -64,6 +64,8 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 // begins the game by loading the level and all of its enemies
 void MainGame::init()
 {
+
+	mainCharacter->setSpeed(400); //SPEED FOR DEBUGGING
 	loadLevel();
 	//weapons = WeaponFactory::getAllWeapons();
 	numPlayers = numEnemies+1;
@@ -229,31 +231,40 @@ void MainGame::loadLevel()
 			// initialize a small set of enemies
 			monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
 
-			numEnemies = 3;
+			numEnemies = 6;
 			enemies = new Monster[numEnemies];
-			enemies[0] = Monster(15,20,6,2,monsterGraphics,Monster::SKELETON,1);
-			enemies[1] = Monster(25,10,0,0,monsterGraphics,Monster::ELF,1);
-			enemies[2] = Monster(25,15,14,0,monsterGraphics,Monster::GOBLIN,1);
+			enemies[0] = Monster(23,26,6,2,monsterGraphics,Monster::SKELETON,1);
+			enemies[1] = Monster(15,20,14,1,monsterGraphics,Monster::VINE,1);
+			enemies[2] = Monster(4,24,0,0,monsterGraphics,Monster::ELF,2);
+			enemies[3] = Monster(4,8,0,0,monsterGraphics,Monster::ELF,1);
+			enemies[4] = Monster(25,10,14,1,monsterGraphics,Monster::VINE,1);
+			enemies[5] = Monster(38,5,6,2,monsterGraphics,Monster::SKELETON,2);
 
-			numTreasure = 3;
-			treasure = new Treasure*[3];
+			//initialize treasure
+			numTreasure = 4;
+			treasure = new Treasure*[numTreasure];
 			treasure[0] = new MoneyTreasure(50);
-			treasure[0]->x = 16;
-			treasure[0]->y = 12;
-			treasure[1] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[1]);
-			treasure[1]->x = 25;
-			treasure[1]->y = 26;
-			treasure[2] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[0]);
-			treasure[2]->x = 35;
-			treasure[2]->y = 25;
+			treasure[0]->x = 2;
+			treasure[0]->y = 30;
+			treasure[1] = new MoneyTreasure(50);
+			treasure[1]->x = 4;
+			treasure[1]->y = 30;
+			treasure[2] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[1]);
+			treasure[2]->x = 7;
+			treasure[2]->y = 3;
+			treasure[3] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[0]);
+			treasure[3]->x = 25;
+			treasure[3]->y = 4;
 
+			//doors
 			shopDoorX = 4;
 			shopDoorY = 6;
 			exitDoorX = 38;
 			exitDoorY = 1;
 
-			mainCharacter->x = 10;
-			mainCharacter->y = 14;
+			//character start
+			mainCharacter->x = 27;
+			mainCharacter->y = 17;
 
 			break;
 
@@ -270,39 +281,65 @@ void MainGame::loadLevel()
 			// initialize a small set of enemies
 			monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
 
-			numEnemies = 6;
+			numEnemies = 9;
 			enemies = new Monster[numEnemies];
-			enemies[0] = Monster(15,20,6,2,monsterGraphics,Monster::SKELETON,2);
-			enemies[1] = Monster(25,10,0,0,monsterGraphics,Monster::ELF,1);
-			enemies[2] = Monster(25,25,14,0,monsterGraphics,Monster::GOBLIN,1);
-			enemies[3] = Monster(20,15,8,1,monsterGraphics,Monster::LIZARD,2);
-			enemies[4] = Monster(25,15,14,1,monsterGraphics,Monster::VINE,1);
-			enemies[5] = Monster(15,15,1,4,monsterGraphics,Monster::MEDUSA,5);
+			enemies[0] = Monster(15,9,6,2,monsterGraphics,Monster::LIZARD,1);
+			enemies[1] = Monster(13,6,0,0,monsterGraphics,Monster::ELF,1);
+			enemies[2] = Monster(34,27,14,0,monsterGraphics,Monster::GOBLIN,1);
+			enemies[3] = Monster(34,28,8,1,monsterGraphics,Monster::LIZARD,2);
+			enemies[4] = Monster(32,20,14,1,monsterGraphics,Monster::VINE,3);
+			enemies[5] = Monster(33,20,14,0,monsterGraphics,Monster::GOBLIN,2);
+			enemies[6] = Monster(6,14,8,1,monsterGraphics,Monster::LIZARD,1);
+			enemies[7] = Monster(29,15,8,1,monsterGraphics,Monster::LIZARD,1);
+			enemies[8] = Monster(23,3,1,4,monsterGraphics,Monster::MEDUSA,6);
 
 			// initialize all treasure and its locations
-			numTreasure = 3;
-			treasure = new Treasure*[3];
+			numTreasure = 8;
+			treasure = new Treasure*[numTreasure];
+
 			treasure[0] = new MoneyTreasure(50);
-			treasure[0]->x = 16;
-			treasure[0]->y = 12;
-			treasure[1] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[1]);
-			treasure[1]->x = 25;
-			treasure[1]->y = 26;
-			treasure[2] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[0]);
-			treasure[2]->x = 35;
-			treasure[2]->y = 25;
+			treasure[0]->x = 39;
+			treasure[0]->y = 30;
+
+			treasure[1] = new MoneyTreasure(50);
+			treasure[1]->x = 38;
+			treasure[1]->y = 30;
+
+			treasure[2] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[1]);
+			treasure[2]->x = 37;
+			treasure[2]->y = 30;
+
+			treasure[3] = new MoneyTreasure(50);
+			treasure[3]->x = 39;
+			treasure[3]->y = 26;
+
+			treasure[4] = new ItemTreasure((UsableItemFactory::getAllUsableItems())[0]);
+			treasure[4]->x = 38;
+			treasure[4]->y = 26;
+
+			treasure[5] = new MoneyTreasure(50);
+			treasure[5]->x = 37;
+			treasure[5]->y = 26;
+
+			treasure[6] = new MoneyTreasure(20);
+			treasure[6]->x = 6;
+			treasure[6]->y = 5;
+
+			treasure[7] = new MoneyTreasure(20);
+			treasure[7]->x = 8;
+			treasure[7]->y = 5;
 
 			// the tile which allows entry to the shop
-			shopDoorX = 4;
-			shopDoorY = 6;
+			shopDoorX = 15;
+			shopDoorY = 7;
 
 			// the tile which leads to the next level
-			exitDoorX = 38;
+			exitDoorX = 23;
 			exitDoorY = 1;
 
 			// main character's starting point
-			mainCharacter->x = 10;
-			mainCharacter->y = 14;
+			mainCharacter->x = 2;
+			mainCharacter->y = 24;
 
 			break;
 	}
