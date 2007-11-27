@@ -16,6 +16,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	treasure = NULL;
 	selectedEnemy = NULL;
 	shopDoorX = shopDoorY = exitDoorX = exitDoorY = -1;
+	unlimitedWalking = false;
 
 	msgCustomInfo[0] = NULL;
 	msgCustomInfo[1] = NULL;
@@ -825,10 +826,16 @@ void MainGame::characterMoved()
 {
 	if(state == STATE_HUMAN_TURN)
 	{
-		currSpeed -= 1;
+		if(!unlimitedWalking)
+			currSpeed -= 1;
 		enterShop();
 		exitLevel();
 	}
+}
+
+void MainGame::toggleUnlimitedWalking()
+{
+	unlimitedWalking = !unlimitedWalking;
 }
 
 void MainGame::keyUp()

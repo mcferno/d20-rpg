@@ -73,6 +73,7 @@ private:
 
 	// the number of steps the current player has left to take
 	int currSpeed;
+	bool unlimitedWalking; // for demonstrative purposes
 
 	// whether or not the human player has attacked
 	bool attackedThisRound;
@@ -218,6 +219,9 @@ public:
 
 	// allows the shop to be invoked (like by keypress)
 	void showShop();
+
+	// for demonstrative purposes
+	void toggleUnlimitedWalking();
 
 	// used to move game logic independently of key/mouse events
 	void tick();

@@ -345,11 +345,11 @@ void ControllableCharacter::addItem(Item* toAdd)
 				numPotions += tempUsableItem->numLeft();
 				break;
 			case UsableItem::ARROW:
-				std::cout << "Increasing the number of arrows " << tempUsableItem->numLeft();
+				std::cout << "Increasing the number of arrows by " << tempUsableItem->numLeft() << "\n";
 				numArrows += tempUsableItem->numLeft();
 				break;
 			case UsableItem::BOLT:
-				std::cout << "Increasing the number of bolts " << tempUsableItem->numLeft();
+				std::cout << "Increasing the number of bolts by " << tempUsableItem->numLeft() << "\n";
 				numBolts += tempUsableItem->numLeft();
 				break;
 		}

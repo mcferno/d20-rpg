@@ -89,6 +89,8 @@ void SelectionScreen::rollButton()
 	rollWis = ControllableCharacter::getAbilityRoll();
 	rollCha = ControllableCharacter::getAbilityRoll();
 
+	std::cout << "\n";
+
 	modStr = ControllableCharacter::getModifier(rollStr);
 	modDex = ControllableCharacter::getModifier(rollDex);
 	modCon = ControllableCharacter::getModifier(rollCon);
@@ -290,7 +292,7 @@ race SelectionScreen::findRace(int selectedRace)
 		case 2:
 			std::cout << "elf ";
 			return ELF;
-		case 3:
+		default:
 			std::cout << "gnome ";
 			return GNOME;
 	}
@@ -304,7 +306,7 @@ playerClass SelectionScreen::findClass(int selectedClass)
 		case 0:
 			std::cout << "fighter.";
 			return FIGHTER;
-		case 1:
+		default:
 			std::cout << "ranger.";
 			return RANGER;
 	}
@@ -470,27 +472,6 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 //LEFT MOUSE EVENT POLLING
 void SelectionScreen::mouseLeft(int x, int y)
 {
-	//DEBUG QUICKSTART!! CLICK TOP CORNER
-	//if (x >= 0 && x <= 2*16 && y >= 0 && y <= 2*16)
-	//{
-	//		selectedSprite = 1;
-	//		selectedRace = 0;
-	//		selectedClass = 0;
-	//		myRace = HUMAN; //WHEN DISABLED INFINITE WALKING WOOT!
-	//		SDL_Rect *characterRect = new SDL_Rect();
-	//		mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
-	//		mainCharacter->graphics = new Graphics(".\\images\\characters.png");
-	//		characterRect->x = availableSprites[selectedSprite].clip.x;
-	//		characterRect->y = availableSprites[selectedSprite].clip.y;
-	//		characterRect->w = availableSprites[selectedSprite].clip.w;
-	//		characterRect->h = availableSprites[selectedSprite].clip.h;
-	//		mainCharacter->x = 10;
-	//		mainCharacter->y = 14;
-	//		mainCharacter->clip = characterRect;
-	//		signalCompletion();
-	//}
-
-
 	//START BUTTON
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
@@ -513,23 +494,19 @@ void SelectionScreen::mouseLeft(int x, int y)
 				case FIGHTER:
 				if (!hasRolled) {
 					mainCharacter = new Fighter(myRace);
-					mainCharacter->showCharacter();
 				}
 				else {
 					mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
-					mainCharacter->showCharacter();
 				}
 				case RANGER:
 				if (!hasRolled) {
 					mainCharacter = new Ranger(myRace);
-					mainCharacter->showCharacter();
 				}
 				else {
 					mainCharacter = new Ranger(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
-					mainCharacter->showCharacter();
 				}
 			}
-
+			mainCharacter->showCharacter();
 			mainCharacter->graphics = new Graphics(".\\images\\characters.png");
 			characterRect->x = availableSprites[selectedSprite].clip.x;
 			characterRect->y = availableSprites[selectedSprite].clip.y;

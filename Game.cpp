@@ -178,6 +178,11 @@ int main( int argc, char* args[] )
 					case SDLK_w:
 						if(state == STATE_START_SCREEN)
 							startScreen->keyW();
+						break;
+					case SDLK_u:
+						if(state == STATE_MAIN_GAME)
+							mainGame->toggleUnlimitedWalking();
+						break;
 					case SDLK_UP:
 						if(state == STATE_MAIN_GAME)
 							mainGame->keyUp();
