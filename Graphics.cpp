@@ -183,7 +183,6 @@ void Graphics::init()
 
 Graphics::~Graphics()
 {
-	std::cout << "Destroying Graphics\n";
 	SDL_FreeSurface(image);
 	delete[] clip;
 }
@@ -210,7 +209,6 @@ Map::Map(int newX, int newY, int newW, int newH)
 
 Map::~Map()
 {
-	std::cout << "Destroying Map\n";
 	if(ts != NULL)
 	{
 		for (int k = 0; k < w; k++)

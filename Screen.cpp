@@ -23,9 +23,7 @@ Screen::Screen(int newX, int newY, int newW, int newH)
 }
 
 Screen::~Screen()
-{
-	std::cout << "Destroying Screen\n";
-}
+{}
 
 void Screen::init(SDL_Surface *newScreen)
 {

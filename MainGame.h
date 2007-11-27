@@ -64,7 +64,7 @@ private:
 	SDL_Surface *msgVariableInfo[10];
 
 	// buttons used to interact with the game
-	Button controlBtns[4];
+	Button controlBtns[5];
 	Button mapBtns[4];
 	Rect exitBtn;
 
@@ -109,6 +109,8 @@ private:
 	static const int STATE_AI_TURN = 2;
 	static const int STATE_SHOP = 3;
 	static const int STATE_EQUIP = 4;
+	static const int STATE_LOSE = 5;
+	static const int STATE_WIN = 6;
 
 	// the location of the informative panels
 	static const int CHARACTER_PANEL_X = 2*TILE_SIZE;

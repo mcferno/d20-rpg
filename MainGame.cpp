@@ -59,6 +59,9 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	// end turn button
 	controlBtns[3] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*21,7*TILE_SIZE,2*TILE_SIZE,19*TILE_SIZE,0,buttons);
 
+	// use potion button
+	controlBtns[4] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*12,7*TILE_SIZE,2*TILE_SIZE,26*TILE_SIZE,0,buttons);
+
 	exitBtn.x = INFO_PANEL_X+TILE_SIZE;
 	exitBtn.y = INFO_PANEL_Y+TILE_SIZE*24;
 	exitBtn.w = TILE_SIZE*5;
@@ -153,6 +156,7 @@ void MainGame::nextTurn()
 	// check if any dead players are in the queue
 	Character *tempPlayer = NULL;
 	int numPlayers = playOrder.size();
+
 	for(int i=0;i<numPlayers;i++)
 	{
 		tempPlayer = playOrder.front();
@@ -407,49 +411,62 @@ void MainGame::paint()
 		}
 	}
 
-	gameMap.paint();
-
-	// does the map need horizontal scrolling?
-	if(gameMap.limit.w < gameMap.w*TILE_SIZE)
+	if(state == STATE_LOSE)
 	{
-		mapBtns[0].paint();
-		mapBtns[1].paint();
+		// paint losing screen
+		applySurface(TILE_SIZE,TILE_SIZE,loseScreen,screen);
 	}
-
-	// does the map need verical scrolling?
-	if(gameMap.limit.h < gameMap.h*TILE_SIZE)
+	else if(state == STATE_WIN)
 	{
-		mapBtns[2].paint();
-		mapBtns[3].paint();
+		// paint winning screen
+		applySurface(TILE_SIZE,TILE_SIZE,winScreen,screen);
 	}
-
-	// paint more information if its the human's turn
-	if(state == STATE_HUMAN_TURN)
+	else
 	{
-		// where can the human walk?
-		paintRange(currSpeed,walkableHighlight);
+		gameMap.paint();
 
-		// how far can the human attack
-		paintRange(mainCharacter->getWeaponRange(),targetableHighlight,true);
-		
-		paintInfoPanel();
-	}
+		// does the map need horizontal scrolling?
+		if(gameMap.limit.w < gameMap.w*TILE_SIZE)
+		{
+			mapBtns[0].paint();
+			mapBtns[1].paint();
+		}
 
-	for(int i=0;i<numEnemies;i++)
-		paintObject(&enemies[i]);
+		// does the map need verical scrolling?
+		if(gameMap.limit.h < gameMap.h*TILE_SIZE)
+		{
+			mapBtns[2].paint();
+			mapBtns[3].paint();
+		}
 
-	for(int i=0;i<numTreasure;i++)
-		paintObject(treasure[i]);
+		// paint more information if its the human's turn
+		if(state == STATE_HUMAN_TURN)
+		{
+			// where can the human walk?
+			paintRange(currSpeed,walkableHighlight);
 
-	paintObject(mainCharacter);
+			// how far can the human attack
+			paintRange(mainCharacter->getWeaponRange(),targetableHighlight,true);
+			
+			paintInfoPanel();
+		}
 
-	if(state == STATE_SHOP)
-	{
-		shopScreen->paint();
-	}
-	else if(state == STATE_EQUIP)
-	{
-		equipScreen->paint();
+		for(int i=0;i<numEnemies;i++)
+			paintObject(&enemies[i]);
+
+		for(int i=0;i<numTreasure;i++)
+			paintObject(treasure[i]);
+
+		paintObject(mainCharacter);
+
+		if(state == STATE_SHOP)
+		{
+			shopScreen->paint();
+		}
+		else if(state == STATE_EQUIP)
+		{
+			equipScreen->paint();
+		}
 	}
 
 	paintCharacterPanel();
@@ -576,8 +593,15 @@ void MainGame::paintInfoPanel()
 		if(inRange(selectedEnemy,mainCharacter->getWeaponRange()) && !attackedThisRound && !selectedEnemy->isDead())
 			controlBtns[0].paint();
 	}
+	// equip screen button
 	controlBtns[1].paint();
+
+	// end turn button
 	controlBtns[3].paint();
+
+	// use potion button
+	if(mainCharacter->getNumPotions() && mainCharacter->getHp() < mainCharacter->getMaxHp())
+		controlBtns[4].paint();
 
 	// paint the open treasure button if a treasure is in range
 	for(int i=0;i<numTreasure;i++)
@@ -891,6 +915,8 @@ void MainGame::mouseLeft(int clickX, int clickY)
 			if(inRange(selectedEnemy,mainCharacter->getWeaponRange()) && !attackedThisRound)
 			{
 				fight(selectedEnemy);
+				if(mainCharacter->isDead())
+					state = STATE_LOSE;
 				paintNow();
 			}
 		}
@@ -905,6 +931,20 @@ void MainGame::mouseLeft(int clickX, int clickY)
 		else if(controlBtns[3].inBounds(clickX, clickY))
 		{
 			nextTurn();
+		}
+		else if(controlBtns[4].inBounds(clickX, clickY))
+		{
+			if(!mainCharacter->isDead())
+			{
+				// how much does the potion heal?
+				int potionBonus = ((Potion*)(UsableItemFactory::getAllUsableItems()[2]))->getHpBonus();
+				if(potionBonus > 0 && mainCharacter->getNumPotions() > 0 && mainCharacter->getHp() < mainCharacter->getMaxHp())
+				{
+					// use a potion
+					mainCharacter->setHp(mainCharacter->getHp() + potionBonus);
+					mainCharacter->setNumPotions(mainCharacter->getNumPotions()-1);
+				}
+			}
 		}
 		else
 		{
@@ -1011,17 +1051,25 @@ void MainGame::enterShop()
 // quick post level clean up, and loading of the new level
 void MainGame::exitLevel()
 {
-	if(exitDoorX == mainCharacter->x && exitDoorY == mainCharacter->y && currentLevel == LEVEL_1)
+	if(exitDoorX == mainCharacter->x && exitDoorY == mainCharacter->y)
 	{
-		std::cout << "LEVEL COMPLETED!";
-		currentLevel = LEVEL_2;
-		
-		while(!playOrder.empty())
-			playOrder.pop();
-		
-		currentPlayer = NULL;
+		if(currentLevel == LEVEL_1)
+		{
+			std::cout << "LEVEL 1 COMPLETED!";
+			currentLevel = LEVEL_2;
+			
+			while(!playOrder.empty())
+				playOrder.pop();
+			
+			currentPlayer = NULL;
 
-		init();
+			init();
+		}
+		else // level 2 ended, you have beat the game
+		{
+			std::cout << "LEVEL 2 COMPLETED!";
+			state = STATE_WIN;
+		}
 	}
 }
 

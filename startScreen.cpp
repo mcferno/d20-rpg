@@ -13,7 +13,6 @@ StartScreen::StartScreen(int newX, int newY, int newW, int newH) : Screen(newX,n
 
 StartScreen::~StartScreen()
 {
-	std::cout << "Destroying StartScreen\n";
 	if(background != NULL)
 		SDL_FreeSurface(background);
 	if(mapEditor != NULL)

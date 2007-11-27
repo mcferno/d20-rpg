@@ -66,7 +66,7 @@ protected:
 	char* name;
 	
 	// hit points, current level, speed (in tiles)
-	int hp, level, speed;
+	int maxHp, hp, level, speed;
 
 	int imyRace, imyClass;
 
@@ -105,6 +105,7 @@ public:
 	void setCha(int);
 	void setAllModifiers(int, int, int, int, int, int);
 	void setHp(int);
+	void setMaxHp(int);
 	void setLevel(int);
 	void setSpeed(int);
 
@@ -116,6 +117,7 @@ public:
 	int getWis();
 	int getCha();
 	int getHp();
+	int getMaxHp();
 	int getLevel();
 	virtual int getAC();
 	virtual int rollWeaponDamage(int);

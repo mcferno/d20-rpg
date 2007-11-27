@@ -14,7 +14,6 @@ SelectionScreen::SelectionScreen(int newX, int newY, int newW, int newH) : Scree
 
 SelectionScreen::~SelectionScreen()
 {
-	std::cout << "Destroying SelectionScreen\n";
 	SDL_FreeSurface(characterSprites);
 	SDL_FreeSurface(selectScreen);
 }

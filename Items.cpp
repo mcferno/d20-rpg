@@ -67,6 +67,13 @@ Potion::Potion(char* newName,int newCostInGold, int graphicOffset, int newHpBonu
 	hpBonus = (newHpBonus>0)?newHpBonus:0;
 }
 
+int Potion::getHpBonus()
+{
+	if(hpBonus > 0)
+		return hpBonus;
+	return 0;
+}
+
 //#####################################################################################################
 
 // statically create the set of all available usable items in the game

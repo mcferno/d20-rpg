@@ -22,7 +22,6 @@ EditableMap::EditableMap(int newX, int newY, int newW, int newH): Map(newX,newY,
 
 EditableMap::~EditableMap()
 {
-	std::cout << "Destroying EditableMap\n";
 	if(emptyTile != NULL)
 		SDL_FreeSurface(emptyTile);
 }
@@ -137,7 +136,6 @@ SelectableMap::SelectableMap(int newX, int newY, int newW, int newH): Map(newX,n
 
 SelectableMap::~SelectableMap()
 {
-	std::cout << "Destroying SelectableMap\n";
 	SDL_FreeSurface(highlightTile);
 }
 
@@ -230,7 +228,6 @@ MapEditor::MapEditor(int newX, int newY, int width, int height) :
 
 MapEditor::~MapEditor()
 {
-	std::cout << "Destroying MapEditor\n";
 	SDL_FreeSurface(background);
 	SDL_FreeSurface(selectedTileMsg);
 	SDL_FreeSurface(selectedCellMsg);

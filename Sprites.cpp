@@ -13,6 +13,7 @@ Object::Object()
 
 Character::Character() : Object()
 {
+	hp = maxHp = -1;
 }
 
 void Character::setName(char* name) {
@@ -113,15 +114,23 @@ void Character::setAllModifiers(int str, int dex, int con, int ite, int wis, int
 	setWis(wis);
 	setCha(cha);
 }
-void Character::setHp(int hp){
-	if (hp <= 0)
+void Character::setHp(int newHp){
+	if (newHp <= 0)
 	{
-		this->hp = 0;
+		hp = 0;
 		died();
 	}
+	else if(newHp > maxHp)
+		hp = maxHp;
 	else
-		this->hp = hp;
+		hp = newHp;
 }
+
+void Character::setMaxHp(int newMaxHp){
+	if(newMaxHp > 0)
+		maxHp = newMaxHp;
+}
+
 void Character::setLevel(int level){
 	if (level <= 1)
 		this->level = 1;
@@ -158,6 +167,9 @@ int Character::getCha() {
 }
 int Character::getHp(){
 	return hp;
+}
+int Character::getMaxHp() {
+	return maxHp;
 }
 int Character::getLevel(){
 	return level;
@@ -215,7 +227,7 @@ void Character::died()
 {
 	if(isDead())
 	{
-		std::cout << name << " has dies.\n";
+		std::cout << name << " has died.\n";
 		speed = 0;
 	}
 }
@@ -244,6 +256,8 @@ ControllableCharacter::ControllableCharacter() : Character()
 	inventory.addItem(tempItems[0]);
 	inventory.addItem(tempItems[1]);
 	inventory.addItem(tempItems[2]);
+
+	setName("Main Character");
 }
 
 int ControllableCharacter::rollWeaponDamage()
@@ -389,17 +403,20 @@ int ControllableCharacter::getNumPotions()
 	return numPotions;
 }
 
-void ControllableCharacter::setNumArrows(int numArrows)
+void ControllableCharacter::setNumArrows(int newNumArrows)
 {
-	this->numArrows = numArrows;
+	if(newNumArrows >= 0)
+		this->numArrows = newNumArrows;
 }
-void ControllableCharacter::setNumBolts(int numBolts)
+void ControllableCharacter::setNumBolts(int newNumBolts)
 {
-	this->numBolts = numBolts;
+	if(newNumBolts >= 0)
+		this->numBolts = newNumBolts;
 }
-void ControllableCharacter::setNumPotions(int NumPotions)
+void ControllableCharacter::setNumPotions(int newNumPotions)
 {
-	this->numPotions = numPotions;
+	if(newNumPotions >= 0)
+		this->numPotions = newNumPotions;
 }
 
 int ControllableCharacter::getWeaponRange()
@@ -426,6 +443,7 @@ Fighter::Fighter()
 //Str, Dex, Con, Ite, Wis, Cha are all determined randomly by the character roll.
 Fighter::Fighter(race myrace) : ControllableCharacter() {
 
+	setMaxHp(FIGHTER_HP);
 	setHp(FIGHTER_HP);
 	setLevel(1);
 	setClass(Character::FIGHTER);
@@ -479,6 +497,7 @@ Fighter::Fighter(race myrace) : ControllableCharacter() {
 
 Fighter::Fighter(race myrace, int str, int dex, int con, int ite, int wis, int cha) : ControllableCharacter() {
 
+	setMaxHp(FIGHTER_HP);
 	setHp(FIGHTER_HP);
 	setLevel(1);
 	setClass(Character::FIGHTER);
@@ -542,6 +561,7 @@ Ranger::Ranger()
 //Str, Dex, Con, Ite, Wis, Cha are all determined randomly by the character roll.
 Ranger::Ranger(race myrace) : ControllableCharacter() {
 
+	setMaxHp(RANGER_HP);
 	setHp(RANGER_HP);
 	setLevel(1);
 	setClass(Character::RANGER);
@@ -595,6 +615,7 @@ Ranger::Ranger(race myrace) : ControllableCharacter() {
 
 Ranger::Ranger(race myrace, int str, int dex, int con, int ite, int wis, int cha) : ControllableCharacter() {
 
+	setMaxHp(RANGER_HP);
 	setHp(RANGER_HP);
 	setLevel(1);
 	setClass(Character::RANGER);
@@ -703,6 +724,7 @@ int Monster::getMonsterHP(int level)
 void Monster::setAllMonster(char* name, int level, int speed, int str, int dex, int con, int ite, int wis, int cha, int diceType)
 {
 	setLevel(level);
+	setMaxHp(getMonsterHP(level));
 	setHp(getMonsterHP(level));
 	setSpeed(speed);
 
