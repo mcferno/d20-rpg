@@ -115,7 +115,10 @@ void Character::setAllModifiers(int str, int dex, int con, int ite, int wis, int
 }
 void Character::setHp(int hp){
 	if (hp <= 0)
+	{
 		this->hp = 0;
+		died();
+	}
 	else
 		this->hp = hp;
 }
@@ -206,6 +209,20 @@ void Character::showCharacter() {
 		<< "CHA: " << getCha() << ", Mod: " << getChaMod() << "\n"
 		<< "SPEED: " << getSpeed() << "\n"
 		<< "HP: " << getHp() << "\n";
+}
+
+void Character::died()
+{
+	if(isDead())
+	{
+		std::cout << name << " has dies.\n";
+		speed = 0;
+	}
+}
+
+bool Character::isDead()
+{
+	return (hp < 1);
 }
 
 
@@ -708,6 +725,15 @@ void Monster::setDamageDiceType(int diceType) {
 
 int Monster::getDamageDiceType() {
 	return damageDiceType;
+}
+
+void Monster::died()
+{
+	if(isDead())
+	{
+		Character::died();
+		clip->x += TILE_SIZE;
+	}
 }
 
 

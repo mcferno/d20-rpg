@@ -69,9 +69,8 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 void MainGame::init()
 {
 
-	mainCharacter->setSpeed(400); //SPEED FOR DEBUGGING
+	mainCharacter->setSpeed(200); //SPEED FOR DEBUGGING
 	loadLevel();
-	//weapons = WeaponFactory::getAllWeapons();
 	numPlayers = numEnemies+1;
 
 	gameMap.loadGraphics(level->graphics, level->alphaR, level->alphaG, level->alphaB);
@@ -139,6 +138,20 @@ void MainGame::nextTurn()
 	if(currentPlayer != NULL)
 		playOrder.push(currentPlayer);
 
+	// check if any dead players are in the queue
+	Character *tempPlayer = NULL;
+	int numPlayers = playOrder.size();
+	for(int i=0;i<numPlayers;i++)
+	{
+		tempPlayer = playOrder.front();
+		playOrder.pop();
+
+		// only return living characters to the play order queue
+		if(!tempPlayer->isDead())
+			playOrder.push(tempPlayer);
+	}
+
+
 	currentPlayer = playOrder.front();
 	playOrder.pop();
 
@@ -166,7 +179,7 @@ bool MainGame::isTileOccupied(int xCoord, int yCoord)
 	if(xCoord == mainCharacter->x && yCoord == mainCharacter->y)
 		return true;
 	for(int i=0;i<numEnemies;i++)
-		if(xCoord == enemies[i].x && yCoord == enemies[i].y)
+		if(xCoord == enemies[i].x && yCoord == enemies[i].y && !enemies[i].isDead())
 			return true;
 	for(int i=0;i<numTreasure;i++)
 		if(xCoord == treasure[i]->x && yCoord == treasure[i]->y)
@@ -295,7 +308,7 @@ void MainGame::loadLevel()
 			enemies[5] = Monster(33,20,14,0,monsterGraphics,Monster::GOBLIN,2);
 			enemies[6] = Monster(6,14,8,1,monsterGraphics,Monster::LIZARD,1);
 			enemies[7] = Monster(29,15,8,1,monsterGraphics,Monster::LIZARD,1);
-			enemies[8] = Monster(23,3,1,4,monsterGraphics,Monster::MEDUSA,6);
+			enemies[8] = Monster(23,3,0,4,monsterGraphics,Monster::MEDUSA,6);
 
 			// initialize all treasure and its locations
 			numTreasure = 8;
@@ -397,13 +410,13 @@ void MainGame::paint()
 		paintInfoPanel();
 	}
 
-	paintObject(mainCharacter);
-
 	for(int i=0;i<numEnemies;i++)
 		paintObject(&enemies[i]);
 
 	for(int i=0;i<numTreasure;i++)
 		paintObject(treasure[i]);
+
+	paintObject(mainCharacter);
 
 	if(state == STATE_SHOP)
 	{
@@ -525,7 +538,7 @@ void MainGame::paintInfoPanel()
 		applySurface(x+INFO_PANEL_X,y+INFO_PANEL_Y+TILE_SIZE*2,msgInfo[1],screen);
 		applySurface(x+INFO_PANEL_X+msgInfo[1]->w,y+INFO_PANEL_Y+TILE_SIZE*2,msgCustomInfo[1],screen);
 
-		if(inRange(selectedEnemy,mainCharacter->getWeaponRange()) && !attackedThisRound)
+		if(inRange(selectedEnemy,mainCharacter->getWeaponRange()) && !attackedThisRound && !selectedEnemy->isDead())
 			controlBtns[0].paint();
 	}
 	controlBtns[1].paint();

@@ -111,7 +111,7 @@ void stateTransition()
 int main( int argc, char* args[] ) 
 {
 	// Initialize the SDL library 
-	if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 ) 
+	if( SDL_Init( SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO ) == -1 ) 
 	{ 
 		return 1; 
 	} 

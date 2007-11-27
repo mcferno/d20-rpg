@@ -72,7 +72,7 @@ protected:
 
 	static const int FIGHTER = 0;
 	static const int RANGER = 1;
-
+	virtual void died();
 
 public:
 
@@ -120,6 +120,7 @@ public:
 	virtual int getAC();
 	virtual int rollWeaponDamage(int);
 	int getSpeed();
+	bool isDead();
 
 	// accessors for modifiers
 	int getStrMod();
@@ -192,6 +193,9 @@ class Monster : public Character
 private:
 
 	int damageDiceType;
+
+protected:
+	void died();
 
 public:
 
