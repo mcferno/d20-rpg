@@ -1182,14 +1182,55 @@ void MainGame::fight(Monster *thisMonster)
 			break;
 		}
 
-		//if you had enough consumable, attack
-		//since monsters dont have ranged weapons you attack from far, monster doesnt retaliate
 		if (damageRoll)
 		{
-			std::cout << "\n YOU ATTACK WITH RANGED WEAPON! \n";
-			attackedThisRound = true;
-			if (fPlayerAttackRoll(thisMonster))
-				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+
+//--->		///*****
+//--->		///*** THIS IS THE IF FOR THE RANGE. NOT SURE WHAT MELEE RANGE IS, IF 0 OR 1 ?
+			if (inRange(thisMonster,mainCharacter->getWeaponRange()))
+			{
+				//get Initiative Rolls
+				playerInitiativeRoll = mainCharacter->getInitiativeRoll();
+				std::cout << "\n Your Initiative Roll: " << playerInitiativeRoll << "\n";
+				monsterInitiativeRoll = thisMonster->getInitiativeRoll();
+				std::cout << "Monsters Initiative Roll: " << monsterInitiativeRoll << "\n";
+
+				//compare initiative rolls to see who attacks first
+				if (playerInitiativeRoll >= monsterInitiativeRoll)
+				{
+					std::cout << "\n YOU ATTACK FIRST WITH RANGED WEAPON! \n";
+
+					//allows you to attack only once per round
+					attackedThisRound = true;
+
+					//roll damage and subtrack it
+					if (fPlayerAttackRoll(thisMonster))
+						thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+
+					if (fMonsterAttackRoll(thisMonster))
+						mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
+				}
+
+				else
+				{
+					std::cout << "\n MONSTER ATTACKS FIRST! \n";
+
+					attackedThisRound = true;
+
+					if (fMonsterAttackRoll(thisMonster))
+						mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
+
+					if (fPlayerAttackRoll(thisMonster))
+						thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
+				}
+			}
+			else
+			{
+				std::cout << "\n YOU ATTACK WITH RANGED WEAPON! \n";
+				attackedThisRound = true;
+				if (fPlayerAttackRoll(thisMonster))
+					thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );	
+			}
 		}
 	}
 }
