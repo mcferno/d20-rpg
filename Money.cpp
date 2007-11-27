@@ -2,11 +2,13 @@
 
 Money::Money(int copper, int silver, int gold, int platinum)
 {
+	// store all initial coins in their copper equivalent
 	totalCopper = copper + (silver * SILVER_TO_COPPER) + (gold * GOLD_TO_COPPER) + (platinum * PLATINUM_TO_COPPER);
 }
 
 void Money::addCoin(int amount, int coinType)
 {
+	// add the appropriate type of coin
 	switch(coinType)
 	{
 		case COPPER:
@@ -25,6 +27,7 @@ void Money::addCoin(int amount, int coinType)
 
 void Money::addCopper(int copper)
 {
+	// no restriction on negative coin, since this function is reused by 'remove'
 	totalCopper += copper;
 
 	if(totalCopper < 0)
@@ -49,6 +52,7 @@ void Money::addPlatinum(int platinum)
 		addCopper(platinum*PLATINUM_TO_COPPER);
 }
 
+// remove coin functions make reuse of the add function
 void Money::removeCopper(int copper)
 {
 	if(copper > 0)

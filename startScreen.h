@@ -1,7 +1,7 @@
 #ifndef START_SCREENS_H
 	#define START_SCREENS_H
 
-#include "Screens.h"
+#include "Screen.h"
 #include "MapEditor.h"
 
 class StartScreen : public Screen

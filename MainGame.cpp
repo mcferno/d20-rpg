@@ -32,22 +32,30 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	SDL_Surface *arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
 
 	// initialize the 4 directional scrolling arrows for the custom map
-	//left
+	//left arrow
 	mapBtns[0] = Button(TILE_SIZE,29*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,arrows);
-	//right
+
+	//right arrow
 	mapBtns[1] = Button(37*TILE_SIZE,29*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,0,arrows);
-	//up
+
+	//up arrow
 	mapBtns[2] = Button(38*TILE_SIZE,TILE_SIZE,TILE_SIZE,TILE_SIZE,2*TILE_SIZE,0,arrows);
-	//down
+
+	//down arrow
 	mapBtns[3] = Button(38*TILE_SIZE,28*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
 
+	// graphics used for all in game buttons
 	SDL_Surface *buttons = loadImage(".\\images\\mainGameButtons.png");
+
 	// attack button
 	controlBtns[0] = Button(INFO_PANEL_X+TILE_SIZE,INFO_PANEL_Y+TILE_SIZE*4,5*TILE_SIZE,2*TILE_SIZE,0,0,buttons);
+
 	// equip screen button
 	controlBtns[1] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*18,7*TILE_SIZE,2*TILE_SIZE,controlBtns[0].w,0,buttons);
+
 	// open chest button
 	controlBtns[2] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*15,7*TILE_SIZE,2*TILE_SIZE,12*TILE_SIZE,0,buttons);
+
 	// end turn button
 	controlBtns[3] = Button(INFO_PANEL_X,INFO_PANEL_Y+TILE_SIZE*21,7*TILE_SIZE,2*TILE_SIZE,19*TILE_SIZE,0,buttons);
 
@@ -68,21 +76,25 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 // begins the game by loading the level and all of its enemies
 void MainGame::init()
 {
+	mainCharacter->setSpeed(200); //SPEED FOR DEBUGGING, TO REMOVE
 
-	mainCharacter->setSpeed(200); //SPEED FOR DEBUGGING
+	// load the next level
 	loadLevel();
+
 	numPlayers = numEnemies+1;
 
+	// load the map into the gameMap object
 	gameMap.loadGraphics(level->graphics, level->alphaR, level->alphaG, level->alphaB);
 	gameMap.parseIndex(level->index);
 	state = STATE_LEVEL_START;
 
+	// render information that remains constant during the level
 	setFixedInfo();
 
 	std::cout << "There are " << numEnemies << " monsters on this level\n";
 
-	if(state == STATE_LEVEL_START)
-		doInitiativeRoll();
+	// kick start the game by deciding who will go first
+	doInitiativeRoll();
 }
 
 // initiative roll to decide the order the turns will be taken in
@@ -176,14 +188,21 @@ void MainGame::nextTurn()
 
 bool MainGame::isTileOccupied(int xCoord, int yCoord)
 {
+	// is the tile occupied by the main character?
 	if(xCoord == mainCharacter->x && yCoord == mainCharacter->y)
 		return true;
+
+	// is the tile occupied by any of the living monsters
 	for(int i=0;i<numEnemies;i++)
 		if(xCoord == enemies[i].x && yCoord == enemies[i].y && !enemies[i].isDead())
 			return true;
+
+	// is there treasure on that tile?
 	for(int i=0;i<numTreasure;i++)
 		if(xCoord == treasure[i]->x && yCoord == treasure[i]->y)
 			return true;
+
+	// nothing was found
 	return false;
 }
 
@@ -390,21 +409,27 @@ void MainGame::paint()
 
 	gameMap.paint();
 
+	// does the map need horizontal scrolling?
 	if(gameMap.limit.w < gameMap.w*TILE_SIZE)
 	{
 		mapBtns[0].paint();
 		mapBtns[1].paint();
 	}
 
+	// does the map need verical scrolling?
 	if(gameMap.limit.h < gameMap.h*TILE_SIZE)
 	{
 		mapBtns[2].paint();
 		mapBtns[3].paint();
 	}
 
+	// paint more information if its the human's turn
 	if(state == STATE_HUMAN_TURN)
 	{
+		// where can the human walk?
 		paintRange(currSpeed,walkableHighlight);
+
+		// how far can the human attack
 		paintRange(mainCharacter->getWeaponRange(),targetableHighlight,true);
 		
 		paintInfoPanel();
@@ -432,34 +457,42 @@ void MainGame::paint()
 
 void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkable)
 {
+	// what will be the center point to the painted range
 	int center = dist;
 
+	// dont waste your time with anything less than a range of 1
 	if(center < 1)
 		return;
 
 	int centerX = mainCharacter->x;
 	int centerY = mainCharacter->y;
 
+	// simple flags used to differenciate tiles
 	unsigned short unwalkable = 65535;
 	unsigned short uninit = 9999;
 
 	int i,j;
 
 	int width = center*2+1;
+
+	// create a 2 dimentional array of size [range*2+1][range*2+1]
 	unsigned short **b;
 	b = new unsigned short*[width];
 
-	// first pass, initialization;
-	// goes row by row
+	// first pass of the shortest path algorithm, initialization;
+	// goes row by row (on the map)
 	for(i=0;i<width;i++)
 	{
 		b[i] = new unsigned short[width];
 		for(j=0;j<width;j++)
 		{
+			// whether or not the tile will be considered as possibly within range
 			if(gameMap.isOnScreen(centerX+(center-i),centerY+(center-j)) 
 				&& (!isTileOccupied(centerX+(center-i),centerY+(center-j)) || ignoreUnWalkable)
 				&& (isTileWalkable(centerX+(center-i),centerY+(center-j)) || ignoreUnWalkable))
 				b[i][j] = uninit;
+
+			// the tile is unwalkable, don't consider it in any further calculations
 			else
 				b[i][j] = unwalkable;
 		}
@@ -470,7 +503,8 @@ void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkabl
 
 	unsigned short min;
 
-	// first discovery path
+	// run several discover passes over the 2d array, every time, increase the number of discovered
+	// reachable tiles
 	for(int k=0;k<center;k++)
 	{
 		for(i=0;i<width;i++)
@@ -488,6 +522,7 @@ void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkabl
 				if(j<width-1)
 					min = (b[i][j+1] < min)? b[i][j+1] : min;
 
+				// is there an adjacent tile which has a value less than yours? set your value to one more than it.
 				if(min < uninit && b[i][j] != unwalkable && b[i][j] > min)
 					b[i][j] = min+1;
 			}
@@ -544,6 +579,7 @@ void MainGame::paintInfoPanel()
 	controlBtns[1].paint();
 	controlBtns[3].paint();
 
+	// paint the open treasure button if a treasure is in range
 	for(int i=0;i<numTreasure;i++)
 	{
 		if(inRange(treasure[i],1) && !treasure[i]->isOpen())
@@ -967,6 +1003,7 @@ void MainGame::openTreasure()
 
 void MainGame::enterShop()
 {
+	// open the shop if the character walked to the door
 	if(shopDoorX == mainCharacter->x && shopDoorY == mainCharacter->y)
 		showShop();
 }
@@ -992,6 +1029,7 @@ void MainGame::tick()
 {
 	if(state == STATE_AI_TURN)
 	{
+		// the AI is done his movements
 		if(currSpeed == 0)
 		{
 			std::cout << " Done!\n";

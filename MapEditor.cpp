@@ -1,9 +1,6 @@
 
 #include "MapEditor.h"
 
-// the font color used for on screen text 
-SDL_Color textColor = { 255, 255, 255 };
-
 // ###########################################################################################
 
 void EditableMap::init()
@@ -211,16 +208,17 @@ MapEditor::MapEditor(int newX, int newY, int width, int height) :
 	saveBtn = Rect(672,288,80,32);
 
 	std::cout << "Rendering all text displays ... ";
-	selectedTileMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Tile:", textColor );
-	selectedCellMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Map Cell:", textColor );
-	xCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "x:", textColor );
-	yCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "y:", textColor );
-	foregroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Foreground:", textColor );
-	backgroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Background:", textColor );
-	indexMsg = TTF_RenderText_Solid( fontCalibriTiny, "Index:", textColor );
-	walkableMsg = TTF_RenderText_Solid( fontCalibriTiny, "Walkable:", textColor );
+	selectedTileMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Tile:", colorWhite );
+	selectedCellMsg = TTF_RenderText_Solid( fontCalibriTiny, "Selected Map Cell:", colorWhite );
+	xCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "x:", colorWhite );
+	yCoordLabel = TTF_RenderText_Solid( fontCalibriTiny, "y:", colorWhite );
+	foregroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Foreground:", colorWhite );
+	backgroundMsg = TTF_RenderText_Solid( fontCalibriTiny, "Background:", colorWhite );
+	indexMsg = TTF_RenderText_Solid( fontCalibriTiny, "Index:", colorWhite );
+	walkableMsg = TTF_RenderText_Solid( fontCalibriTiny, "Walkable:", colorWhite );
 	std::cout << "Successful!\n";
 
+	// no map has been loaded yet
 	customMap = NULL;
 	tileSet = NULL;
 	graphics = NULL;
@@ -352,6 +350,7 @@ void MapEditor::load(const char* mapFile, const char* graphicsFile, int newMapW,
 	isLoaded = true;
 }
 
+// release anything directly related to a loaded map, so that a new one can be loaded
 void MapEditor::unload()
 {
 	tileSize = 0;
@@ -372,9 +371,9 @@ void MapEditor::paintInfoPanel()
 
 	// simple coordinates to inform the user how much they are scrolling on the main map
 	_itoa_s(customMap->x,tempBuffer,10);
-	applySurface(16,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, textColor),screen);
+	applySurface(16,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
 	_itoa_s(customMap->y,tempBuffer,10);
-	applySurface(48,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, textColor),screen);
+	applySurface(48,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
 
 	applySurface(640,16,selectedCellMsg,screen);
 	applySurface(640,32,xCoordLabel,screen);
@@ -387,23 +386,23 @@ void MapEditor::paintInfoPanel()
 	if(selectedCellX != -1 && selectedCellY != -1)
 	{
 		_itoa_s(selectedCellX,tempBuffer,10);
-		applySurface(656,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, textColor),screen);
+		applySurface(656,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
 		_itoa_s(selectedCellY,tempBuffer,10);
-		applySurface(704,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, textColor),screen);
+		applySurface(704,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
 
 		// paint information about the background layer if it is initialized
 		if(selectedCell->b != -1)
 		{
 			_itoa_s(selectedCell->b,tempBuffer,10);
-			applySurface(720,64,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, textColor),screen);
-			applySurface(720,80,TTF_RenderText_Solid( fontCalibriTiny, (selectedCell->isWalkable)?"Y":"N", textColor),screen);
+			applySurface(720,64,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
+			applySurface(720,80,TTF_RenderText_Solid( fontCalibriTiny, (selectedCell->isWalkable)?"Y":"N", colorWhite),screen);
 		}
 
 		// paint information about the foreground layer if it is initialized
 		if(selectedCell->f != -1)
 		{
 			_itoa_s(selectedCell->f,tempBuffer,10);
-			applySurface(720,48,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, textColor),screen);
+			applySurface(720,48,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
 		}
 
 		// paint the selected cell itself
@@ -417,7 +416,7 @@ void MapEditor::paintInfoPanel()
 	if(selectedTileIndex != -1)
 	{
 		_itoa_s(selectedTileIndex,tempBuffer,10);
-		applySurface(688,128,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, textColor),screen);
+		applySurface(688,128,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
 		applySurface(752,112,graphics->image,screen,&graphics->clip[selectedTileIndex]);
 	}
 }

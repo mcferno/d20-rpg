@@ -56,6 +56,7 @@ void EquipScreen::paint()
 		}
 	}
 
+	// paint the selected item if it is equipable
 	if(selectedEquipableItem != NULL)
 	{
 		if(mainCharacter->isEquipped(selectedEquipableItem))
@@ -69,7 +70,8 @@ void EquipScreen::paint()
 			equipButton.paint();
 		}
 	}
-
+	
+	// paint the graphics for any equipped items
 	if(mainCharacter->equippedWeapon != NULL)
 		paintItem(x+EQUIP_WEAPON_X*16,y+EQUIP_WEAPON_Y*16,mainCharacter->equippedWeapon);
 
@@ -149,10 +151,12 @@ void EquipScreen::mouseLeft(int clickX, int clickY)
 		}
 	}
 
+	// the user wished to return, signal the parent window
 	if(clickedExit(clickX, clickY))
 	{
 		signalCompletion();
 	}
+	// unequip an item that was selected
 	else if(selectedEquipableItem != NULL 
 		&& unEquipButton.inBounds(clickX, clickY)
 		&& mainCharacter->isEquipped(selectedEquipableItem))
@@ -200,8 +204,6 @@ void EquipScreen::mouseLeft(int clickX, int clickY)
 			selectedInventory = selected;
 		}
 	}
-	else
-	{}
 }
 
 void EquipScreen::mouseRight(int clickX, int clickY)
@@ -217,6 +219,8 @@ bool EquipScreen::clickedEquiped(int clickX, int clickY,int xLoc,int yLoc)
 int EquipScreen::findInventoryNumber(Item* toHighlight)
 {
 	int size = mainCharacter->inventory.getSize();
+
+	// traverse the inventory to see if this item is present
 	for(int i=0;i<size;i++)
 	{
 		if(mainCharacter->inventory.get(i) == toHighlight)
@@ -238,6 +242,7 @@ void EquipScreen::selectedItem(Item* item)
 	_itoa_s(item->cost.getGold(),tempBuffer,10);
 	msgItemCost = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
 
+	// render any information relevant to an item with quantity, do not allow it to be equipped
 	if(item->isItemOfQuantity())
 	{
 		msgCustom[0] = TTF_RenderText_Solid(fontCalibri,"Quantity: ",fontColorWhite);
@@ -261,6 +266,7 @@ void EquipScreen::selectedItem(Item* item)
 
 	if(selectedEquipableItem != NULL)
 	{
+		// show information specific to a weapon
 		if(selectedEquipableItem->equipType == EquipableItem::WEAPON)
 		{
 			Weapon* tempWeapon = (Weapon*)selectedEquipableItem;
@@ -284,6 +290,7 @@ void EquipScreen::selectedItem(Item* item)
 		}
 		else	// item type is armor
 		{
+			// show information specific to armor (shield, helmet, vest)
 			Armor* tempArmor = (Armor*)selectedEquipableItem;
 			if(tempArmor != NULL)
 			{
@@ -306,6 +313,7 @@ void EquipScreen::equipItem()
 {
 	if(selectedEquipableItem != NULL)
 	{
+		// equip the item in the right place, depending on its type
 		switch(selectedEquipableItem->equipType)
 		{
 			case EquipableItem::WEAPON:
@@ -322,10 +330,4 @@ void EquipScreen::equipItem()
 				break;
 		}
 	}
-}
-
-bool EquipScreen::clickedButton(int clickX, int clickY, Button toCheck)
-{
-	// check the bounds of the button
-	return (clickX >= toCheck.x && clickX < toCheck.x + toCheck.clip.w && clickY >= toCheck.y && clickY < toCheck.y + toCheck.clip.h);
 }

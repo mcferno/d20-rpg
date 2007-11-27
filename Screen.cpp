@@ -1,6 +1,4 @@
-#include "Screens.h"
-
-// #####################################################################################################
+#include "Screen.h"
 
 // initialize the static pointers
 ControllableCharacter* Screen::mainCharacter = NULL;
@@ -14,10 +12,13 @@ SDL_Color Screen::colorBlack = SDL_Color();
 
 Screen::Screen(int newX, int newY, int newW, int newH)
 {
+	// set the size of the window
 	x = newX;
 	y = newY;
 	w = newW;
 	h = newH;
+
+	// no signal has been set
 	signal = NULL;
 }
 
@@ -49,5 +50,4 @@ void Screen::signalCompletion()
 		*signal = true;
 }
 
-// #####################################################################################################
 

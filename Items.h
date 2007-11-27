@@ -5,42 +5,77 @@
 #include "Dice.h"
 #include "Money.h"
 
+// #####################################################################################################
+
+/* Class Item: a generic item which has a cost when purchased.
+ */
 class Item
 {
 public:
+	Item(char*,int,int);
+
+	// how much money this item costs to obtain (if applicable)
 	Money cost;
+
+	// the name of this item, needed if the visual representation isn't distinct
 	char *name;
+
 	// tile offset for the clip
 	int index;
+
+	// the graphics to use to display this item
 	static Graphics* graphics;
-	Item(char*,int,int);
+
+	// whether or not the item is unique, or has an inventory (ex: many potions, one sword)
 	virtual bool isItemOfQuantity();
 };
 
+// #####################################################################################################
+
+/* Class UsableItem: a generic item which can be used (consumed). For example, this includes
+ *   potions, arrows, bolts.
+ */
 class UsableItem : public Item
 {
 protected:
+	// how many of this item is there?
 	int num;
 public:
+	// which type of consumable is this? will be needed for weapons that require consumables
 	enum UsableItemType { ARROW, BOLT, POTION, NONE };
 	UsableItemType usableType;
 
 	UsableItem(char*, int, int, UsableItemType, int = 0);
-
-	void add(int);
-	bool isEmpty();
-	int numLeft();
-	void useOne();
 	virtual bool isItemOfQuantity();
+
+	// add more to this item's quantity
+	void add(int);
+
+	// is there any items left of this kind?
+	bool isEmpty();
+
+	// return the number of items left
+	int numLeft();
+
+	// consume one item
+	void useOne();
 };
 
+// #####################################################################################################
+
+/* Class Potion: a kind of usable item which can be taken to heal a character's
+ *   hit points.
+ */
 class Potion : public UsableItem
 {
 private:
+	// how much HP does this potion restore?
 	int hpBonus;
 public:
 	Potion(char*,int,int,int);
 };
+
+// #####################################################################################################
 
 /* Class UsableItemFactory: Creates a finite number of items which will be
  *   available across the game. Only one set of finite items will exist
@@ -49,6 +84,7 @@ public:
 class UsableItemFactory
 {
 private:
+	// the only set of items for the majority of the game
 	static UsableItem* availableUsableItems[];
 	static int numAvailableUsableItems;
 	static void loadGraphics();
@@ -57,7 +93,10 @@ public:
 	static int getNumUsableItems();
 };
 
+// #####################################################################################################
 
+/* Class EquipableItem: a type of item which can be worn, typically for battle
+ */
 class EquipableItem : public Item
 {
 public:
@@ -67,6 +106,10 @@ public:
 	EquipableItem(char*,int,int,EquipableItemType);
 };
 
+// #####################################################################################################
+
+/* Class Armor: a type of equippable item which provides defences for the character wearing it
+ */
 class Armor : public EquipableItem
 {
 private:
@@ -80,6 +123,8 @@ public:
 	int getMaxDexBonus();
 	int getArmorCheckPenalty();
 };
+
+// #####################################################################################################
 
 /* Class ArmorFactory: Creates a finite number of armor which will be
  *   available across the game. Only one set of finite armor will exist
@@ -96,6 +141,7 @@ public:
 	static int getNumArmor();
 };
 
+// #####################################################################################################
 
 /* Class Weapon: Any kind of weapon (both range weapon and melee weapon). A
  *   set of weapons will be precreated and will be used across the game
@@ -106,8 +152,6 @@ private:
 	const int DAMAGE_DICE_TYPE;
 	const int RANGE_INCREMENT;
 	const int CRITICAL_MULTIPLIER;
-
-
 public:
 	UsableItem::UsableItemType requiredConsumable;
 	// name, damage dice type, critical multiplier, cost in gold, graphicOffset
@@ -121,6 +165,8 @@ public:
 	int getRangeIncrement();
 	int getCriticalMultiplier();
 };
+
+// #####################################################################################################
 
 /* Class WeaponFactory: Creates a finite number of weapons which will be
  *   available across the game. Only one set of finite weapons will exist
@@ -136,5 +182,7 @@ public:
 	static Weapon** getAllWeapons();
 	static int getNumWeapons();
 };
+
+// #####################################################################################################
 
 #endif

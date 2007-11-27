@@ -3,60 +3,56 @@
 ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) : 
 	Screen(newX,newY,newW,newH)
 {
-	int numWeapons = WeaponFactory::getNumWeapons();
-	int numArmor = ArmorFactory::getNumArmor();
-	int numItems = UsableItemFactory::getNumUsableItems();
-
 	background = loadImage(".\\images\\shopScreen.png");
 	buttons = loadImage(".\\images\\buySellButtons.png");
 	showPurchaseError = false;
 
 	// initialize the buttons used to buy and sell
-	buyButton.clip.x = buyButton.clip.y = sellButton.clip.y = 0;
-	sellButton.clip.x = 4*16;
-	buyButton.clip.w = sellButton.clip.w = 4*16;
-	buyButton.clip.h = sellButton.clip.h = 2*16;
+	buyButton = Button(x+(INFO_SECTION_X+2)*TILE_SIZE, y+(INFO_SECTION_Y+6)*TILE_SIZE, 4*TILE_SIZE, 2*TILE_SIZE, 0, 0, buttons);
+	sellButton = Button(x+(INFO_SECTION_X+2)*TILE_SIZE, y+(INFO_SECTION_Y+6)*TILE_SIZE, 4*TILE_SIZE, 2*TILE_SIZE, 4*TILE_SIZE, 0, buttons);
 
-	buyButton.x = sellButton.x = x+(INFO_SECTION_X+2)*16;
-	buyButton.y = sellButton.y = y+(INFO_SECTION_Y+6)*16;
+	// render the fixed informative text
+	msgItem = TTF_RenderText_Solid(fontCalibri,"Item:",colorWhite);
+	msgName = TTF_RenderText_Solid(fontCalibri,"Name:",colorWhite);
+	msgPrice = TTF_RenderText_Solid(fontCalibri,"Price: ",colorWhite);
+	msgGold = TTF_RenderText_Solid(fontCalibri," gold",colorWhite);
+	msgNoMoney = TTF_RenderText_Solid(fontCalibri,"You don't have enough gold to purchase that item!",colorWhite);
+	msgQuantity = TTF_RenderText_Solid(fontCalibri,"Quantity: ",colorWhite);
 
-	fontColorWhite.r = fontColorWhite.g = fontColorWhite.b = 0xFF;
-
-	msgItem = TTF_RenderText_Solid(fontCalibri,"Item:",fontColorWhite);
-	msgName = TTF_RenderText_Solid(fontCalibri,"Name:",fontColorWhite);
-	msgPrice = TTF_RenderText_Solid(fontCalibri,"Price: ",fontColorWhite);
-	msgGold = TTF_RenderText_Solid(fontCalibri," gold",fontColorWhite);
-	msgNoMoney = TTF_RenderText_Solid(fontCalibri,"You don't have enough gold to purchase that item!",fontColorWhite);
-	msgQuantity = TTF_RenderText_Solid(fontCalibri,"Quantity: ",fontColorWhite);
+	// variable informative text will be initialized when an item is selected
 	msgCurrItemName = NULL;
 	msgCurrItemPrice = NULL;
 	msgItemQuantity = NULL;
 
+	// get a array of pointers for all available weapons, armor and items in the game
 	Weapon** weapons = WeaponFactory::getAllWeapons();
 	Armor** armor = ArmorFactory::getAllArmor();
 	UsableItem** items = UsableItemFactory::getAllUsableItems();
 
-	// make a local copy of the pointers
+	// how many of each kind of item is there?
+	int numWeapons = WeaponFactory::getNumWeapons();
+	int numArmor = ArmorFactory::getNumArmor();
+	int numItems = UsableItemFactory::getNumUsableItems();
+
+	// make a local copy of the pointers for all items to be available in the store
 	for(int i=0;i<numWeapons;i++)
 		storeInventory.addItem(weapons[i]);
-
 	for(int i=0;i<numArmor;i++)
 		storeInventory.addItem(armor[i]);
-
 	for(int i=0;i<numItems;i++)
 		storeInventory.addItem(items[i]);
 	
+	// no items are selected yet
 	selectedStoreItem = selectedClientItem = -1;
 }
 
 void ShopScreen::mouseLeft(int clickX, int clickY)
 {
-	bool clickResolved = false;
-
 	int col = 0;
 	int row = 0;
-
 	int numItems = storeInventory.getSize();
+
+	// check to see if one of the store's items were clicked
 	for(int i=0;i<numItems;i++)
 	{
 		if(col == ITEMS_PER_ROW)
@@ -64,6 +60,8 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 			row++;
 			col = 0;
 		}
+
+		// item was clicked, set it as the selected store item
 		if(clickX >= x+(col+SELL_SECTION_X)*16
 		 && clickX <= x+(col+SELL_SECTION_X+1)*16
 		 && clickY >= y+(row+SELL_SECTION_Y)*16
@@ -71,61 +69,63 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 		{
 			selectedItem(storeInventory.get(i),true);
 			selectedStoreItem = i;
-			clickResolved = true;
-			break;
+			return;
 		}
 		col++;
 	}
 
-	if(!clickResolved)
+	// check if an item in user's inventory was clicked
+	numItems = mainCharacter->inventory.getSize();
+	for(int i=0;i<numItems;i++)
 	{
-		numItems = mainCharacter->inventory.getSize();
-		for(int i=0;i<numItems;i++)
+		if(clickX >= x+(i+BUY_SECTION_X)*16
+		 && clickX <= x+(i+BUY_SECTION_X+1)*16
+		 && clickY >= y+(BUY_SECTION_Y)*16
+		 && clickY <= y+(BUY_SECTION_Y+1)*16)
 		{
-			if(clickX >= x+(i+BUY_SECTION_X)*16
-			 && clickX <= x+(i+BUY_SECTION_X+1)*16
-			 && clickY >= y+(BUY_SECTION_Y)*16
-			 && clickY <= y+(BUY_SECTION_Y+1)*16)
-			{
-				selectedItem(mainCharacter->inventory.get(i),false);
-				selectedClientItem = i;
-				clickResolved = true;
-				break;
-			}
+			selectedItem(mainCharacter->inventory.get(i),false);
+			selectedClientItem = i;
+			return;
 		}
 	}
 
-	if(clickResolved)
-		return;
-
 	
-	if(selectedStoreItem != -1 && clickedButton(clickX, clickY, buyButton))
+	// check if the user wishes to purchase the selected store item
+	if(selectedStoreItem != -1 && buyButton.inBounds(clickX, clickY))
 	{
 		Item *toBuy = storeInventory.get(selectedStoreItem);
+
+		// process the transaction if the user has enough money
 		if(mainCharacter->money >= toBuy->cost)
 		{
 			mainCharacter->money -= toBuy->cost;
 			mainCharacter->addItem(toBuy);
 
+			// don't remove item which have quantities (like arrows)
 			if(!toBuy->isItemOfQuantity())
 			{
 				storeInventory.removeItem(toBuy);
 			}
 			deselectItems();
 		}
+		// inform the user he/she doesn't have enough money to buy that item
 		else
 		{
 			showPurchaseError = true;
 		}
 		return;
 	}
+	// the user wishes to exit, signal the parent window
 	else if(clickedExit(clickX, clickY))
 	{
 		signalCompletion();
 	}
-	else if(selectedClientItem != -1 && clickedButton(clickX, clickY, sellButton))
+	// the user wishes to sell one of his/her items, process the transaction
+	else if(selectedClientItem != -1 && sellButton.inBounds(clickX, clickY))
 	{
 		Item *toSell = mainCharacter->inventory.get(selectedClientItem);
+
+		// you can't sell an item of quantity
 		if(!toSell->isItemOfQuantity())
 		{
 			mainCharacter->money += toSell->cost;
@@ -134,31 +134,27 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 			deselectItems();
 		}
 	}
-	else { /* no default action */ }
-}
-
-bool ShopScreen::clickedButton(int clickX, int clickY, Button toCheck)
-{
-	// check the bounds of the button
-	return (clickX >= toCheck.x && clickX < toCheck.x + toCheck.clip.w && clickY >= toCheck.y && clickY < toCheck.y + toCheck.clip.h);
 }
 
 bool ShopScreen::clickedExit(int clickX, int clickY)
 {
+	// was the click in the top right corner (where the exit button is)
 	return (clickX >= x+w-16 && clickX < x+w && clickY >= y && clickY < y+16);
 }
 
 void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 {
+	// clear any old text dependent data
 	if(selectedStoreItem != -1 || selectedClientItem != -1)
 		deselectItems();
 
-	msgCurrItemName = TTF_RenderText_Solid(fontCalibriTiny,item->name,fontColorWhite);
+	msgCurrItemName = TTF_RenderText_Solid(fontCalibriTiny,item->name,colorWhite);
 
 	char tempBuffer[5];
 	_itoa_s(item->cost.getGold(),tempBuffer,10);
-	msgCurrItemPrice = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+	msgCurrItemPrice = TTF_RenderText_Solid(fontCalibri,tempBuffer,colorWhite);
 
+	// get special information about the item if it has a quantity
 	if(item->isItemOfQuantity())
 	{
 		UsableItem* usableItem = static_cast<UsableItem*>(item);
@@ -168,6 +164,7 @@ void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 				_itoa_s(usableItem->numLeft(),tempBuffer,10);
 			else
 			{
+				// check how many of this item the character is carrying on him
 				switch(usableItem->usableType)
 				{
 					case UsableItem::POTION:
@@ -184,7 +181,7 @@ void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 						break;
 				}
 			}
-			msgItemQuantity = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+			msgItemQuantity = TTF_RenderText_Solid(fontCalibri,tempBuffer,colorWhite);
 		}
 	}
 }
@@ -228,6 +225,7 @@ void ShopScreen::paint()
 	int col = 0;
 	int row = 0;
 
+	// paint all of the store's items
 	int numItems = storeInventory.getSize();
 	for(int i=0;i<numItems;i++)
 	{
@@ -245,6 +243,7 @@ void ShopScreen::paint()
 	}
 
 	numItems = mainCharacter->inventory.getSize();
+	// paint all of the customer's items
 	for(int i=0;i<numItems;i++)
 	{
 		paintItem(x+(i+BUY_SECTION_X)*16,y+BUY_SECTION_Y*16,mainCharacter->inventory.get(i));
@@ -253,6 +252,7 @@ void ShopScreen::paint()
 			applySurface(x+(i+BUY_SECTION_X)*16,y+BUY_SECTION_Y*16,highlightTile,screen);
 	}
 
+	// paint more information if there is an item currently selected
 	if(selectedStoreItem != -1 || selectedClientItem != -1)
 	{
 		applySurface(x+INFO_SECTION_X*16,y+INFO_SECTION_Y*16,msgItem,screen);

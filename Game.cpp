@@ -1,5 +1,5 @@
 #include "SDL.h"
-#include "Screens.h"
+#include "Screen.h"
 #include "StartScreen.h"
 #include "SelectionScreen.h"
 #include "MainGame.h"

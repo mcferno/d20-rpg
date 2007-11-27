@@ -2,7 +2,7 @@
 	#define MAPEDITOR_H
 
 #include "Graphics.h"
-#include "Screens.h"
+#include "Screen.h"
 
 /* Class EditableMap: extension of the Map class which allows the user to make
  *   changes to the map which has been loaded. Adds the ability to save the map
@@ -67,24 +67,37 @@ public:
 class MapEditor :  public Screen
 {
 private:
+	SDL_Surface *background, *arrows;
+
 	// tracks the indexes of selected map cells and graphic tiles
 	int selectedTileX, selectedTileY, selectedTileIndex, selectedCellX, selectedCellY;
 	Tile *selectedCell;
 
-	SDL_Surface *background, *arrows;
+	// rendered text to inform the user
 	SDL_Surface *selectedTileMsg, *selectedCellMsg, *xCoordLabel, *yCoordLabel, *foregroundMsg, *backgroundMsg, *indexMsg, *walkableMsg;
 
+	// pointer to the graphics which will be used to build a map
 	Graphics *graphics;
 
+	// the editable map which will be where you create your new map
 	EditableMap *customMap;
 	Button customMapBtns[4];
 
+	// a selectable map, which will store the full set of tiles you can use to create a map
 	SelectableMap *tileSet;
 	Button tileSetBtns[4];
 
+	// buttons in a fixed location
 	Rect closeBtn, saveBtn;
 
+	// the tile size corresponding to the tiles used to create the map
 	int tileSize;
+
+	// has a map been loaded successfully?
+	bool isLoaded;
+
+	// the filename of the current map, if it was loaded from disk, this will allow saving on top of it
+	char* currentMapFilename;
 
 	// checks if an x,y coordinate is within the bounds of a certain screen area
 	bool inBounds(int, int, Rect);
@@ -98,12 +111,11 @@ private:
 	// checks if the scroll buttons were pressed, if so, it invokes the appropriate scrolling
 	void checkButtons(int, int, Button*, Map*);
 
+	// shows the informative panel
 	void paintInfoPanel();
 
+	// release any memory used for the editing of a specific map
 	void unload();
-
-	bool isLoaded;
-	char* currentMapFilename;
 
 	static const int DEFAULT_NEW_MAP_SIZE_W = 20;
 	static const int DEFAULT_NEW_MAP_SIZE_H = 20;
@@ -115,17 +127,15 @@ private:
 public:
 	MapEditor(int,int,int,int);
 	~MapEditor();
+	void mouseLeft(int, int);
+	void mouseRight(int, int);
+	void showInstructions();
 
+	// loads a map from disk, or initializes a new empty map
 	void load(const char* = NULL, const char* = NULL, int = DEFAULT_NEW_MAP_SIZE_W, int = DEFAULT_NEW_MAP_SIZE_H);
 
 	// full layered paint of the map editor and all of its inner sections
 	void paint();
-
-	void mouseLeft(int, int);
-
-	void mouseRight(int, int);
-
-	void showInstructions();
 
 	// if a custom map cell is selected, switch between walkable and non-walkable
 	void toggleWalkable();
