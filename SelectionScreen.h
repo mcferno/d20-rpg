@@ -70,6 +70,7 @@ private:
 
 public:
 
+	//playerClass and race are enumerations
 	playerClass myClass;
 	race myRace;
 

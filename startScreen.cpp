@@ -30,6 +30,7 @@ void StartScreen::init()
 
 	background = loadImage(".\\images\\startScreen.png");
 
+	//buttons
 	btnStartGame = Rect(14*TILE_SIZE,18*TILE_SIZE,22*TILE_SIZE,3*TILE_SIZE);
 	btnCreateNewLevel = Rect(14*TILE_SIZE,22*TILE_SIZE,22*TILE_SIZE,3*TILE_SIZE);
 	btnEditLevel1 = Rect(17*TILE_SIZE,26*TILE_SIZE,16*TILE_SIZE,3*TILE_SIZE);

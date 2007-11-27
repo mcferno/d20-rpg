@@ -33,7 +33,7 @@ public:
  * Class MainGame: Once the main character has been chosen, the main game class
  *   will take care of implementing the game rules involved in playing. This
  *   includes but is not limited to: determining who will go first, maintaining
- *   proper turns, etc...
+ *   proper turns, attacking, etc...
  */
 class MainGame : public Screen
 {

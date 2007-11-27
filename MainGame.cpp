@@ -1101,20 +1101,25 @@ void MainGame::tick()
 void MainGame::fight(Monster *thisMonster) 
 {
 
+	//If your range of weapon is 1 then
 	//MELEE ATTACK
 	if (mainCharacter->getWeaponRange() == 1)
 	{
+		//get Initiative Rolls
 		playerInitiativeRoll = mainCharacter->getInitiativeRoll();
 		std::cout << "\n Your Initiative Roll: " << playerInitiativeRoll << "\n";
 		monsterInitiativeRoll = thisMonster->getInitiativeRoll();
 		std::cout << "Monsters Initiative Roll: " << monsterInitiativeRoll << "\n";
 
+		//compare initiative rolls to see who attacks first
 		if (playerInitiativeRoll >= monsterInitiativeRoll)
 		{
 			std::cout << "\n YOU ATTACK FIRST! \n";
 
+			//allows you to attack only once per round
 			attackedThisRound = true;
 
+			//roll damage and subtrack it
 			if (fPlayerAttackRoll(thisMonster))
 				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 
@@ -1136,14 +1141,12 @@ void MainGame::fight(Monster *thisMonster)
 		}
 	}
 	
+	//If not a melee attack, then it must be
 	//RANGED ATTACK
 	else
 	{
-	
 		//check if you have enough of the consumable
 		//and if you do, decrease it.
-
-
 		switch (mainCharacter->equippedWeapon->requiredConsumable)
 		{
 		case UsableItem::ARROW:
@@ -1172,6 +1175,8 @@ void MainGame::fight(Monster *thisMonster)
 			break;
 		}
 
+		//if you had enough consumable, attack
+		//since monsters dont have ranged weapons you attack from far, monster doesnt retaliate
 		if (damageRoll)
 		{
 			std::cout << "\n YOU ATTACK WITH RANGED WEAPON! \n";
@@ -1182,6 +1187,7 @@ void MainGame::fight(Monster *thisMonster)
 	}
 }
 
+//Monsters attack roll.
 bool MainGame::fMonsterAttackRoll(Monster *thisMonster)
 {
 	monsterAttackRoll = Dice::roll(Dice::D20) + thisMonster->getAttackBonus();
@@ -1210,6 +1216,7 @@ bool MainGame::fMonsterAttackRoll(Monster *thisMonster)
 	return false;
 }
 
+//Players attack roll
 bool MainGame::fPlayerAttackRoll(Monster *thisMonster)
 {
 
@@ -1242,6 +1249,7 @@ bool MainGame::fPlayerAttackRoll(Monster *thisMonster)
 	return false;
 }
 
+//Players Damage Roll from a Ranged Weapon
 int MainGame::rollDamageRanged()
 {
 	playerDamageRoll = Dice::roll(mainCharacter->equippedWeapon->getDamage()) + (mainCharacter->getDexMod());
@@ -1262,9 +1270,10 @@ int MainGame::rollDamageRanged()
 	return -1;
 }
 
-
+//Players damage roll from a ranged Weapon
 int MainGame::rollDamageMelee()
 {
+	//check if he has an equipped item
 	if (mainCharacter->equippedWeapon != NULL)
 		playerDamageRoll = Dice::roll(mainCharacter->equippedWeapon->getDamage()) + (mainCharacter->getStrMod());
 	else
@@ -1286,6 +1295,7 @@ int MainGame::rollDamageMelee()
 	return -1;
 }
 
+//Monsters Melee Damage Roll
 int MainGame::rollDamageMelee(Monster *thisMonster) 
 {
 	monsterDamageRoll = Dice::roll(thisMonster->getDamageDiceType()) + (thisMonster->getStrMod());

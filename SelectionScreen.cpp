@@ -30,17 +30,20 @@ void SelectionScreen::init()
 	//initialize roll button to never pressed
 	hasRolled = false;
 
+	//buttons for the sprites
 	availableSprites[0] = Button(5*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,0,characterSprites);
 	availableSprites[1] = Button(9*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,9*TILE_SIZE,0,characterSprites);
 	availableSprites[2] = Button(13*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,0,4*TILE_SIZE,characterSprites);
 	availableSprites[3] = Button(17*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,5*TILE_SIZE,4*TILE_SIZE,characterSprites);
 	availableSprites[4] = Button(21*TILE_SIZE,5*TILE_SIZE,TILE_SIZE,TILE_SIZE,9*TILE_SIZE,4*TILE_SIZE,characterSprites);
 
+	//buttons for the races
 	availableRaces[0] = Rect(3*TILE_SIZE,14*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 	availableRaces[1] = Rect(17*TILE_SIZE,18*TILE_SIZE,5*TILE_SIZE,TILE_SIZE);
 	availableRaces[2] = Rect(24*TILE_SIZE,16*TILE_SIZE,3*TILE_SIZE,TILE_SIZE);
 	availableRaces[3] = Rect(10*TILE_SIZE,20*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 
+	//buttons for the classes
 	availableClasses[0] = Rect(8*TILE_SIZE,31*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 	availableClasses[1] = Rect(19*TILE_SIZE,31*TILE_SIZE,6*TILE_SIZE,TILE_SIZE);
 }
@@ -69,11 +72,14 @@ void SelectionScreen::paint()
 	//paints dynamic selected race and class
 	paintCharacterMessage(selectedRace, selectedClass);
 	
+	//if you have clicked the rolled button paint the stats
 	if(hasRolled) {
 		paintAttributes(36,8);
 	}
 }
 
+//what happens when you click a roll button
+//rolls for player attributes
 void SelectionScreen::rollButton() 
 {
 	rollStr = ControllableCharacter::getAbilityRoll();
@@ -105,6 +111,7 @@ void SelectionScreen::rollButton()
 	_itoa_s(modCha,smCha,10); 
 }
 
+//this paints the rolls to the screen
 void SelectionScreen::paintAttributes(int x, int y)
 {
 	attributes = TTF_RenderText_Solid(fontCalibri, sStr, colorWhite );
@@ -155,6 +162,7 @@ void SelectionScreen::paintAttributes(int x, int y)
 	x=x-6;
 }
 
+//this paints other items onto the screen that are static
 void SelectionScreen::paintMessage(int x, int y)
 {
 	int xAdj = 5;
@@ -221,6 +229,7 @@ void SelectionScreen::paintMessage(int x, int y)
 	applySurface( (x+6)*16, (y)*16, message, screen );
 }
 
+//this paints the type of character you have selected dynamically
 void SelectionScreen::paintCharacterMessage(int race, int clas) 
 {
 	int x = 36*16;
@@ -266,6 +275,7 @@ void SelectionScreen::paintCharacterMessage(int race, int clas)
 	}
 }
 
+//simple function to output what race you selected to console
 race SelectionScreen::findRace(int selectedRace)
 {
 	std::cout << "You have selected a: ";
@@ -286,6 +296,7 @@ race SelectionScreen::findRace(int selectedRace)
 	}
 }
 
+//outputs your selected class to console
 playerClass SelectionScreen::findClass(int selectedClass)
 {
 	switch (selectedClass) 
@@ -299,6 +310,7 @@ playerClass SelectionScreen::findClass(int selectedClass)
 	}
 }
 
+//this prints out the special additions to race attribtes
 void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int y)
 {
 
@@ -459,24 +471,24 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 void SelectionScreen::mouseLeft(int x, int y)
 {
 	//DEBUG QUICKSTART!! CLICK TOP CORNER
-	if (x >= 0 && x <= 2*16 && y >= 0 && y <= 2*16)
-	{
-			selectedSprite = 1;
-			selectedRace = 0;
-			selectedClass = 0;
-			myRace = HUMAN; //WHEN DISABLED INFINITE WALKING WOOT!
-			SDL_Rect *characterRect = new SDL_Rect();
-			mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
-			mainCharacter->graphics = new Graphics(".\\images\\characters.png");
-			characterRect->x = availableSprites[selectedSprite].clip.x;
-			characterRect->y = availableSprites[selectedSprite].clip.y;
-			characterRect->w = availableSprites[selectedSprite].clip.w;
-			characterRect->h = availableSprites[selectedSprite].clip.h;
-			mainCharacter->x = 10;
-			mainCharacter->y = 14;
-			mainCharacter->clip = characterRect;
-			signalCompletion();
-	}
+	//if (x >= 0 && x <= 2*16 && y >= 0 && y <= 2*16)
+	//{
+	//		selectedSprite = 1;
+	//		selectedRace = 0;
+	//		selectedClass = 0;
+	//		myRace = HUMAN; //WHEN DISABLED INFINITE WALKING WOOT!
+	//		SDL_Rect *characterRect = new SDL_Rect();
+	//		mainCharacter = new Fighter(myRace, rollStr, rollDex, rollCon, rollIte, rollWis, rollCha);
+	//		mainCharacter->graphics = new Graphics(".\\images\\characters.png");
+	//		characterRect->x = availableSprites[selectedSprite].clip.x;
+	//		characterRect->y = availableSprites[selectedSprite].clip.y;
+	//		characterRect->w = availableSprites[selectedSprite].clip.w;
+	//		characterRect->h = availableSprites[selectedSprite].clip.h;
+	//		mainCharacter->x = 10;
+	//		mainCharacter->y = 14;
+	//		mainCharacter->clip = characterRect;
+	//		signalCompletion();
+	//}
 
 
 	//START BUTTON

@@ -68,35 +68,28 @@ protected:
 	// hit points, current level, speed (in tiles)
 	int maxHp, hp, level, speed;
 
-	int imyRace, imyClass;
-
-	static const int FIGHTER = 0;
-	static const int RANGER = 1;
 	virtual void died();
 
 public:
 
+	Character();
+
+	//if your not equipped your dice rolled for hand combat
 	static const int HAND_COMBAT_DICE = Dice::D3;
 
-	void setRace(int);
-	void setClass(int);
-	int getRace();
-	int getClass();
-
+	//gets and sets a characters name
 	char* getName();
 	void setName(char*);
 
+	//input an attribute and outputs modifier
 	static int getModifier(int);
 
+	//this rolls all abilities and gets them
+	// get the sum of a number of rolls, discarding the lowest
 	static int getAbilityRoll();
 
-	Character();
-
-	// get the sum of a number of rolls, discarding the lowest
 
 	//mutators
-
-
 	void setStr(int);
 	void setDex(int);
 	void setCon(int);
@@ -132,16 +125,18 @@ public:
 	int getWisMod();
 	int getChaMod();
 
-	//output
+	//output to console
 	void showCharacter();
 
+	//info for in game fighting mechanism
 	int getInitiativeRoll();
 	int getAttackBonus();
 	int getBaseAttackBonus();
 
 };
 // #####################################################################################################
-
+// class ControllableCharacter has all the information and functions for a
+// character that is controlled by the player
 class ControllableCharacter : public Character
 {
 protected:
@@ -189,11 +184,10 @@ public:
 // #####################################################################################################
 
 // a movable object which is controlled by the computer
-// to be implemented later.
 class Monster : public Character
 {
 private:
-
+	//damage dice type associated to each monster
 	int damageDiceType;
 
 protected:
@@ -201,15 +195,16 @@ protected:
 
 public:
 
+	Monster();
+	Monster(int, int, int, int, Graphics*, int, int);
+
+	//the different types of monsters implemented
 	static const int SKELETON = 0;
 	static const int ELF = 1;
 	static const int GOBLIN = 2;
 	static const int LIZARD = 3;
 	static const int VINE = 4;
 	static const int MEDUSA = 5;
-
-	Monster();
-	Monster(int, int, int, int, Graphics*, int, int);
 
 	//monster HP depends on level of monster
 	int getMonsterHP(int);
@@ -236,6 +231,8 @@ public:
 	Fighter(race, int, int, int, int, int, int);
 };
 
+// Ranger class is the definition of a certain type of character in the game
+// When calling the class, it receives a specific race type specified in the above race enumeration
 class Ranger : public ControllableCharacter {
 public:
 	const static int RANGER_HP = 10;

@@ -4,6 +4,12 @@
 #include "Screen.h"
 #include "MapEditor.h"
 
+/*
+ * Class StartScreen: Loads up a start graphics. Loads music into the game. 
+	Allows the user to choose between starting the game or editing maps.
+	When clicking start game, Startscreen transitions to selectScreen
+ */
+
 class StartScreen : public Screen
 {
 private:
@@ -11,6 +17,7 @@ private:
 	Mix_Music *startMusic;
 
 	SDL_Surface *background;
+	//The buttons
 	Rect btnStartGame, btnEditLevel1, btnEditLevel2, btnCreateNewLevel;
 
 	MapEditor *mapEditor;

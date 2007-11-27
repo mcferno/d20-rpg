@@ -1,3 +1,13 @@
+/********************************************************
+Authors: Patrick McFern & Christopher Karpyszyn
+Created: November 27th 2007
+Build 1.0
+
+This is a representation of the Dungeons and Dragons game by Wizards of the Coast inc.
+interpreted by Patrick McFern & Christopher Karpyszyn for the class Advanced Programming
+in C++ using the d20 rules system.
+*********************************************************/
+
 #include "SDL.h"
 #include "Screen.h"
 #include "StartScreen.h"
