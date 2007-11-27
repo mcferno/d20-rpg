@@ -79,7 +79,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 // begins the game by loading the level and all of its enemies
 void MainGame::init()
 {
-	mainCharacter->setSpeed(200); //SPEED FOR DEBUGGING, TO REMOVE
+	//mainCharacter->setSpeed(200); //SPEED FOR DEBUGGING, TO REMOVE
 
 	// load the next level
 	loadLevel();
