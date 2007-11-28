@@ -1130,7 +1130,7 @@ void MainGame::fight(Monster *thisMonster)
 			if (fPlayerAttackRoll(thisMonster))
 				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 
-			if (fMonsterAttackRoll(thisMonster))
+			if (!thisMonster->isDead() && fMonsterAttackRoll(thisMonster))
 				mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
 		}
 
@@ -1143,7 +1143,7 @@ void MainGame::fight(Monster *thisMonster)
 			if (fMonsterAttackRoll(thisMonster))
 				mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
 
-			if (fPlayerAttackRoll(thisMonster))
+			if (!mainCharacter->isDead() && fPlayerAttackRoll(thisMonster))
 				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 		}
 	}
@@ -1184,10 +1184,7 @@ void MainGame::fight(Monster *thisMonster)
 
 		if (damageRoll)
 		{
-
-//--->		///*****
-//--->		///*** THIS IS THE IF FOR THE RANGE. NOT SURE WHAT MELEE RANGE IS, IF 0 OR 1 ?
-			if (inRange(thisMonster,mainCharacter->getWeaponRange()))
+			if (inRange(thisMonster,1))
 			{
 				//get Initiative Rolls
 				playerInitiativeRoll = mainCharacter->getInitiativeRoll();
@@ -1207,7 +1204,7 @@ void MainGame::fight(Monster *thisMonster)
 					if (fPlayerAttackRoll(thisMonster))
 						thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 
-					if (fMonsterAttackRoll(thisMonster))
+					if (!thisMonster->isDead() && fMonsterAttackRoll(thisMonster))
 						mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
 				}
 
@@ -1220,7 +1217,7 @@ void MainGame::fight(Monster *thisMonster)
 					if (fMonsterAttackRoll(thisMonster))
 						mainCharacter->setHp( mainCharacter->getHp() - rollDamageMelee(thisMonster) );
 
-					if (fPlayerAttackRoll(thisMonster))
+					if (!mainCharacter->isDead() && fPlayerAttackRoll(thisMonster))
 						thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 				}
 			}
