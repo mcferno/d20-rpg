@@ -1,5 +1,5 @@
 #ifndef SELECTION_SCREEN_H
-	#define SELECTION_SCREENS_H
+	#define SELECTION_SCREEN_H
 
 
 #include <iostream>
@@ -43,9 +43,9 @@ private:
 	int rollStr, rollDex, rollCon, rollIte, rollWis, rollCha;
 	int modStr, modDex, modCon, modIte, modWis, modCha;
 	//temp holders for the string representation to print to screen
-	char sStr[4], sDex[4], sCon[4], sIte[4], sWis[4], sCha[4]; //roll
-	char smStr[4], smDex[4], smCon[4], smIte[4], smWis[4], smCha[4]; //mod roll
-	char sadjStr[4], sadjDex[4], sadjCon[4], sadjIte[4], sadjWis[4], sadjCha[4];
+	std::string sStr, sDex, sCon, sIte, sWis, sCha; //roll
+	std::string smStr, smDex, smCon, smIte, smWis, smCha; //mod roll
+	std::string sadjStr, sadjDex, sadjCon, sadjIte, sadjWis, sadjCha;
 
 	//if youve clicked the roll button or not
 	bool hasRolled;

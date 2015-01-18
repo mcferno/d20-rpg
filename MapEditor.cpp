@@ -92,7 +92,7 @@ void EditableMap::save(char *filename)
 	std::cout << "Saving the map index \"" << filename << "\" ... ";
 
 	// verify that the file was opened correctly before reading 
-	if(mapFile == NULL) 
+	if(mapFile.bad())
 	{ 
 		std::cout << "FAILED!\n";
 		return; 
@@ -364,13 +364,13 @@ void MapEditor::unload()
 void MapEditor::paintInfoPanel()
 {
 	// temporary buffer for on-the-fly conversion from int to char string
-	char tempBuffer[4];
+	std::string tempBuffer;
 
 	// simple coordinates to inform the user how much they are scrolling on the main map
-	_itoa_s(customMap->x,tempBuffer,10);
-	applySurface(16,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
-	_itoa_s(customMap->y,tempBuffer,10);
-	applySurface(48,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
+	tempBuffer = std::to_string(customMap->x);
+	applySurface(16,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
+	tempBuffer = std::to_string(customMap->y);
+	applySurface(48,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 
 	applySurface(640,16,selectedCellMsg,screen);
 	applySurface(640,32,xCoordLabel,screen);
@@ -382,24 +382,24 @@ void MapEditor::paintInfoPanel()
 	// renders specifics of the selected custom map cell on-the-fly since they change frequently
 	if(selectedCellX != -1 && selectedCellY != -1)
 	{
-		_itoa_s(selectedCellX,tempBuffer,10);
-		applySurface(656,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
-		_itoa_s(selectedCellY,tempBuffer,10);
-		applySurface(704,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
+		tempBuffer = std::to_string(selectedCellX);
+		applySurface(656,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
+		tempBuffer = std::to_string(selectedCellY);
+		applySurface(704,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 
 		// paint information about the background layer if it is initialized
 		if(selectedCell->b != -1)
 		{
-			_itoa_s(selectedCell->b,tempBuffer,10);
-			applySurface(720,64,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
+			tempBuffer = std::to_string(selectedCell->b);
+			applySurface(720,64,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 			applySurface(720,80,TTF_RenderText_Solid( fontCalibriTiny, (selectedCell->isWalkable)?"Y":"N", colorWhite),screen);
 		}
 
 		// paint information about the foreground layer if it is initialized
 		if(selectedCell->f != -1)
 		{
-			_itoa_s(selectedCell->f,tempBuffer,10);
-			applySurface(720,48,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
+			tempBuffer = std::to_string(selectedCell->f);
+			applySurface(720,48,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 		}
 
 		// paint the selected cell itself
@@ -412,8 +412,8 @@ void MapEditor::paintInfoPanel()
 	// paint information about the selected graphics
 	if(selectedTileIndex != -1)
 	{
-		_itoa_s(selectedTileIndex,tempBuffer,10);
-		applySurface(688,128,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer, colorWhite),screen);
+		tempBuffer = std::to_string(selectedTileIndex);
+		applySurface(688,128,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 		applySurface(752,112,graphics->image,screen,&graphics->clip[selectedTileIndex]);
 	}
 }

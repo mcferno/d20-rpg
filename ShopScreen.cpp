@@ -150,9 +150,9 @@ void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 
 	msgCurrItemName = TTF_RenderText_Solid(fontCalibriTiny,item->name,colorWhite);
 
-	char tempBuffer[5];
-	_itoa_s(item->cost.getGold(),tempBuffer,10);
-	msgCurrItemPrice = TTF_RenderText_Solid(fontCalibri,tempBuffer,colorWhite);
+	std::string tempBuffer;
+	tempBuffer = std::to_string(item->cost.getGold());
+	msgCurrItemPrice = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite);
 
 	// get special information about the item if it has a quantity
 	if(item->isItemOfQuantity())
@@ -161,27 +161,27 @@ void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 		if(usableItem)
 		{
 			if(belongsToShop)
-				_itoa_s(usableItem->numLeft(),tempBuffer,10);
+				tempBuffer = std::to_string(usableItem->numLeft());
 			else
 			{
 				// check how many of this item the character is carrying on him
 				switch(usableItem->usableType)
 				{
 					case UsableItem::POTION:
-						_itoa_s(mainCharacter->getNumPotions(),tempBuffer,10);
+						tempBuffer = std::to_string(mainCharacter->getNumPotions());
 						break;
 					case UsableItem::ARROW:
-						_itoa_s(mainCharacter->getNumArrows(),tempBuffer,10);
+						tempBuffer = std::to_string(mainCharacter->getNumArrows());
 						break;
 					case UsableItem::BOLT:
-						_itoa_s(mainCharacter->getNumBolts(),tempBuffer,10);
+						tempBuffer = std::to_string(mainCharacter->getNumBolts());
 						break;
 					default:
-						_itoa_s(0,tempBuffer,10);
+						tempBuffer = std::to_string(0);
 						break;
 				}
 			}
-			msgItemQuantity = TTF_RenderText_Solid(fontCalibri,tempBuffer,colorWhite);
+			msgItemQuantity = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite);
 		}
 	}
 }

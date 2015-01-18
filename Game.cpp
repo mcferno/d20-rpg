@@ -118,7 +118,7 @@ void stateTransition()
 	}
 }
 
-int main( int argc, char* args[] ) 
+int main( int argc, char *args[] )
 {
 	// Initialize the SDL library 
 	if( SDL_Init( SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO ) == -1 ) 
@@ -198,6 +198,8 @@ int main( int argc, char* args[] )
 					case SDLK_RIGHT:
 						if(state == STATE_MAIN_GAME)
 							mainGame->keyRight();
+						break;
+					default:
 						break;
 				}
 			}

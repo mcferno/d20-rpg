@@ -51,15 +51,15 @@ public:
 	int getPlatinum();
 
 	// comparison operators: >, >=, <, <=, ==
-	bool Money::operator>(const Money &);
-	bool Money::operator>=(const Money &);
-	bool Money::operator<(const Money &);
-	bool Money::operator<=(const Money &);
-	bool Money::operator==(const Money &);
+	bool operator>(const Money &);
+	bool operator>=(const Money &);
+	bool operator<(const Money &);
+	bool operator<=(const Money &);
+	bool operator==(const Money &);
 
 	// += and -= operators
-	Money & Money::operator+=(const Money &);
-	Money & Money::operator-=(const Money &);
+	Money & operator+=(const Money &);
+	Money & operator-=(const Money &);
 };
 
 #endif

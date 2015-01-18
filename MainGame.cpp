@@ -313,8 +313,8 @@ void MainGame::loadLevel()
 			std::cout << "\nNow Loading Level 2\n";
 
 			level = new Level();
-			level->graphics = ".\\levels\\level02\\graphicTiles.png";
-			level->index = ".\\levels\\level02\\index.map";
+			level->graphics = LEVEL_2_GRAPHICS;
+			level->index = LEVEL_2_MAP;
 			level->alphaR = 0xFF;
 			level->alphaG = 0xE2;
 			level->alphaB = 0xAA;
@@ -670,30 +670,30 @@ void MainGame::refreshVariableInfo()
 			}
 		}
 
-		char tempBuffer[5];
+		std::string tempBuffer;
 
-		_itoa_s(mainCharacter->getHp(),tempBuffer,10);
-		msgVariableInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getHp());
+		msgVariableInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->money.getGold(),tempBuffer,10);
-		msgVariableInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->money.getGold());
+		msgVariableInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
 		if(currentPlayer == mainCharacter)
 		{
-			_itoa_s(currSpeed,tempBuffer,10);
-			msgVariableInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+			tempBuffer = std::to_string(currSpeed);
+			msgVariableInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 		}
 		else
 			msgVariableInfo[2] = TTF_RenderText_Solid(fontCalibri, "0", colorWhite );
 
-		_itoa_s(mainCharacter->getNumBolts(),tempBuffer,10);
-		msgVariableInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getNumBolts());
+		msgVariableInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getNumArrows(),tempBuffer,10);
-		msgVariableInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getNumArrows());
+		msgVariableInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getNumPotions(),tempBuffer,10);
-		msgVariableInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getNumPotions());
+		msgVariableInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
 		if(mainCharacter->equippedWeapon == NULL)
 			msgVariableInfo[6] = TTF_RenderText_Solid(fontCalibri, "none", colorWhite);
@@ -722,27 +722,27 @@ void MainGame::setFixedInfo()
 {
 	if(mainCharacter != NULL)
 	{
-		char tempBuffer[5];
-		_itoa_s(mainCharacter->getLevel(),tempBuffer,10);
-		msgFixedInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		std::string tempBuffer;
+		tempBuffer = std::to_string(mainCharacter->getLevel());
+		msgFixedInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getStr(),tempBuffer,10);
-		msgFixedInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getStr());
+		msgFixedInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getDex(),tempBuffer,10);
-		msgFixedInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getDex());
+		msgFixedInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getCon(),tempBuffer,10);
-		msgFixedInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getCon());
+		msgFixedInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getIte(),tempBuffer,10);
-		msgFixedInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getIte());
+		msgFixedInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getWis(),tempBuffer,10);
-		msgFixedInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getWis());
+		msgFixedInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		_itoa_s(mainCharacter->getCha(),tempBuffer,10);
-		msgFixedInfo[6] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		tempBuffer = std::to_string(mainCharacter->getCha());
+		msgFixedInfo[6] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 	}
 }
 
@@ -790,9 +790,9 @@ void MainGame::selectEnemy(Monster* toSelect)
 
 			msgCustomInfo[0] = TTF_RenderText_Solid(fontCalibri, selectedEnemy->getName(), colorWhite );
 		}
-		char tempBuffer[5];
-		_itoa_s(selectedEnemy->getHp(),tempBuffer,10);
-		msgCustomInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer, colorWhite );
+		std::string tempBuffer;
+		tempBuffer = std::to_string(selectedEnemy->getHp());
+		msgCustomInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 	}
 }
 
@@ -1156,30 +1156,32 @@ void MainGame::fight(Monster *thisMonster)
 		//and if you do, decrease it.
 		switch (mainCharacter->equippedWeapon->requiredConsumable)
 		{
-		case UsableItem::ARROW:
-			if (mainCharacter->getNumArrows() == 0)
-			{
-				std::cout << "You do not have enough arrows\n";
-				damageRoll = false;
-			}
-			else
-			{
-				mainCharacter->setNumArrows( mainCharacter->getNumArrows() - 1 );
-				damageRoll = true;
-			}
-			break;
-		case UsableItem::BOLT:
-			if (mainCharacter->getNumBolts() == 0)
-			{
-				std::cout << "You do not have enough bolts\n";
-				damageRoll = false;
-			}
-			else
-			{
-				mainCharacter->setNumBolts( mainCharacter->getNumBolts() - 1 );
-				damageRoll = true;
-			}
-			break;
+			case UsableItem::ARROW:
+				if (mainCharacter->getNumArrows() == 0)
+				{
+					std::cout << "You do not have enough arrows\n";
+					damageRoll = false;
+				}
+				else
+				{
+					mainCharacter->setNumArrows( mainCharacter->getNumArrows() - 1 );
+					damageRoll = true;
+				}
+				break;
+			case UsableItem::BOLT:
+				if (mainCharacter->getNumBolts() == 0)
+				{
+					std::cout << "You do not have enough bolts\n";
+					damageRoll = false;
+				}
+				else
+				{
+					mainCharacter->setNumBolts( mainCharacter->getNumBolts() - 1 );
+					damageRoll = true;
+				}
+				break;
+			default:
+				break;
 		}
 
 		if (damageRoll)

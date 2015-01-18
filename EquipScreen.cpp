@@ -237,10 +237,10 @@ void EquipScreen::selectedItem(Item* item)
 	if(selectedInventory != -1)
 		deselectItems();
 
-	char tempBuffer[5];
+	std::string tempBuffer;
 	msgItemName = TTF_RenderText_Solid(fontCalibri,item->name,fontColorWhite);
-	_itoa_s(item->cost.getGold(),tempBuffer,10);
-	msgItemCost = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+	tempBuffer = std::to_string(item->cost.getGold());
+	msgItemCost = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 
 	// render any information relevant to an item with quantity, do not allow it to be equipped
 	if(item->isItemOfQuantity())
@@ -249,17 +249,17 @@ void EquipScreen::selectedItem(Item* item)
 		switch(((UsableItem*)item)->usableType)
 		{
 			case UsableItem::ARROW:
-				_itoa_s(mainCharacter->getNumArrows(),tempBuffer,10);
+				tempBuffer = std::to_string(mainCharacter->getNumArrows());
 				break;
 			case UsableItem::BOLT:
-				_itoa_s(mainCharacter->getNumBolts(),tempBuffer,10);
+				tempBuffer = std::to_string(mainCharacter->getNumBolts());
 				break;
 			default:
-				_itoa_s(mainCharacter->getNumPotions(),tempBuffer,10);
+				tempBuffer = std::to_string(mainCharacter->getNumPotions());
 				break;
 
 		}
-		msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+		msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 	}
 	else
 		selectedEquipableItem = (EquipableItem*)item;
@@ -275,16 +275,16 @@ void EquipScreen::selectedItem(Item* item)
 				msgCustom[0] = TTF_RenderText_Solid(fontCalibri,"Damage Dice: D",fontColorWhite);
 				msgCustom[1] = TTF_RenderText_Solid(fontCalibri,"Critical Multiplyer: ",fontColorWhite);
 
-				_itoa_s(tempWeapon->getDamage(),tempBuffer,10);
-				msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
-				_itoa_s(tempWeapon->getCriticalMultiplier(),tempBuffer,10);
-				msgItemCustom[1] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+				tempBuffer = std::to_string(tempWeapon->getDamage());
+				msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
+				tempBuffer = std::to_string(tempWeapon->getCriticalMultiplier());
+				msgItemCustom[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 
 				if(tempWeapon->getRangeIncrement() > 0)
 				{
 					msgCustom[2] = TTF_RenderText_Solid(fontCalibri,"Range Increment: ",fontColorWhite);
-					_itoa_s(tempWeapon->getRangeIncrement(),tempBuffer,10);
-					msgItemCustom[2] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+					tempBuffer = std::to_string(tempWeapon->getRangeIncrement());
+					msgItemCustom[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 				}
 			}
 		}
@@ -298,12 +298,12 @@ void EquipScreen::selectedItem(Item* item)
 				msgCustom[1] = TTF_RenderText_Solid(fontCalibri,"Max Dexterity Bonus: ",fontColorWhite);
 				msgCustom[2] = TTF_RenderText_Solid(fontCalibri,"Armor Check Penalty: ",fontColorWhite);
 
-				_itoa_s(tempArmor->getArmorBonus(),tempBuffer,10);
-				msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
-				_itoa_s(tempArmor->getMaxDexBonus(),tempBuffer,10);
-				msgItemCustom[1] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
-				_itoa_s(tempArmor->getArmorCheckPenalty(),tempBuffer,10);
-				msgItemCustom[2] = TTF_RenderText_Solid(fontCalibri,tempBuffer,fontColorWhite);
+				tempBuffer = std::to_string(tempArmor->getArmorBonus());
+				msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
+				tempBuffer = std::to_string(tempArmor->getMaxDexBonus());
+				msgItemCustom[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
+				tempBuffer = std::to_string(tempArmor->getArmorCheckPenalty());
+				msgItemCustom[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 			}
 		}
 	}

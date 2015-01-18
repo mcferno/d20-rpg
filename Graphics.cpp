@@ -227,7 +227,7 @@ void Map::parseIndex(char *filename)
 	std::cout << "Opening map index \"" << filename << "\" ... ";
 
 	// verify that the file was opened correctly before reading 
-	if(mapFile == NULL) 
+	if(mapFile.bad()) 
 	{ 
 		std::cout << "FAILED!\n";
 		return; 

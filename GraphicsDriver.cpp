@@ -17,8 +17,8 @@ SDL_Surface *background = NULL;
 class Level
 {
 public:
-	char *graphics;
-	char *index;
+	const char *graphics;
+	const char *index;
 	int alphaR;
 	int alphaG;
 	int alphaB;
@@ -104,7 +104,9 @@ int main( int argc, char* args[] )
 						break; 
 					case SDLK_RIGHT:
 						gameMap.scrollRight();
-						break; 
+						break;
+					default:
+						break;
 				}
 
 				// reapply background and paint tiles again
