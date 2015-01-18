@@ -20,8 +20,8 @@ SelectionScreen::~SelectionScreen()
 
 void SelectionScreen::init()
 {
-	characterSprites = loadImage(".\\images\\characters.png",0,0xFF,0xFF);
-	selectScreen = loadImage(".\\images\\selectScreen.png");
+	characterSprites = loadImage(SPRITES_HERO,0,0xFF,0xFF);
+	selectScreen = loadImage(SELECT_SCREEN_BACKDROP);
 
 	//initialize to non-selected
 	selectedSprite = -1;
@@ -507,7 +507,7 @@ void SelectionScreen::mouseLeft(int x, int y)
 				}
 			}
 			mainCharacter->showCharacter();
-			mainCharacter->graphics = new Graphics(".\\images\\characters.png");
+			mainCharacter->graphics = new Graphics(SPRITES_HERO);
 			characterRect->x = availableSprites[selectedSprite].clip.x;
 			characterRect->y = availableSprites[selectedSprite].clip.y;
 			characterRect->w = availableSprites[selectedSprite].clip.w;

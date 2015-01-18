@@ -28,10 +28,10 @@ Screen::~Screen()
 void Screen::init(SDL_Surface *newScreen)
 {
 	Screen::screen = newScreen;
-	Screen::highlightTile = loadImage(".\\images\\highlight.png",0x0,0xFF,0xFF);
-	Screen::fontCalibri = TTF_OpenFont( ".\\fonts\\calibri.ttf", 16 );
-	Screen::fontCalibriTiny = TTF_OpenFont ( ".\\fonts\\calibri.ttf", 12 );
-	Screen::fontCalibriBold = TTF_OpenFont ( ".\\fonts\\calibrib.ttf", 16 );
+	Screen::highlightTile = loadImage(TILE_HIGHLIGHTED,0x0,0xFF,0xFF);
+	Screen::fontCalibri = TTF_OpenFont( FONT_REGULAR, 16 );
+	Screen::fontCalibriTiny = TTF_OpenFont ( FONT_REGULAR, 12 );
+	Screen::fontCalibriBold = TTF_OpenFont ( FONT_BOLD, 16 );
 	colorWhite.r = colorWhite.g = colorWhite.b = 0xFF;
 	colorBlack.r = colorBlack.g = colorBlack.b = 0x0;
 }

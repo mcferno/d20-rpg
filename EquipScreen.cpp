@@ -3,8 +3,8 @@
 EquipScreen::EquipScreen(int newX, int newY, int newW, int newH) : 
 	Screen(newX,newY,newW,newH)
 {
-	background = loadImage(".\\images\\equipScreen.png");
-	buttons = loadImage(".\\images\\equipButton.png");
+	background = loadImage(EQUIPMENT_SCREEN_BACKDROP);
+	buttons = loadImage(EQUIPMENT_SCREEN_BUTTONS);
 	selectedInventory = -1;
 	selectedEquipableItem = NULL;
 	fontColorWhite.r = fontColorWhite.g = fontColorWhite.b = 0xFF;

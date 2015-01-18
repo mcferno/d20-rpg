@@ -5,7 +5,7 @@
 
 void EditableMap::init()
 {
-	emptyTile = loadImage(".\\images\\emptycell.png");
+	emptyTile = loadImage(TILE_EMPTY);
 
 	if(emptyTile == NULL)
 		std::cout << "Error loading empty tile!\n";
@@ -128,7 +128,7 @@ SelectableMap::SelectableMap()
 // map is created, passing the specs of its bounding window
 SelectableMap::SelectableMap(int newX, int newY, int newW, int newH): Map(newX,newY,newW,newH)
 {
-	highlightTile = loadImage(".\\images\\highlight.png",0x0,0xFF,0xFF);
+	highlightTile = loadImage(TILE_HIGHLIGHTED,0x0,0xFF,0xFF);
 
 	if(highlightTile == NULL)
 		std::cout << "Highlight Tile Error'ed\n";
@@ -171,16 +171,16 @@ void SelectableMap::loadGraphics(Graphics *newGraphics)
  *   Allows maps to be loaded, edited and saved.
  */
 
-const char* MapEditor::DEFAULT_TILES = ".\\images\\defaultTiles.png";
+const char* MapEditor::DEFAULT_TILES = SPRITES_MAP_OBJECTS;
 const char* MapEditor::DEFAULT_MAP_LOCATION = "index.map";
 
 MapEditor::MapEditor(int newX, int newY, int width, int height) : 
 	Screen(newX, newY, width, height)
 {
 	selectedTileX = selectedTileY = selectedCellX = selectedCellY = selectedTileIndex = -1;
-	background = loadImage(".\\images\\mapEditorBg.png");
+	background = loadImage(EDITOR_SCREEN_BACKDROP);
 
-	arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
+	arrows = loadImage(UI_NAV_ARROWS,0xFF,0x0,0xFF);
 
 	// initialize the 4 directional scrolling arrows for the custom map
 	//left

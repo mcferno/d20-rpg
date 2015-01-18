@@ -25,10 +25,10 @@ StartScreen::~StartScreen()
 
 void StartScreen::init()
 {
-	startMusic = Mix_LoadMUS(".\\music\\start.mp3");
+	startMusic = Mix_LoadMUS(MUSIC_INTRO);
 	musicStarted = false;
 
-	background = loadImage(".\\images\\startScreen.png");
+	background = loadImage(START_SCREEN_BACKDROP);
 
 	//buttons
 	btnStartGame = Rect(14*TILE_SIZE,18*TILE_SIZE,22*TILE_SIZE,3*TILE_SIZE);

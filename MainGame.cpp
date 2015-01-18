@@ -26,11 +26,11 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	for(int i=0;i<10;i++)
 		msgVariableInfo[i] = NULL;
 
-	background = loadImage(".\\images\\mainScreen.png");
-	winScreen = loadImage(".\\images\\winScreen.png");
-	loseScreen = loadImage(".\\images\\loseScreen.png");
+	background = loadImage(MAIN_SCREEN_BACKDROP_DEFAULT);
+	winScreen = loadImage(MAIN_SCREEN_BACKDROP_WIN);
+	loseScreen = loadImage(MAIN_SCREEN_BACKDROP_LOSE);
 
-	SDL_Surface *arrows = loadImage(".\\images\\arrows.png",0xFF,0x0,0xFF);
+	SDL_Surface *arrows = loadImage(UI_NAV_ARROWS,0xFF,0x0,0xFF);
 
 	// initialize the 4 directional scrolling arrows for the custom map
 	//left arrow
@@ -46,7 +46,7 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	mapBtns[3] = Button(38*TILE_SIZE,28*TILE_SIZE,TILE_SIZE,TILE_SIZE,3*TILE_SIZE,0,arrows);
 
 	// graphics used for all in game buttons
-	SDL_Surface *buttons = loadImage(".\\images\\mainGameButtons.png");
+	SDL_Surface *buttons = loadImage(UI_IN_GAME_BUTTONS);
 
 	// attack button
 	controlBtns[0] = Button(INFO_PANEL_X+TILE_SIZE,INFO_PANEL_Y+TILE_SIZE*4,5*TILE_SIZE,2*TILE_SIZE,0,0,buttons);
@@ -71,8 +71,8 @@ MainGame::MainGame(int newX, int newY, int newW, int newH) : Screen(newX,newY,ne
 	msgInfo[0] = TTF_RenderText_Solid(fontCalibri, "Monster ", colorWhite );
 	msgInfo[1] = TTF_RenderText_Solid(fontCalibri, "HP: ", colorWhite );
 
-	walkableHighlight = loadImage(".\\images\\fullHighlight.png");
-	targetableHighlight = loadImage(".\\images\\fullHighlightWeapon.png");
+	walkableHighlight = loadImage(TILE_WALKABLE);
+	targetableHighlight = loadImage(TILE_ATTACKABLE);
 	SDL_SetAlpha( walkableHighlight, SDL_SRCALPHA | SDL_RLEACCEL, 75 );
 	SDL_SetAlpha( targetableHighlight, SDL_SRCALPHA | SDL_RLEACCEL, 75 );
 }
@@ -270,7 +270,7 @@ void MainGame::loadLevel()
 			level->alphaB = 0xAA;
 
 			// initialize a small set of enemies
-			monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
+			monsterGraphics = new Graphics(SPRITES_AI,0xFF, 0x0, 0xFF);
 
 			numEnemies = 6;
 			enemies = new Monster[numEnemies];
@@ -320,7 +320,7 @@ void MainGame::loadLevel()
 			level->alphaB = 0xAA;
 
 			// initialize a small set of enemies
-			monsterGraphics = new Graphics(".\\images\\enemies.png",0xFF, 0x0, 0xFF);
+			monsterGraphics = new Graphics(SPRITES_AI,0xFF, 0x0, 0xFF);
 
 			numEnemies = 9;
 			enemies = new Monster[numEnemies];

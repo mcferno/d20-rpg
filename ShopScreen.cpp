@@ -3,8 +3,8 @@
 ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) : 
 	Screen(newX,newY,newW,newH)
 {
-	background = loadImage(".\\images\\shopScreen.png");
-	buttons = loadImage(".\\images\\buySellButtons.png");
+	background = loadImage(SHOP_SCREEN_BACKDROP);
+	buttons = loadImage(UI_SHOP_BUTTONS);
 	showPurchaseError = false;
 
 	// initialize the buttons used to buy and sell

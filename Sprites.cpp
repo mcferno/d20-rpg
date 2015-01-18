@@ -726,7 +726,7 @@ Treasure::Treasure()
 {
 	opened = false;
 	if(treasureGraphics == NULL)
-		treasureGraphics = new Graphics(".\\images\\treasure.png",0xFF,0x0,0xFF);
+		treasureGraphics = new Graphics(SPRITES_CHESTS,0xFF,0x0,0xFF);
 	graphics = treasureGraphics;
 	clip = new SDL_Rect();
 	clip->x = clip->y = 0;
