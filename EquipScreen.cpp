@@ -1,6 +1,6 @@
 #include "EquipScreen.h"
 
-EquipScreen::EquipScreen(int newX, int newY, int newW, int newH) : 
+EquipScreen::EquipScreen(int newX, int newY, int newW, int newH) :
 	Screen(newX,newY,newW,newH)
 {
 	background = loadImage(EQUIPMENT_SCREEN_BACKDROP);
@@ -70,7 +70,7 @@ void EquipScreen::paint()
 			equipButton.paint();
 		}
 	}
-	
+
 	// paint the graphics for any equipped items
 	if(mainCharacter->equippedWeapon != NULL)
 		paintItem(x+EQUIP_WEAPON_X*16,y+EQUIP_WEAPON_Y*16,mainCharacter->equippedWeapon);
@@ -157,7 +157,7 @@ void EquipScreen::mouseLeft(int clickX, int clickY)
 		signalCompletion();
 	}
 	// unequip an item that was selected
-	else if(selectedEquipableItem != NULL 
+	else if(selectedEquipableItem != NULL
 		&& unEquipButton.inBounds(clickX, clickY)
 		&& mainCharacter->isEquipped(selectedEquipableItem))
 	{
@@ -239,7 +239,7 @@ void EquipScreen::selectedItem(Item* item)
 
 	std::string tempBuffer;
 	msgItemName = TTF_RenderText_Solid(fontCalibri,item->name,fontColorWhite);
-	tempBuffer = std::to_string(item->cost.getGold());
+	tempBuffer = to_string(item->cost.getGold());
 	msgItemCost = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 
 	// render any information relevant to an item with quantity, do not allow it to be equipped
@@ -249,13 +249,13 @@ void EquipScreen::selectedItem(Item* item)
 		switch(((UsableItem*)item)->usableType)
 		{
 			case UsableItem::ARROW:
-				tempBuffer = std::to_string(mainCharacter->getNumArrows());
+				tempBuffer = to_string(mainCharacter->getNumArrows());
 				break;
 			case UsableItem::BOLT:
-				tempBuffer = std::to_string(mainCharacter->getNumBolts());
+				tempBuffer = to_string(mainCharacter->getNumBolts());
 				break;
 			default:
-				tempBuffer = std::to_string(mainCharacter->getNumPotions());
+				tempBuffer = to_string(mainCharacter->getNumPotions());
 				break;
 
 		}
@@ -275,15 +275,15 @@ void EquipScreen::selectedItem(Item* item)
 				msgCustom[0] = TTF_RenderText_Solid(fontCalibri,"Damage Dice: D",fontColorWhite);
 				msgCustom[1] = TTF_RenderText_Solid(fontCalibri,"Critical Multiplyer: ",fontColorWhite);
 
-				tempBuffer = std::to_string(tempWeapon->getDamage());
+				tempBuffer = to_string(tempWeapon->getDamage());
 				msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
-				tempBuffer = std::to_string(tempWeapon->getCriticalMultiplier());
+				tempBuffer = to_string(tempWeapon->getCriticalMultiplier());
 				msgItemCustom[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 
 				if(tempWeapon->getRangeIncrement() > 0)
 				{
 					msgCustom[2] = TTF_RenderText_Solid(fontCalibri,"Range Increment: ",fontColorWhite);
-					tempBuffer = std::to_string(tempWeapon->getRangeIncrement());
+					tempBuffer = to_string(tempWeapon->getRangeIncrement());
 					msgItemCustom[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 				}
 			}
@@ -298,11 +298,11 @@ void EquipScreen::selectedItem(Item* item)
 				msgCustom[1] = TTF_RenderText_Solid(fontCalibri,"Max Dexterity Bonus: ",fontColorWhite);
 				msgCustom[2] = TTF_RenderText_Solid(fontCalibri,"Armor Check Penalty: ",fontColorWhite);
 
-				tempBuffer = std::to_string(tempArmor->getArmorBonus());
+				tempBuffer = to_string(tempArmor->getArmorBonus());
 				msgItemCustom[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
-				tempBuffer = std::to_string(tempArmor->getMaxDexBonus());
+				tempBuffer = to_string(tempArmor->getMaxDexBonus());
 				msgItemCustom[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
-				tempBuffer = std::to_string(tempArmor->getArmorCheckPenalty());
+				tempBuffer = to_string(tempArmor->getArmorCheckPenalty());
 				msgItemCustom[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), fontColorWhite);
 			}
 		}

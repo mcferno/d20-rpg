@@ -1,6 +1,6 @@
 #include "ShopScreen.h"
 
-ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) : 
+ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 	Screen(newX,newY,newW,newH)
 {
 	background = loadImage(SHOP_SCREEN_BACKDROP);
@@ -41,7 +41,7 @@ ShopScreen::ShopScreen(int newX, int newY, int newW, int newH) :
 		storeInventory.addItem(armor[i]);
 	for(int i=0;i<numItems;i++)
 		storeInventory.addItem(items[i]);
-	
+
 	// no items are selected yet
 	selectedStoreItem = selectedClientItem = -1;
 }
@@ -89,7 +89,7 @@ void ShopScreen::mouseLeft(int clickX, int clickY)
 		}
 	}
 
-	
+
 	// check if the user wishes to purchase the selected store item
 	if(selectedStoreItem != -1 && buyButton.inBounds(clickX, clickY))
 	{
@@ -151,7 +151,7 @@ void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 	msgCurrItemName = TTF_RenderText_Solid(fontCalibriTiny,item->name,colorWhite);
 
 	std::string tempBuffer;
-	tempBuffer = std::to_string(item->cost.getGold());
+	tempBuffer = to_string(item->cost.getGold());
 	msgCurrItemPrice = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite);
 
 	// get special information about the item if it has a quantity
@@ -161,23 +161,23 @@ void ShopScreen::selectedItem(Item* item, bool belongsToShop)
 		if(usableItem)
 		{
 			if(belongsToShop)
-				tempBuffer = std::to_string(usableItem->numLeft());
+				tempBuffer = to_string(usableItem->numLeft());
 			else
 			{
 				// check how many of this item the character is carrying on him
 				switch(usableItem->usableType)
 				{
 					case UsableItem::POTION:
-						tempBuffer = std::to_string(mainCharacter->getNumPotions());
+						tempBuffer = to_string(mainCharacter->getNumPotions());
 						break;
 					case UsableItem::ARROW:
-						tempBuffer = std::to_string(mainCharacter->getNumArrows());
+						tempBuffer = to_string(mainCharacter->getNumArrows());
 						break;
 					case UsableItem::BOLT:
-						tempBuffer = std::to_string(mainCharacter->getNumBolts());
+						tempBuffer = to_string(mainCharacter->getNumBolts());
 						break;
 					default:
-						tempBuffer = std::to_string(0);
+						tempBuffer = to_string(0);
 						break;
 				}
 			}
@@ -235,10 +235,10 @@ void ShopScreen::paint()
 			col = 0;
 		}
 		paintItem(x+(col+SELL_SECTION_X)*16,y+(row+SELL_SECTION_Y)*16,storeInventory.get(i));
-		
+
 		if(i == selectedStoreItem)
 			applySurface(x+(col+SELL_SECTION_X)*16,y+(row+SELL_SECTION_Y)*16,highlightTile,screen);
-		
+
 		col++;
 	}
 

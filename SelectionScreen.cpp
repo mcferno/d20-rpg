@@ -58,7 +58,7 @@ void SelectionScreen::paint()
 		availableSprites[i].paint();
 
 	// highlight a selected sprite
-	if(selectedSprite != -1) 
+	if(selectedSprite != -1)
 		applySurface(availableSprites[selectedSprite].x,availableSprites[selectedSprite].y,highlightTile,screen);
 	if(selectedRace != -1)
 		applySurface(availableRaces[selectedRace].x,availableRaces[selectedRace].y,highlightTile,screen);
@@ -71,7 +71,7 @@ void SelectionScreen::paint()
 
 	//paints dynamic selected race and class
 	paintCharacterMessage(selectedRace, selectedClass);
-	
+
 	//if you have clicked the rolled button paint the stats
 	if(hasRolled) {
 		paintAttributes(36,8);
@@ -80,7 +80,7 @@ void SelectionScreen::paint()
 
 //what happens when you click a roll button
 //rolls for player attributes
-void SelectionScreen::rollButton() 
+void SelectionScreen::rollButton()
 {
 	rollStr = ControllableCharacter::getAbilityRoll();
 	rollDex = ControllableCharacter::getAbilityRoll();
@@ -98,19 +98,19 @@ void SelectionScreen::rollButton()
 	modWis = ControllableCharacter::getModifier(rollWis);
 	modCha = ControllableCharacter::getModifier(rollCha);
 
-	sStr = std::to_string(rollStr); 
-	sDex = std::to_string(rollDex); 
-	sCon = std::to_string(rollCon); 
-	sIte = std::to_string(rollIte); 
-	sWis = std::to_string(rollWis); 
-	sCha = std::to_string(rollCha); 
+	sStr = to_string(rollStr);
+	sDex = to_string(rollDex);
+	sCon = to_string(rollCon);
+	sIte = to_string(rollIte);
+	sWis = to_string(rollWis);
+	sCha = to_string(rollCha);
 
-	smStr = std::to_string(modStr);
-	smDex = std::to_string(modDex); 
-	smCon = std::to_string(modCon); 
-	smIte = std::to_string(modIte); 
-	smWis = std::to_string(modWis); 
-	smCha = std::to_string(modCha); 
+	smStr = to_string(modStr);
+	smDex = to_string(modDex);
+	smCon = to_string(modCon);
+	smIte = to_string(modIte);
+	smWis = to_string(modWis);
+	smCha = to_string(modCha);
 }
 
 //this paints the rolls to the screen
@@ -232,7 +232,7 @@ void SelectionScreen::paintMessage(int x, int y)
 }
 
 //this paints the type of character you have selected dynamically
-void SelectionScreen::paintCharacterMessage(int race, int clas) 
+void SelectionScreen::paintCharacterMessage(int race, int clas)
 {
 	int x = 36*16;
 	int y = 5*16+8;
@@ -301,7 +301,7 @@ race SelectionScreen::findRace(int selectedRace)
 //outputs your selected class to console
 playerClass SelectionScreen::findClass(int selectedClass)
 {
-	switch (selectedClass) 
+	switch (selectedClass)
 	{
 		case 0:
 			std::cout << "fighter.";
@@ -318,7 +318,7 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 
 	x = x*16;
 	y = y*16;
-	switch (selectedRace) 
+	switch (selectedRace)
 	{
 		case -1:
 			message = TTF_RenderText_Solid(fontCalibri, " ", colorWhite );
@@ -326,12 +326,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			break;
 
 		case 0:
-			sadjStr = std::to_string(abs(HumanRace::STR_ADJ));
-			sadjDex = std::to_string(abs(HumanRace::DEX_ADJ));
-			sadjCon = std::to_string(abs(HumanRace::CON_ADJ));
-			sadjIte = std::to_string(abs(HumanRace::ITE_ADJ));
-			sadjWis = std::to_string(abs(HumanRace::WIS_ADJ));
-			sadjCha = std::to_string(abs(HumanRace::CHA_ADJ));
+			sadjStr = to_string(abs(HumanRace::STR_ADJ));
+			sadjDex = to_string(abs(HumanRace::DEX_ADJ));
+			sadjCon = to_string(abs(HumanRace::CON_ADJ));
+			sadjIte = to_string(abs(HumanRace::ITE_ADJ));
+			sadjWis = to_string(abs(HumanRace::WIS_ADJ));
+			sadjCha = to_string(abs(HumanRace::CHA_ADJ));
 			switch (characteristic)
 			{
 				case 1:
@@ -361,12 +361,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			}
 			break;
 		case 1:
-			sadjStr = std::to_string(abs(DwarfRace::STR_ADJ));
-			sadjDex = std::to_string(abs(DwarfRace::DEX_ADJ));
-			sadjCon = std::to_string(abs(DwarfRace::CON_ADJ));
-			sadjIte = std::to_string(abs(DwarfRace::ITE_ADJ));
-			sadjWis = std::to_string(abs(DwarfRace::WIS_ADJ));
-			sadjCha = std::to_string(abs(DwarfRace::CHA_ADJ));
+			sadjStr = to_string(abs(DwarfRace::STR_ADJ));
+			sadjDex = to_string(abs(DwarfRace::DEX_ADJ));
+			sadjCon = to_string(abs(DwarfRace::CON_ADJ));
+			sadjIte = to_string(abs(DwarfRace::ITE_ADJ));
+			sadjWis = to_string(abs(DwarfRace::WIS_ADJ));
+			sadjCha = to_string(abs(DwarfRace::CHA_ADJ));
 			switch (characteristic)
 			{
 				case 1:
@@ -396,12 +396,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			}
 			break;
 		case 2:
-			sadjStr = std::to_string(abs(ElfRace::STR_ADJ));
-			sadjDex = std::to_string(abs(ElfRace::DEX_ADJ));
-			sadjCon = std::to_string(abs(ElfRace::CON_ADJ));
-			sadjIte = std::to_string(abs(ElfRace::ITE_ADJ));
-			sadjWis = std::to_string(abs(ElfRace::WIS_ADJ));
-			sadjCha = std::to_string(abs(ElfRace::CHA_ADJ));
+			sadjStr = to_string(abs(ElfRace::STR_ADJ));
+			sadjDex = to_string(abs(ElfRace::DEX_ADJ));
+			sadjCon = to_string(abs(ElfRace::CON_ADJ));
+			sadjIte = to_string(abs(ElfRace::ITE_ADJ));
+			sadjWis = to_string(abs(ElfRace::WIS_ADJ));
+			sadjCha = to_string(abs(ElfRace::CHA_ADJ));
 			switch (characteristic)
 			{
 				case 1:
@@ -431,12 +431,12 @@ void SelectionScreen::printADJ(int selectedRace, int characteristic, int x, int 
 			}
 			break;
 		case 3:
-			sadjStr = std::to_string(abs(GnomeRace::STR_ADJ));
-			sadjDex = std::to_string(abs(GnomeRace::DEX_ADJ));
-			sadjCon = std::to_string(abs(GnomeRace::CON_ADJ));
-			sadjIte = std::to_string(abs(GnomeRace::ITE_ADJ));
-			sadjWis = std::to_string(abs(GnomeRace::WIS_ADJ));
-			sadjCha = std::to_string(abs(GnomeRace::CHA_ADJ));
+			sadjStr = to_string(abs(GnomeRace::STR_ADJ));
+			sadjDex = to_string(abs(GnomeRace::DEX_ADJ));
+			sadjCon = to_string(abs(GnomeRace::CON_ADJ));
+			sadjIte = to_string(abs(GnomeRace::ITE_ADJ));
+			sadjWis = to_string(abs(GnomeRace::WIS_ADJ));
+			sadjCha = to_string(abs(GnomeRace::CHA_ADJ));
 			switch (characteristic)
 			{
 				case 1:
@@ -476,20 +476,20 @@ void SelectionScreen::mouseLeft(int x, int y)
 	if (x >= 672 && x <= 784 && y >= 544 && y <= 591)
 	{
 		//Check to make sure you have selected everything
-		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1) 
+		if (selectedSprite != -1 && selectedRace != -1 && selectedClass != -1)
 		{
 
 
 			myRace = findRace(selectedRace);
 			myClass = findClass(selectedClass);
-			
+
 			std::cout << " \n and you've chosen Character " << selectedSprite+1 << "\n\n";
 			//call the character you selected
 			SDL_Rect *characterRect = new SDL_Rect();
 
 			//switch statement to call appropriate class for which class you selected
-			
-			switch (myClass) 
+
+			switch (myClass)
 			{
 				case FIGHTER:
 				if (!hasRolled) {

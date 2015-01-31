@@ -181,7 +181,7 @@ void MainGame::nextTurn()
 		std::cout << "Your turn, make your move\n";
 		paintNow();
 	}
-	else 
+	else
 	{
 		state = STATE_AI_TURN;
 
@@ -448,7 +448,7 @@ void MainGame::paint()
 
 			// how far can the human attack
 			paintRange(mainCharacter->getWeaponRange(),targetableHighlight,true);
-			
+
 			paintInfoPanel();
 		}
 
@@ -505,7 +505,7 @@ void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkabl
 		for(j=0;j<width;j++)
 		{
 			// whether or not the tile will be considered as possibly within range
-			if(gameMap.isOnScreen(centerX+(center-i),centerY+(center-j)) 
+			if(gameMap.isOnScreen(centerX+(center-i),centerY+(center-j))
 				&& (!isTileOccupied(centerX+(center-i),centerY+(center-j)) || ignoreUnWalkable)
 				&& (isTileWalkable(centerX+(center-i),centerY+(center-j)) || ignoreUnWalkable))
 				b[i][j] = uninit;
@@ -530,7 +530,7 @@ void MainGame::paintRange(int dist, SDL_Surface *highlight, bool ignoreUnWalkabl
 			for(j=0;j<width;j++)
 			{
 				min = unwalkable;
-				
+
 				if(i>0)
 					min = (b[i-1][j] < min)? b[i-1][j] : min;
 				if(i<width-1)
@@ -672,27 +672,27 @@ void MainGame::refreshVariableInfo()
 
 		std::string tempBuffer;
 
-		tempBuffer = std::to_string(mainCharacter->getHp());
+		tempBuffer = to_string(mainCharacter->getHp());
 		msgVariableInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->money.getGold());
+		tempBuffer = to_string(mainCharacter->money.getGold());
 		msgVariableInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
 		if(currentPlayer == mainCharacter)
 		{
-			tempBuffer = std::to_string(currSpeed);
+			tempBuffer = to_string(currSpeed);
 			msgVariableInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 		}
 		else
 			msgVariableInfo[2] = TTF_RenderText_Solid(fontCalibri, "0", colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getNumBolts());
+		tempBuffer = to_string(mainCharacter->getNumBolts());
 		msgVariableInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getNumArrows());
+		tempBuffer = to_string(mainCharacter->getNumArrows());
 		msgVariableInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getNumPotions());
+		tempBuffer = to_string(mainCharacter->getNumPotions());
 		msgVariableInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
 		if(mainCharacter->equippedWeapon == NULL)
@@ -723,25 +723,25 @@ void MainGame::setFixedInfo()
 	if(mainCharacter != NULL)
 	{
 		std::string tempBuffer;
-		tempBuffer = std::to_string(mainCharacter->getLevel());
+		tempBuffer = to_string(mainCharacter->getLevel());
 		msgFixedInfo[0] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getStr());
+		tempBuffer = to_string(mainCharacter->getStr());
 		msgFixedInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getDex());
+		tempBuffer = to_string(mainCharacter->getDex());
 		msgFixedInfo[2] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getCon());
+		tempBuffer = to_string(mainCharacter->getCon());
 		msgFixedInfo[3] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getIte());
+		tempBuffer = to_string(mainCharacter->getIte());
 		msgFixedInfo[4] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getWis());
+		tempBuffer = to_string(mainCharacter->getWis());
 		msgFixedInfo[5] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 
-		tempBuffer = std::to_string(mainCharacter->getCha());
+		tempBuffer = to_string(mainCharacter->getCha());
 		msgFixedInfo[6] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 	}
 }
@@ -774,7 +774,7 @@ void MainGame::selectEnemy(Monster* toSelect)
 	if(toSelect != NULL)
 	{
 		if(selectedEnemy == toSelect)
-		{	
+		{
 			// erase the monster's hp, to refresh it
 			if(msgCustomInfo[1] != NULL)
 			{
@@ -791,7 +791,7 @@ void MainGame::selectEnemy(Monster* toSelect)
 			msgCustomInfo[0] = TTF_RenderText_Solid(fontCalibri, selectedEnemy->getName(), colorWhite );
 		}
 		std::string tempBuffer;
-		tempBuffer = std::to_string(selectedEnemy->getHp());
+		tempBuffer = to_string(selectedEnemy->getHp());
 		msgCustomInfo[1] = TTF_RenderText_Solid(fontCalibri, tempBuffer.c_str(), colorWhite );
 	}
 }
@@ -973,9 +973,9 @@ void MainGame::mouseLeft(int clickX, int clickY)
 							break;
 						case 3: //down button
 							gameMap.scrollDown();
-							break;							
+							break;
 					}
-					
+
 				}
 			}
 		}
@@ -1064,10 +1064,10 @@ void MainGame::exitLevel()
 		{
 			std::cout << "LEVEL 1 COMPLETED!";
 			currentLevel = LEVEL_2;
-			
+
 			while(!playOrder.empty())
 				playOrder.pop();
-			
+
 			currentPlayer = NULL;
 
 			init();
@@ -1105,7 +1105,7 @@ void MainGame::tick()
 //#######################################################################
 //FIGHTING LOGIC
 //#######################################################################
-void MainGame::fight(Monster *thisMonster) 
+void MainGame::fight(Monster *thisMonster)
 {
 
 	//If your range of weapon is 1 then
@@ -1147,7 +1147,7 @@ void MainGame::fight(Monster *thisMonster)
 				thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 		}
 	}
-	
+
 	//If not a melee attack, then it must be
 	//RANGED ATTACK
 	else
@@ -1228,7 +1228,7 @@ void MainGame::fight(Monster *thisMonster)
 				std::cout << "\n YOU ATTACK WITH RANGED WEAPON! \n";
 				attackedThisRound = true;
 				if (fPlayerAttackRoll(thisMonster))
-					thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );	
+					thisMonster->setHp( thisMonster->getHp() - rollDamageMelee() );
 			}
 		}
 	}
@@ -1242,7 +1242,7 @@ bool MainGame::fMonsterAttackRoll(Monster *thisMonster)
 	std::cout << "\nMonster Attack Roll: " << monsterAttackRoll << "\n";
 
 	//critical hit implimentation
-	if (monsterAttackRoll == 20) 
+	if (monsterAttackRoll == 20)
 	{
 		std::cout << "MONSTER AUTOMATICALY HITS YOU" << "\n\n";
 		return true;
@@ -1272,21 +1272,21 @@ bool MainGame::fPlayerAttackRoll(Monster *thisMonster)
 	std::cout << "\nYour Attack Roll: " << playerAttackRoll << "\n";
 
 	//critical hit implimentation
-	if (playerAttackRoll == 20) 
-	{ 
+	if (playerAttackRoll == 20)
+	{
 		std::cout << "YOU AUTOMATICALY HIT HIM" << "\n\n";
 		return true;
 	}
 
 	//Normal Hit
-	if (playerAttackRoll >= (thisMonster->getAC())) 
+	if (playerAttackRoll >= (thisMonster->getAC()))
 	{
 		std::cout << "YOU HIT HIM!" << "\n\n";
 		return true;
 	}
 
 	//automatic miss
-	if (playerAttackRoll == 1) 
+	if (playerAttackRoll == 1)
 	{
 		std::cout << "YOU AUTOMATICALLY MISS HIM!" << "\n\n";
 		return false;
@@ -1303,7 +1303,7 @@ int MainGame::rollDamageRanged()
 
 	std::cout <<"\nYour Damage Roll: " << playerDamageRoll << "\n";
 
-	if (playerDamageRoll <= 1) 
+	if (playerDamageRoll <= 1)
 	{
 		std::cout << "You deal an automatic 1 damage \n";
 		return 1;
@@ -1313,7 +1313,7 @@ int MainGame::rollDamageRanged()
 		std::cout << "You deal " << playerDamageRoll << " damage points\n\n";
 		return 0;
 	}
-	
+
 	return -1;
 }
 
@@ -1328,7 +1328,7 @@ int MainGame::rollDamageMelee()
 
 	std::cout <<"\nYour Damage Roll: " << playerDamageRoll << "\n";
 
-	if (playerDamageRoll <= 1) 
+	if (playerDamageRoll <= 1)
 	{
 		std::cout << "You deal an automatic 1 damage \n";
 		return 1;
@@ -1343,12 +1343,12 @@ int MainGame::rollDamageMelee()
 }
 
 //Monsters Melee Damage Roll
-int MainGame::rollDamageMelee(Monster *thisMonster) 
+int MainGame::rollDamageMelee(Monster *thisMonster)
 {
 	monsterDamageRoll = Dice::roll(thisMonster->getDamageDiceType()) + (thisMonster->getStrMod());
 	std::cout <<"\nMonster Damage Roll: " << monsterDamageRoll << "\n";
 
-	if (monsterDamageRoll <= 1) 
+	if (monsterDamageRoll <= 1)
 	{
 		std::cout << "Monster deals an automatic 1 damage \n";
 		return 1;

@@ -91,11 +91,11 @@ void EditableMap::save(char *filename)
 
 	std::cout << "Saving the map index \"" << filename << "\" ... ";
 
-	// verify that the file was opened correctly before reading 
+	// verify that the file was opened correctly before reading
 	if(mapFile.bad())
-	{ 
+	{
 		std::cout << "FAILED!\n";
-		return; 
+		return;
 	}
 
 	// sets the width and height of the map
@@ -117,7 +117,7 @@ void EditableMap::save(char *filename)
 
 // ###########################################################################################
 
-/* Class SelectableMap: extension and simplification of the Map class which 
+/* Class SelectableMap: extension and simplification of the Map class which
  *   sets its tiles according to a graphic image instead of loading an index
  *   file.
  */
@@ -149,7 +149,7 @@ void SelectableMap::paint(int highlightTileX, int highlightTileY)
 	windowClip.y = y*tileSize;
 	windowClip.w = limit.w;
 	windowClip.h = limit.h;
-	
+
 	applySurface(limit.x,limit.y,g->image,screen,&windowClip);
 
 	if(highlightTileX != -1 && highlightTileY != -1 && isOnScreen(highlightTileX,highlightTileY))
@@ -174,7 +174,7 @@ void SelectableMap::loadGraphics(Graphics *newGraphics)
 const char* MapEditor::DEFAULT_TILES = SPRITES_MAP_OBJECTS;
 const char* MapEditor::DEFAULT_MAP_LOCATION = "index.map";
 
-MapEditor::MapEditor(int newX, int newY, int width, int height) : 
+MapEditor::MapEditor(int newX, int newY, int width, int height) :
 	Screen(newX, newY, width, height)
 {
 	selectedTileX = selectedTileY = selectedCellX = selectedCellY = selectedTileIndex = -1;
@@ -249,9 +249,9 @@ MapEditor::~MapEditor()
 // checks if an x,y coordinate is within the bounds of a certain screen area
 bool MapEditor::inBounds(int x, int y, Rect limits)
 {
-	return (x >= limits.x && 
+	return (x >= limits.x &&
 			x <= limits.w + limits.x &&
-			y >= limits.y && 
+			y >= limits.y &&
 			y <= limits.h + limits.y);
 }
 
@@ -302,9 +302,9 @@ void MapEditor::checkButtons(int x, int y, Button *setOfButtons, Map *mapToAffec
 					break;
 				case 3: //down button
 					mapToAffect->scrollDown();
-					break;							
+					break;
 			}
-			
+
 		}
 	}
 }
@@ -367,9 +367,9 @@ void MapEditor::paintInfoPanel()
 	std::string tempBuffer;
 
 	// simple coordinates to inform the user how much they are scrolling on the main map
-	tempBuffer = std::to_string(customMap->x);
+	tempBuffer = to_string(customMap->x);
 	applySurface(16,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
-	tempBuffer = std::to_string(customMap->y);
+	tempBuffer = to_string(customMap->y);
 	applySurface(48,0,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 
 	applySurface(640,16,selectedCellMsg,screen);
@@ -382,15 +382,15 @@ void MapEditor::paintInfoPanel()
 	// renders specifics of the selected custom map cell on-the-fly since they change frequently
 	if(selectedCellX != -1 && selectedCellY != -1)
 	{
-		tempBuffer = std::to_string(selectedCellX);
+		tempBuffer = to_string(selectedCellX);
 		applySurface(656,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
-		tempBuffer = std::to_string(selectedCellY);
+		tempBuffer = to_string(selectedCellY);
 		applySurface(704,32,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 
 		// paint information about the background layer if it is initialized
 		if(selectedCell->b != -1)
 		{
-			tempBuffer = std::to_string(selectedCell->b);
+			tempBuffer = to_string(selectedCell->b);
 			applySurface(720,64,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 			applySurface(720,80,TTF_RenderText_Solid( fontCalibriTiny, (selectedCell->isWalkable)?"Y":"N", colorWhite),screen);
 		}
@@ -398,7 +398,7 @@ void MapEditor::paintInfoPanel()
 		// paint information about the foreground layer if it is initialized
 		if(selectedCell->f != -1)
 		{
-			tempBuffer = std::to_string(selectedCell->f);
+			tempBuffer = to_string(selectedCell->f);
 			applySurface(720,48,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 		}
 
@@ -412,7 +412,7 @@ void MapEditor::paintInfoPanel()
 	// paint information about the selected graphics
 	if(selectedTileIndex != -1)
 	{
-		tempBuffer = std::to_string(selectedTileIndex);
+		tempBuffer = to_string(selectedTileIndex);
 		applySurface(688,128,TTF_RenderText_Solid( fontCalibriTiny, tempBuffer.c_str(), colorWhite),screen);
 		applySurface(752,112,graphics->image,screen,&graphics->clip[selectedTileIndex]);
 	}
@@ -439,7 +439,7 @@ void MapEditor::paint()
 	}
 }
 
-void MapEditor::mouseLeft(int x, int y) 
+void MapEditor::mouseLeft(int x, int y)
 {
 	// check if the custom map was clicked
 	if(inBounds(x,y,customMap->limit))

@@ -15,8 +15,15 @@ Before using the dice class to seed the rand
 	#define DICE_H
 
 #include <iostream>
-#include <math.h>
 #include <time.h>
+
+// handle lack of rand() in g++
+#if defined(__MINGW32__) || defined(__MINGW64__)
+    #include <cstdlib>
+#else
+    #include <math.h>
+#endif // G++ via MinGW
+
 
 //class dice requires no variables
 //remember to call srand(time(NULL));
