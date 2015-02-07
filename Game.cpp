@@ -13,6 +13,7 @@ in C++ using the d20 rules system.
 #include "StartScreen.h"
 #include "SelectionScreen.h"
 #include "MainGame.h"
+#include "utilities.h"
 #include <time.h>
 
 static const int SCREEN_WIDTH = 800; 

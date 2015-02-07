@@ -27,11 +27,14 @@ Screen::~Screen()
 
 void Screen::init(SDL_Surface *newScreen)
 {
+	std::string fontRegularPath = getResourcePath(FONT_REGULAR);
+	std::string fontBoldPath = getResourcePath(FONT_BOLD);
+
 	Screen::screen = newScreen;
 	Screen::highlightTile = loadImage(TILE_HIGHLIGHTED,0x0,0xFF,0xFF);
-	Screen::fontCalibri = TTF_OpenFont( FONT_REGULAR, 16 );
-	Screen::fontCalibriTiny = TTF_OpenFont ( FONT_REGULAR, 12 );
-	Screen::fontCalibriBold = TTF_OpenFont ( FONT_BOLD, 16 );
+	Screen::fontCalibri = TTF_OpenFont(fontRegularPath.c_str(), 16 );
+	Screen::fontCalibriTiny = TTF_OpenFont (fontRegularPath.c_str(), 12 );
+	Screen::fontCalibriBold = TTF_OpenFont (fontBoldPath.c_str(), 16 );
 	colorWhite.r = colorWhite.g = colorWhite.b = 0xFF;
 	colorBlack.r = colorBlack.g = colorBlack.b = 0x0;
 }

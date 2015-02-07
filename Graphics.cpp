@@ -2,13 +2,14 @@
 
 // #####################################################################################################
 
-SDL_Surface *loadImage( char *filename, int r, int g, int b ) 
+SDL_Surface *loadImage( const char *filename, int r, int g, int b ) 
 { 
 	SDL_Surface* loadedImage = NULL; 
 	SDL_Surface* optimizedImage = NULL;
 
 	// load the image from disk
-	loadedImage = IMG_Load( filename );
+	std::string image_path = getResourcePath(filename);
+	loadedImage = IMG_Load(image_path.c_str());
 
 	if( loadedImage == NULL ) 
 	{ 
@@ -37,11 +38,12 @@ SDL_Surface *loadImage( char *filename, int r, int g, int b )
 
 	return optimizedImage; 
 }
-
+/*
 SDL_Surface *loadImage(const char *filename, int r, int g, int b ) 
 { 
 	return (loadImage(const_cast<char*>(filename),r,g,b));
 }
+*/
 
 void applySurface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip ) 
 { 

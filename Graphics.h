@@ -34,7 +34,7 @@ const int GRAPHICS_INT_DEFAULT = -1;
  *   Supported image formats:
  *     BMP, PNG, JPEG, GIF, TIF, PCX, and more..
  */
-SDL_Surface *loadImage( char *, int = -1, int = -1, int = -1);
+//SDL_Surface *loadImage( char *, int = -1, int = -1, int = -1);
 SDL_Surface *loadImage( const char *, int = -1, int = -1, int = -1);
 
 /* applySurface: applies an image onto a surface (which may also be an image or

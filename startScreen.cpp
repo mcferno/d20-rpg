@@ -25,7 +25,8 @@ StartScreen::~StartScreen()
 
 void StartScreen::init()
 {
-	startMusic = Mix_LoadMUS(MUSIC_INTRO);
+	std::string musicPath = getResourcePath(MUSIC_INTRO);
+	startMusic = Mix_LoadMUS(musicPath.c_str());
 	musicStarted = false;
 
 	background = loadImage(START_SCREEN_BACKDROP);
