@@ -224,7 +224,7 @@ void Map::parseIndex(char *filename)
 	int mapW, mapH, newF, newB;
 	char newW;
 
-	std::ifstream mapFile(filename);
+	std::ifstream mapFile(getResourcePath(filename));
 
 	std::cout << "Opening map index \"" << filename << "\" ... ";
 

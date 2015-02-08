@@ -42,3 +42,4 @@ std::string getResourcePath(T relative)
 
 // explicit template declarations (to satify linker)
 template std::string getResourcePath<const char*>(const char* relative);
+template std::string getResourcePath<char*>(char* relative);

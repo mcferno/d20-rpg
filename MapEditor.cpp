@@ -87,7 +87,7 @@ void EditableMap::paintTile(int indexX, int indexY, int locX, int locY)
 // saves the currently loaded map to a file
 void EditableMap::save(char *filename)
 {
-	std::ofstream mapFile(filename);
+	std::ofstream mapFile(getResourcePath(filename));
 
 	std::cout << "Saving the map index \"" << filename << "\" ... ";
 
