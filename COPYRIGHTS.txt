@@ -1,31 +1,104 @@
-Various Sprite Images
-==============================
-
-- The Legend of Zelda: A Link to the Past
-  - Nintendo for the Super Nintedo Entertainment System (SNES)
-  - April 13, 1992
-  
-- Final Fantasy Mystic Quest
-  - Square Soft, Inc. for the Super Nintedo Entertainment System (SNES)
-  - October 5, 1992
 
 
-Various Images
-==============================
+This project uses a mixture of open source, closed source and copyright content.
+This file identifies the portions used and their respective licenses.
 
-- Neverwinter Nights Stratics, Dungeons & Dragons 3rd Edition Concept Art Gallery: Races & Classes
-  - http://nwn.stratics.com/content/gallery/dungeons/concept_races.shtml
 
-- Dungeons and Dragons Logo, Wizards of the Coast
-  - http://www.wizards.com/
+C++ source code and header files
+================================================================================
+
+Copyright (c) 2015 Patrick McFern & Christopher Karpyszyn
+License: MIT license (see LICENSE.txt)
+
+ - All *.h and *.cpp files, unless specified otherwise
+
+
+Darrell Walisser <dwaliss1@purdue.edu> & Max Horn <max@quendi.de>
+
+ - SDLMain.h
+ - SDLMain.m
+
+
+External Libraries
+================================================================================
+
+GNU LGPL version 2
+
+ - SDL v1.2         https://www.libsdl.org/
+
+
+zlib license
+
+ - SDL_ttf v2.x     https://www.libsdl.org/projects/SDL_ttf/
+ - SDL_mixer 1.2.x  https://www.libsdl.org/projects/SDL_mixer/
+ - SDL_image 1.2.x  https://www.libsdl.org/projects/SDL_image/
+
+
+Sprite Images
+================================================================================
+
+The Legend of Zelda: A Link to the Past
+Nintendo for the Super Nintendo Entertainment System (SNES)
+All right reserved.
+
+ - /images/defaultTiles.png
+ - /images/mainScreen.png (derivative work)
+ - /images/mapEditorBg.png (derivative work)
+ - /images/treasure.png
+ - /levels/level01/graphicTiles.png
+ - /levels/level02/graphicTiles.png
+
+
+Final Fantasy Mystic Quest
+Square Soft, Inc. for the Super Nintendo Entertainment System (SNES)
+All right reserved.
+
+ - /images/characters.png
+ - /images/enemies.png
+ - /images/items.png
+
+
+Images used in derivative work
+================================================================================
+
+Neverwinter Nights Stratics, Dungeons & Dragons 3rd Edition 
+Concept Art Gallery: Races & Classes
+http://nwn.stratics.com/content/gallery/dungeons/concept_races.shtml
+All right reserved.
+
+ - /images/equipScreen.png
+ - /images/selectScreen.png
+
+
+Dungeons and Dragons Logo, Wizards of the Coast
+http://www.wizards.com/
+All right reserved.
+
+ - /images/startScreen.png
+
+
+Fonts
+================================================================================
+
+Calibri font family
+© 2008 Microsoft Corporation. All Rights Reserved.
+
+ - /fonts/calibri.ttf
+ - /fonts/calibrib.ttf
 
 
 Music
-==============================
+================================================================================
 
- - Craig Stuart Garfinkle - The Bluff, Sample Cues and Themes
+Craig Stuart Garfinkle - The Bluff, Sample Cues and Themes
+All right reserved.
 
-Other
-==============================
+ - /music/start.mp3
 
-All other files, code and concepts have been entirely created by and remain the property of Patrick McFern & Christopher Karpyszyn
+
+Any files not explicitly mentioned above.
+================================================================================
+
+Copyright (c) 2015 Patrick McFern & Christopher Karpyszyn.
+License: MIT license (see LICENSE.txt).
+
