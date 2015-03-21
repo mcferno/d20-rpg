@@ -19,7 +19,7 @@ in C++ using the d20 rules system.
 static const int SCREEN_WIDTH = 800; 
 static const int SCREEN_HEIGHT = 600; 
 static const int SCREEN_BPP = 32;
-static const char* WINDOW_TITLE = "COMP446: Final Project";
+static const char* WINDOW_TITLE = "D20 RPG";
 const int FRAME_RATE_SLEEP = 40;
 
 //The event structure that will be used 
