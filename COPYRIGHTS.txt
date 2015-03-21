@@ -39,7 +39,7 @@ Sprite Images
 
 The Legend of Zelda: A Link to the Past
 Nintendo for the Super Nintendo Entertainment System (SNES)
-All right reserved.
+All rights reserved.
 
  - /images/defaultTiles.png
  - /images/mainScreen.png (derivative work)
@@ -51,7 +51,7 @@ All right reserved.
 
 Final Fantasy Mystic Quest
 Square Soft, Inc. for the Super Nintendo Entertainment System (SNES)
-All right reserved.
+All rights reserved.
 
  - /images/characters.png
  - /images/enemies.png
@@ -64,7 +64,7 @@ Images used in derivative work
 Neverwinter Nights Stratics, Dungeons & Dragons 3rd Edition 
 Concept Art Gallery: Races & Classes
 http://nwn.stratics.com/content/gallery/dungeons/concept_races.shtml
-All right reserved.
+All rights reserved.
 
  - /images/equipScreen.png
  - /images/selectScreen.png
@@ -72,7 +72,7 @@ All right reserved.
 
 Dungeons and Dragons Logo, Wizards of the Coast
 http://www.wizards.com/
-All right reserved.
+All rights reserved.
 
  - /images/startScreen.png
 
@@ -91,7 +91,7 @@ Music
 ================================================================================
 
 Craig Stuart Garfinkle - The Bluff, Sample Cues and Themes
-All right reserved.
+All rights reserved.
 
  - /music/start.mp3
 
