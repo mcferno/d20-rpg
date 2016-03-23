@@ -22,8 +22,8 @@ this project and we hope it inspires you.
 The code depends on the following libraries:
 
  * [Simple DirectMedia Layer](http://www.libsdl.org/) (SDL) v1.2.x (LGPL licensed)
- * [SDL image](https://www.libsdl.org/projects/SDL_image/) v1.2.x (zlib licensed)
- * [SDL mixer](https://www.libsdl.org/projects/SDL_mixer/) v1.2.x (zlib licensed)
+ * [SDL image](https://www.libsdl.org/projects/SDL_image/) v1.2.x (zlib licensed) [v1.2.12](https://www.libsdl.org/projects/SDL_image/release-1.2.html)
+ * [SDL mixer](https://www.libsdl.org/projects/SDL_mixer/) v1.2.x (zlib licensed) [v1.2.12](https://www.libsdl.org/projects/SDL_mixer/release-1.2.html)
  * [SDL ttf](http://www.libsdl.org/projects/SDL_ttf/) v2.0.x (zlib licensed)
 
 ## Project Status
